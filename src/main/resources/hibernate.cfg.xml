@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD//EN" 
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+<session-factory>
+		<property name="hibernate.connection.driver_class">
+			com.mysql.jdbc.Driver
+		</property>
+		<!--<property name="hibernate.connection.url">
+			jdbc:mysql://localhost:3306/mostdb
+		</property>-->
+		<property name="hibernate.connection.url">
+			jdbc:mysql://eu-cdbr-azure-west-d.cloudapp.net:3306/mostdb
+		</property>
+		<!--<property name="hibernate.connection.username">most_user</property>-->
+		<property name="hibernate.connection.username">b2ded1ffb1bb31</property>
+		<property name="hibernate.connection.password">ad102b20</property>
+		<!--<property name="hibernate.connection.password">123456</property>-->
+		<property name="show_sql">true</property>
+		<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+		<property name="hibernate.hbm2ddl.auto">update</property>
+		<!-- Mapping files -->
+		<mapping resource="storeuser.hbm.xml"/>
+		<mapping resource="storeresult.hbm.xml"/>
+		<mapping resource="storefriends.hbm.xml"/>
+		<mapping resource="storeuserimage.hbm.xml"/>		
+		
+</session-factory>
+</hibernate-configuration>

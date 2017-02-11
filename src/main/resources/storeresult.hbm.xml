@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.hit.model.ResultAnalysis" table="RESULT">
+		<id name="id" type="int" column="ID" >
+			<generator class="increment"/>
+		</id>
+		<property name="gameId">
+			<column name="GAMEID"/>
+		</property>
+		<property name="userId">
+			<column name="USERID"/>
+		</property>
+		<property name="time">
+			<column name="TIME"/>
+		</property>
+		<property name="level">
+			<column name="LEVEL"/>
+		</property>
+		<property name="score">
+			<column name="SCORE"/>
+		</property>
+		<property name="errors">
+			<column name="ERRORS"/>
+		</property>
+	</class>
+</hibernate-mapping>
