@@ -22,7 +22,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
 
 import com.hit.database.HibernateMOSTDAO;
 import com.hit.database.IMOSTDAO;
@@ -86,9 +90,15 @@ public class ViewController {
 		try {
 			String email = request.getParameter("email");
 			String password = request.getParameter("password");
-			User user = DAO.FindUser(email, password);
-			request.getSession().setAttribute("userId", user.getId());
-			return "redirect:/pages/client_side/homePage.html";
+			
+			if(email.equals("admin") && password.equals("admin")){
+				return "redirect:/pages/AdminPage.html";
+			}
+			else{
+				User user = DAO.FindUser(email, password);
+				request.getSession().setAttribute("userId", user.getId());
+				return "redirect:/pages/client_side/homePage.html";
+			}
 		} catch (DAOException e) {
 			Logger logger = (Logger) LoggerFactory.getLogger("exception.viewCotroller.PostLogin");
 			 logger.error(e.getMessage());
@@ -170,12 +180,113 @@ public class ViewController {
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.parseMediaType("application/xls"));
+	    headers.setContentLength((int)data.length);
 		String fileName = "ResultAnalysis.xls";
 		headers.setContentDispositionFormData(fileName, fileName);
 		headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
 		ResponseEntity<byte[]> response = new ResponseEntity<>(data,headers,HttpStatus.OK);
 
 		return response;
+	}
+	
+	@RequestMapping(value="/view/userResultsCSV", method=RequestMethod.GET)
+	public void userResultsCSV(HttpServletRequest request,HttpServletResponse response){
+		IMOSTDAO DAO = HibernateMOSTDAO.getInstance();
+		String csvFileName = "results.csv";
+        response.setContentType("text/csv");
+ 
+        String headerKey = "Content-Disposition";
+        String headerValue = String.format("attachment; filename=\"%s\"",
+                csvFileName);
+        response.setHeader(headerKey, headerValue);
+ 
+
+        String[] header = { "id", "gameId", "userId","time", "level",
+                "score", "errors"};
+        
+        try {
+        	int userId = DAO.FindUserByEmail(request.getParameter("email")).getId();
+        	
+			ResultAnalysis[] resultsGame1 = DAO.FindResults(1, userId);
+			ResultAnalysis[] resultsGame2 = DAO.FindResults(2, userId);
+			ResultAnalysis[] resultsGame3 = DAO.FindResults(3, userId);
+			ResultAnalysis[] resultsGame4 = DAO.FindResults(4, userId);
+
+			ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(),CsvPreference.STANDARD_PREFERENCE);
+	        csvWriter.writeHeader(header);
+
+	        for (ResultAnalysis result : resultsGame1) {
+	        	csvWriter.write(result, header);
+			}  
+	        
+	        for (ResultAnalysis result : resultsGame2) {
+	        	csvWriter.write(result, header);
+			}   
+	        
+	        for (ResultAnalysis result : resultsGame3) {
+	        	csvWriter.write(result, header);
+			}   
+	        
+	        for (ResultAnalysis result : resultsGame4) {
+	        	csvWriter.write(result, header);
+			}
+
+			csvWriter.close();
+		} catch (DAOException | IOException e) {
+			Logger logger = (Logger) LoggerFactory.getLogger("exception.viewCotroller.getPdf.getResults");
+			 logger.error(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	@RequestMapping(value="/view/ResultsCSV", method=RequestMethod.GET)
+	public void allUsersResultsCSV(HttpServletResponse response){
+		IMOSTDAO DAO = HibernateMOSTDAO.getInstance();
+		String csvFileName = "results.csv";
+        response.setContentType("text/csv");
+ 
+        String headerKey = "Content-Disposition";
+        String headerValue = String.format("attachment; filename=\"%s\"",
+                csvFileName);
+        response.setHeader(headerKey, headerValue);
+ 
+        String[] header = { "id", "gameId", "userId","time", "level",
+                "score", "errors"};
+        
+        try {
+        		User[] users = DAO.GetAllUsers();
+        		ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(),CsvPreference.STANDARD_PREFERENCE);
+        		csvWriter.writeHeader(header);
+        	
+	        	for (User user : users) {
+					
+				ResultAnalysis[] resultsGame1 = DAO.FindResults(1, user.getId());
+				ResultAnalysis[] resultsGame2 = DAO.FindResults(2, user.getId());
+				ResultAnalysis[] resultsGame3 = DAO.FindResults(3, user.getId());
+				ResultAnalysis[] resultsGame4 = DAO.FindResults(4, user.getId());
+	
+		        for (ResultAnalysis result : resultsGame1) {
+		        	csvWriter.write(result, header);
+				}  
+		        
+		        for (ResultAnalysis result : resultsGame2) {
+		        	csvWriter.write(result, header);
+				}   
+		        
+		        for (ResultAnalysis result : resultsGame3) {
+		        	csvWriter.write(result, header);
+				}   
+		        
+		        for (ResultAnalysis result : resultsGame4) {
+		        	csvWriter.write(result, header);
+				}
+        	}
+			csvWriter.close();
+		} catch (DAOException | IOException e) {
+			Logger logger = (Logger) LoggerFactory.getLogger("exception.viewCotroller.getPdf.getResults");
+			 logger.error(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 	
 	@RequestMapping(value="/getImage/{imageName}", method=RequestMethod.GET)

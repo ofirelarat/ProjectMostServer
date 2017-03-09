@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="windows-1255">
+	<title>Admin Page</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+	<div class="container">
+ 	<div class="model-content">
+ 		<div class="modal-header">
+ 			<h3 class="modal-title" style="text-align:center">נתוני משחק</h3>
+ 		</div>
+ 		
+ 		<div class="modal-body">
+ 			<form action="http://project-most.herokuapp.com/view/userResultsCSV" method="get">
+ 				<div class="form-group">
+ 					<input type="text" class="form-control" placeholder="אימייל" name="email" style="text-align:right"> 
+ 				</div>
+ 		
+ 				<div class="modal-footer">
+ 					<button class="btn btn-primary btn-block" style="text-align:center">הורד קובץ נתוני משחק ליוזר</button> 
+ 				</div>
+ 			</form>
+ 		</div>
+ 		<div class="modal-footer">
+ 					<a href="http://project-most.herokuapp.com/view/ResultsCSV"><button class="btn btn-succes" style="text-align:center">הורד קובץ נתוני משחק של כל היוזרים</button></a>
+		</div>
+	</div>
+	</div>
+
+</body>
+</html>

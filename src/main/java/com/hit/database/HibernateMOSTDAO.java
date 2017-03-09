@@ -120,6 +120,27 @@ public class HibernateMOSTDAO implements IMOSTDAO {
 		
 		return user;
 	}
+	
+	public User FindUserByEmail(String email) throws DAOException {
+		User user = null;
+		Session session = factory.openSession();
+
+		try{
+			session.beginTransaction();
+			String hql = String.format("From User u Where u.email = '%s'", email);
+			List users = session.createQuery(hql).list();
+			if(users.size() > 0)
+			{
+				user = (User)users.get(0);
+			}
+		}catch (HibernateException e) {
+			throw new DAOException(e.getMessage(),e);
+		}finally{
+			session.close();
+		}
+		
+		return user;
+	}
 
 	public void EditUser(User temp) throws DAOException {
 		Session session = factory.openSession();

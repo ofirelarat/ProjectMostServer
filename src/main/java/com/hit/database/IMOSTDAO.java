@@ -20,6 +20,7 @@ public interface IMOSTDAO
 	public boolean IsExist(String email) throws DAOException;
 	public User FindUser(int id) throws DAOException;
 	public User FindUser(String email,String password) throws DAOException;
+	public User FindUserByEmail(String email) throws DAOException;
 	public void EditUser(User temp) throws DAOException;
 	public void DeleteUser(int id) throws DAOException;
 	public void DeleteUser(User temp) throws DAOException;
