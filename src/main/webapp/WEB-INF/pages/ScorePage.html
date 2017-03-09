@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="windows-1255">
+	<title>Insert title here</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+</head>
+<body style="background-color:#425062;">
+	<div style="text-align:center;background-color:#425062;height:100%;font-weigth:300;">
+	  <div class="container-fluid">
+          <div class="container">
+            <div class="panel panel-primary" style="margin-top:50px;">
+              <div class="panel-heading">
+                <h1 class="panel-title">New Score:</h1>
+              </div>
+              <div class="panel-body" style="font-size:40px;"><!-- style="background-color:#2980b9;color:white"-->
+					<p id="new-score">0</p>
+              </div>
+            </div>
+          </div>
+      </div>
+      
+        <div class="container-fluid">
+          <div class="container">
+            <div class="panel panel-primary" style="margin-top:50px;">
+              <div class="panel-heading">
+                <h1 class="panel-title">Last Score:</h1>
+              </div>
+              <div class="panel-body" style="font-size:40px;"><!-- style="background-color:#2980b9;color:white"-->
+					<p id="last-score">0</p>
+              </div>
+            </div>
+          </div>
+      </div>
+      
+      <hr/>
+      <a href="####"><button class="btn btn-success btn-block" style="border-radius:1px;border:none;height:50px;font-size:30px;font-family:'Montserrat-Regular',serif;">Back To Menu</button></a>
+    </div>
+    
+    
+    <script>
+    
+    $(document).ready(function(){
+        $.get("http://project-most.herokuapp.com/game/getAverageScore?gameId=1&userId=1",
+        function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+            if(data.lenght == 1){
+            	document.getElementById("new-score").innerHTML = data;
+            }
+            else{
+            	if(data.lenght > 1){
+            		document.getElementById("new-score").innerHTML = data[lenght-1];
+            		document.getElementById("last-score").innerHTML = data[lenght-2];
+            	}
+            }
+        });
+    });
+    
+    </script>
+</body>
+</html>

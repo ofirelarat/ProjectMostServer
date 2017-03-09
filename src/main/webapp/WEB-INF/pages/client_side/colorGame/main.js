@@ -6,4 +6,4 @@ game.state.add('colorGameTutorial', colorGame.colorGameTutorial);
 game.state.add('colorGameCountDown', colorGame.colorGameCountDown);
 
 
-game.state.start('colorGame');
+game.state.start('colorGameTutorial');

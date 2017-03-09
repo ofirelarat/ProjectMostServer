@@ -1,0 +1,88 @@
+body{
+    margin:0;
+    direction: rtl;
+}
+
+#allGames{
+    display:none;
+}
+
+#container {
+    width: 100%;
+    top: 0;
+    right: 0;
+    background-color: #F9EFDD !important;
+    height: 100vh;
+}
+h1,h2,h3,h4,h5,h6,div,span,p{
+    font-family: 'Heebo', sans-serif !important;
+}
+
+h2{
+    font-size:45pt;
+    text-align: center;
+    color:#685E60;
+    padding: 40px 0;
+    font-weight: 800;
+    margin-top: 20px;
+
+}
+
+
+ul.gamesBtn li a{
+    /*    display: block;*/
+    /*    width: 95%;*/
+    /*    background-size: 100% auto;*/
+    /*    height: 183px;*/
+    /*    background-repeat: no-repeat;*/
+    /*    margin: 0 auto;*/
+}
+
+ul.gamesBtn li a img{
+    display: block;
+    width: 95%;
+    margin: 30px auto;
+}
+
+ul.gamesBtn{
+    list-style: none;
+}
+
+header{
+    background-color: rgba(104, 94, 96, 0.43);
+    height: 6%;
+    color: white;
+    font-size: 35pt;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 25px;
+}
+
+#randomGame{
+    height:94%;
+        text-align: center;
+    position:relative;
+}
+
+#toAllGames{
+   position: absolute;
+    top: 85%;
+    right: 50%;
+    transform: translate(51%);
+    height: 71px;
+    width: 100%;
+    border-top: 2px dashed black;
+    padding-top: 40px;
+    font-size: 32px;
+    background-image: url(assets/allGames/sprites/backHome.png);
+    background-repeat: no-repeat;
+    background-size: 60px;
+    background-position: 90% 25px;
+}
+
+h3{
+        font-size: 30px;
+    font-weight: 400;
+    color: #685e60;
+}

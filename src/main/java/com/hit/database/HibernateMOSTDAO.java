@@ -191,16 +191,20 @@ public class HibernateMOSTDAO implements IMOSTDAO {
 
 	@Override
 	public void AddResult(ResultAnalysis result) throws DAOException {
-		Session session = factory.openSession();
 		
-		try{
-			session.beginTransaction();
-			session.save(result);
-			session.getTransaction().commit(); 
-		}catch (HibernateException e) {
-			throw new DAOException(e.getMessage(),e);
-		}finally {
-			session.close();
+		if(FindUser(result.getUserId()) != null){
+			
+			Session session = factory.openSession();
+			
+			try{
+				session.beginTransaction();
+				session.save(result);
+				session.getTransaction().commit(); 
+			}catch (HibernateException e) {
+				throw new DAOException(e.getMessage(),e);
+			}finally {
+				session.close();
+			}
 		}
 	}
 

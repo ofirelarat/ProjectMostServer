@@ -2,6 +2,8 @@ package com.hit.controller;
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,12 +20,12 @@ import com.hit.model.User;
 import com.hit.model.User.Gender;
 import com.hit.model.UserImage;
 
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
 	private IMOSTDAO DAO = HibernateMOSTDAO.getInstance();
-	
 	
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
@@ -45,7 +47,8 @@ public class UserController {
 		try {
 			user = DAO.FindUser(email, password);
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
+			 Logger logger = (Logger) LoggerFactory.getLogger("exception.userCotroller.login");
+			 logger.error(e.getMessage());
 			e.printStackTrace();
 		}
 		
@@ -60,7 +63,8 @@ public class UserController {
 		try {
 			user = DAO.FindUser(userId);
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
+			 Logger logger = (Logger) LoggerFactory.getLogger("exception.userCotroller.search");
+			 logger.error(e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -79,7 +83,8 @@ public class UserController {
 				return HttpStatus.CONFLICT;
 			}
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
+			 Logger logger = (Logger) LoggerFactory.getLogger("exception.userCotroller.register");
+			 logger.error(e.getMessage());
 			e.printStackTrace();
 			return HttpStatus.BAD_REQUEST;
 		}
@@ -92,20 +97,22 @@ public class UserController {
 			DAO.DeleteUser(id);
 			return HttpStatus.OK;
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			 Logger logger = (Logger) LoggerFactory.getLogger("exception.userCotroller.delete");
+			 logger.error(e.getMessage());			
+			 e.printStackTrace();
 			return HttpStatus.BAD_REQUEST;
 		}
 	}
 	
 	@RequestMapping(value = "/all",method = RequestMethod.GET)
 	public User[] getAllUsers()
-	{
+	{	
 		User[] users = null;
 		try {
 			users = DAO.GetAllUsers();
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
+			 Logger logger = (Logger) LoggerFactory.getLogger("exception.userCotroller.getAll");
+			 logger.error(e.getMessage());
 			e.printStackTrace();
 		}
 		
@@ -121,8 +128,9 @@ public class UserController {
 			for(int i=0, len = friendslist.size(); i < len; i++)
 				   friends[i] = friendslist.get(i);
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			 Logger logger = (Logger) LoggerFactory.getLogger("exception.userCotroller.getFriends");
+			 logger.error(e.getMessage());
+			 e.printStackTrace();
 		}
 		return friends;
 	}
@@ -133,7 +141,8 @@ public class UserController {
 		try {
 			DAO.addFriendship(friends);
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
+			 Logger logger = (Logger) LoggerFactory.getLogger("exception.userCotroller.addFriend");
+			 logger.error(e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -144,7 +153,8 @@ public class UserController {
 		try {
 			images = DAO.getUserImages(userId);
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
+			 Logger logger = (Logger) LoggerFactory.getLogger("exception.userCotroller.getImages");
+			 logger.error(e.getMessage());
 			e.printStackTrace();
 		}
 		return images;
@@ -156,7 +166,8 @@ public class UserController {
 		try {
 			 DAO.addUserImage(image);
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
+			 Logger logger = (Logger) LoggerFactory.getLogger("exception.userCotroller.addImage");
+			 logger.error(e.getMessage());
 			e.printStackTrace();
 		}
 	}

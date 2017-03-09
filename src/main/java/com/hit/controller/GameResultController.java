@@ -1,8 +1,12 @@
 package com.hit.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,6 +19,7 @@ import com.hit.exceptions.DAOException;
 import com.hit.model.ResultAnalysis;
 import com.hit.model.ResultAnalysisAsJson;
 
+
 @RestController
 public class GameResultController {
 
@@ -25,15 +30,32 @@ public class GameResultController {
 		try {
 			DAO.AddResults(results);
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
+			 Logger logger = (Logger) LoggerFactory.getLogger("exception.gameCotroller.addResult");
+			 logger.error(e.getMessage());
 			e.printStackTrace();
 		}
 	}
 	
 	@RequestMapping(value="/game/getresult",method=RequestMethod.GET)
-	public ResultAnalysisAsJson[] getGameResult(@RequestParam(value="gameId")int gameId,@RequestParam(value="userId")int userId){
+	public ResultAnalysis[] getGameResult(@RequestParam(value="gameId")int gameId,@RequestParam(value="userId")int userId){
 		ResultAnalysis[] results = null;
 		IMOSTDAO DAO = HibernateMOSTDAO.getInstance();
+		try {
+			results = DAO.FindResults(gameId, userId);
+		} catch (DAOException e) {
+			Logger logger = (Logger) LoggerFactory.getLogger("exception.gameCotroller.getResult");
+			 logger.error(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return results;
+	}
+	
+	@RequestMapping(value="/game/getAverageScore",method=RequestMethod.GET)
+	public Integer[] getAverageResult(@RequestParam(value="gameId")int gameId,@RequestParam(value="userId")int userId){
+		IMOSTDAO DAO = HibernateMOSTDAO.getInstance();
+		ResultAnalysis[] results = null;
+
 		try {
 			results = DAO.FindResults(gameId, userId);
 		} catch (DAOException e) {
@@ -41,11 +63,30 @@ public class GameResultController {
 			e.printStackTrace();
 		}
 		
-		ResultAnalysisAsJson[] resultJson = null;
-		if(results.length > 0){
-			resultJson = ResultAnalysisAsJson.parseToResultAsJson(new ArrayList<ResultAnalysis>(Arrays.asList(results)));
+		Map<String, Integer> sumScorePerDate = new HashMap<String, Integer>();
+		for (int i = 0; i<results.length;i++) {
+			if(!sumScorePerDate.containsKey(results[i].getTime())){
+				sumScorePerDate.put(results[i].getTime(), results[i].getScore());
+				if(i!=0){
+					int sum = sumScorePerDate.get(results[i].getTime());
+					sumScorePerDate.put(results[i].getTime(), sum/(results[i].getLevel() + 1));
+				}
+			}
+			else{
+				int sum = sumScorePerDate.get(results[i].getTime());
+				sumScorePerDate.put(results[i].getTime(), sum + results[i].getScore());
+			}
 		}
-		
-		return null;
+		int sum = sumScorePerDate.get(results[results.length-1].getTime());
+		sumScorePerDate.put(results[results.length-1].getTime(), sum/(results[results.length-1].getLevel() + 1));
+
+		ArrayList<Integer> averagesList = new ArrayList<>();
+		for (Entry<String, Integer> score: sumScorePerDate.entrySet()) {
+			averagesList.add(score.getValue());
+		}
+
+
+		Integer[] averagesArray = new Integer[sumScorePerDate.size()];
+		return averagesList.toArray(averagesArray);
 	}
 }

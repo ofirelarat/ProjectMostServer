@@ -6,8 +6,8 @@ import java.util.Collections;
 
 public class ResultAnalysisAsJson {
 
-	private int game_id;
-	private int user_id;
+	private int gameID;
+	private int userID;
 	private String time;
 	private Data data;
 	
@@ -19,33 +19,33 @@ public class ResultAnalysisAsJson {
 
 	public ResultAnalysisAsJson(int gameId, int userId, String time) {
 		super();
-		this.game_id = gameId;
-		this.user_id = userId;
+		this.gameID = gameId;
+		this.userID = userId;
 		this.time = time;
 	}
 	
 	public ResultAnalysisAsJson(int gameId, int userId, String time, Data data) {
 		super();
-		this.game_id = gameId;
-		this.user_id = userId;
+		this.gameID = gameId;
+		this.userID = userId;
 		this.time = time;
 		this.data = data;
 	}
 
-	public int getGame_id() {
-		return game_id;
+	public int getGameID() {
+		return gameID;
 	}
 
-	public void setGame_id(int gameId) {
-		this.game_id = gameId;
+	public void setGameID(int gameId) {
+		this.gameID = gameId;
 	}
 
-	public int getUser_id() {
-		return user_id;
+	public int getUserID() {
+		return userID;
 	}
 
-	public void setUser_id(int userId) {
-		this.user_id = userId;
+	public void setUserID(int userId) {
+		this.userID = userId;
 	}
 
 	public String getTime() {
@@ -70,7 +70,7 @@ public class ResultAnalysisAsJson {
 	public static ResultAnalysis[] parseToResult(ResultAnalysisAsJson resultAsJson){
 		ResultAnalysis[] results = new ResultAnalysis[resultAsJson.getData().getLevels().length];
 		for(int i=0;i<results.length;i++){
-			results[i] = new ResultAnalysis(resultAsJson.getGame_id(),resultAsJson.getUser_id(),resultAsJson.getTime(),i,resultAsJson.getData().getLevels()[i].getCountPerLevel(),resultAsJson.getData().getLevels()[i].getErrorsPerLevel());
+			results[i] = new ResultAnalysis(resultAsJson.getGameID(),resultAsJson.getUserID(),resultAsJson.getTime(),i,resultAsJson.getData().getLevels()[i].getCountPerLevel(),resultAsJson.getData().getLevels()[i].getErrorsPerLevel());
 		}
 		
 		return results;
