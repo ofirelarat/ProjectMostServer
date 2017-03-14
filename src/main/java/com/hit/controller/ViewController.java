@@ -96,16 +96,21 @@ public class ViewController {
 			}
 			else{
 				User user = DAO.FindUser(email, password);
+				
+				if(user == null){
+					return "redirect:/pages/ErrorPage.html";
+				}
+				
 				request.getSession().setAttribute("userId", user.getId());
 				return "redirect:/pages/client_side/homePage.html";
 			}
 		} catch (DAOException e) {
 			Logger logger = (Logger) LoggerFactory.getLogger("exception.viewCotroller.PostLogin");
-			 logger.error(e.getMessage());
-			e.printStackTrace();
+			logger.error(e.getMessage());
+			//e.printStackTrace();
 		}
 
-		return null;
+		return "redirect:/pages/ErrorPage.html";
 	}
 	
 	@RequestMapping(value="/login", method=RequestMethod.GET)
@@ -113,14 +118,19 @@ public class ViewController {
 		IMOSTDAO DAO = HibernateMOSTDAO.getInstance();
 		try {
 			User user = DAO.FindUser(email, password);
+			
+			if(user == null){
+				return "redirect:/pages/ErrorPage.html";
+			}
+			
 			request.getSession().setAttribute("userId", user.getId());
 			return "redirect:/pages/client_side/homePage.html";
 		} catch (DAOException e) {
 			Logger logger = (Logger) LoggerFactory.getLogger("exception.viewCotroller.GetLogin");
-			 logger.error(e.getMessage());
+			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
-
+		
 		return null;
 	}
 
@@ -155,39 +165,6 @@ public class ViewController {
 
 		return response;
 	}
-
-	@RequestMapping(value="/view/resultsXls", method=RequestMethod.GET)
-	public ResponseEntity<byte[]> getResultsAnalysisXLS(@RequestParam(value="userId")int userId,@RequestParam(value="gameId") int gameId){
-		IMOSTDAO DAO = HibernateMOSTDAO.getInstance();
-		try {
-			ResultAnalysis[] results = DAO.FindResults(gameId, userId);
-			ExcelResultWriter.writeFile(results);
-		} catch (DAOException e) {
-			Logger logger = (Logger) LoggerFactory.getLogger("exception.viewCotroller.getPdf.getResults");
-			 logger.error(e.getMessage());
-			e.printStackTrace();
-		}
-
-		byte[] data = null;
-		Path path = Paths.get(ExcelResultWriter.FILE_NAME);
-		try {
-			data = Files.readAllBytes(path);
-		} catch (IOException e) {
-			Logger logger = (Logger) LoggerFactory.getLogger("exception.viewCotroller.getPdt.readFile");
-			 logger.error(e.getMessage());
-			e.printStackTrace();
-		}
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.parseMediaType("application/xls"));
-	    headers.setContentLength((int)data.length);
-		String fileName = "ResultAnalysis.xls";
-		headers.setContentDispositionFormData(fileName, fileName);
-		headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-		ResponseEntity<byte[]> response = new ResponseEntity<>(data,headers,HttpStatus.OK);
-
-		return response;
-	}
 	
 	@RequestMapping(value="/view/userResultsCSV", method=RequestMethod.GET)
 	public void userResultsCSV(HttpServletRequest request,HttpServletResponse response){
@@ -205,36 +182,39 @@ public class ViewController {
                 "score", "errors"};
         
         try {
-        	int userId = DAO.FindUserByEmail(request.getParameter("email")).getId();
-        	
-			ResultAnalysis[] resultsGame1 = DAO.FindResults(1, userId);
-			ResultAnalysis[] resultsGame2 = DAO.FindResults(2, userId);
-			ResultAnalysis[] resultsGame3 = DAO.FindResults(3, userId);
-			ResultAnalysis[] resultsGame4 = DAO.FindResults(4, userId);
-
-			ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(),CsvPreference.STANDARD_PREFERENCE);
-	        csvWriter.writeHeader(header);
-
-	        for (ResultAnalysis result : resultsGame1) {
-	        	csvWriter.write(result, header);
-			}  
-	        
-	        for (ResultAnalysis result : resultsGame2) {
-	        	csvWriter.write(result, header);
-			}   
-	        
-	        for (ResultAnalysis result : resultsGame3) {
-	        	csvWriter.write(result, header);
-			}   
-	        
-	        for (ResultAnalysis result : resultsGame4) {
-	        	csvWriter.write(result, header);
-			}
-
-			csvWriter.close();
+        	User user = DAO.FindUserByEmail(request.getParameter("email"));
+        	if(user != null){
+	        	int userId = user.getId();
+	        	
+				ResultAnalysis[] resultsGame1 = DAO.FindResults(1, userId);
+				ResultAnalysis[] resultsGame2 = DAO.FindResults(2, userId);
+				ResultAnalysis[] resultsGame3 = DAO.FindResults(3, userId);
+				ResultAnalysis[] resultsGame4 = DAO.FindResults(4, userId);
+	
+				ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(),CsvPreference.STANDARD_PREFERENCE);
+		        csvWriter.writeHeader(header);
+	
+		        for (ResultAnalysis result : resultsGame1) {
+		        	csvWriter.write(result, header);
+				}  
+		        
+		        for (ResultAnalysis result : resultsGame2) {
+		        	csvWriter.write(result, header);
+				}   
+		        
+		        for (ResultAnalysis result : resultsGame3) {
+		        	csvWriter.write(result, header);
+				}   
+		        
+		        for (ResultAnalysis result : resultsGame4) {
+		        	csvWriter.write(result, header);
+				}
+	
+				csvWriter.close();
+        	}
 		} catch (DAOException | IOException e) {
 			Logger logger = (Logger) LoggerFactory.getLogger("exception.viewCotroller.getPdf.getResults");
-			 logger.error(e.getMessage());
+			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
 	}

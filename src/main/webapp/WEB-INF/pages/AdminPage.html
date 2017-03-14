@@ -8,9 +8,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 </head>
-<body>
+<body background="/pages/client_side/assets/ballGame/backgrounds/bg.jpg">
 
-	<div class="container">
+	<div class="container" style="max-width:500px;margin:60px auto;">
  	<div class="model-content">
  		<div class="modal-header">
  			<h3 class="modal-title" style="text-align:center">נתוני משחק</h3>
@@ -19,16 +19,16 @@
  		<div class="modal-body">
  			<form action="http://project-most.herokuapp.com/view/userResultsCSV" method="get">
  				<div class="form-group">
- 					<input type="text" class="form-control" placeholder="אימייל" name="email" style="text-align:right"> 
+ 					<input type="text" class="form-control" placeholder="אימייל של משתמש  עבורו תרצה לקבל את הנתונים" name="email" style="text-align:right"> 
  				</div>
  		
  				<div class="modal-footer">
- 					<button class="btn btn-primary btn-block" style="text-align:center">הורד קובץ נתוני משחק ליוזר</button> 
+ 					<button class="btn btn-primary btn-block" style="text-align:center">הורד קובץ נתוני משחק למשתמש</button> 
  				</div>
  			</form>
  		</div>
  		<div class="modal-footer">
- 					<a href="http://project-most.herokuapp.com/view/ResultsCSV"><button class="btn btn-succes" style="text-align:center">הורד קובץ נתוני משחק של כל היוזרים</button></a>
+ 					<a href="http://project-most.herokuapp.com/view/ResultsCSV"><button class="btn btn-info" style="text-align:center">הורד קובץ נתוני משחק של כל המשתמשים</button></a>
 		</div>
 	</div>
 	</div>
