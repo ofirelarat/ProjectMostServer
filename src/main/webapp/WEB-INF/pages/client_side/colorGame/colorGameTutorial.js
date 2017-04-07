@@ -1,5 +1,11 @@
-var tapToContinue, tapToContinueText, BgTop, BgBottom, rightGate, leftGate, sliderBtn, gateMask, gateWidth = 130, tutorialProgessCounter, tooltip1, tooltip2, tooltip3, tooltip4, tooltip5, tooltip6, tooltip7, arrow, tutorialHeader, gameHeader, gateColorTimer, sliderBtnStrokeTween, skipBtn, star, starLines, wellDoneText, nextLevelContainer, gameIsOn = false, letsStart, startGameBtn, needTapToContinueText = false, tapToContinueTimer, screenPatch, btnSound,hitGateSound, hitWallsSound,errorSound, correctSound, tutorialCardsArray, tutorialGroupsArray, tCard1, tCard2, tCard3, tCard4, tCard5, tCard6, tCard7, tCardsGroup, tYesBtn, tNoBtn, tutorialCurrentCardNum, userWasCorrect, emptyCard1, emptyCard2, emptyCard3, wordTextbox1, wordTextbox2, tutorialCurrentCard, tutorialNotCurrentCard, endOfTutorial, tutorialMoveCard, tool1Sound, tool2Sound, tool3Sound,tool4Sound,tool5Sound, tool6Sound, cameFromGame=false;
+var tapToContinue, tapToContinueText, BgTop, BgBottom, rightGate, leftGate, sliderBtn, gateMask, gateWidth = 130, tutorialProgessCounter, tooltip1, tooltip2, tooltip3, tooltip4, tooltip5, tooltip6, tooltip7, arrow, tutorialHeader, gameHeader, gateColorTimer, sliderBtnStrokeTween, skipBtn, star, starLines, wellDoneText, nextLevelContainer, gameIsOn = false, letsStart, startGameBtn, needTapToContinueText = false, tapToContinueTimer, screenPatch, btnSound,hitGateSound, hitWallsSound,errorSound, correctSound, tutorialCardsArray, tutorialGroupsArray, tCard1, tCard2, tCard3, tCard4, tCard5, tCard6, tCard7, tCardsGroup, tYesBtn, tNoBtn, tutorialCurrentCardNum, userWasCorrect, emptyCard1, emptyCard2, emptyCard3, wordTextbox1, wordTextbox2, tutorialCurrentCard, tutorialNotCurrentCard, endOfTutorial, tutorialMoveCard, letsBeginSound, greatJobSound, tool1Sound, tool2Sound, tool3Sound,tool4Sound,tool5Sound, tool6Sound, starSound, cameFromGameToTutorial = false, cameFromGameToPlayAgain = false;
 
+WebFontConfig = {
+    //  load Google Font
+    google: {
+        families: ['Heebo']
+    }
+};
 
 colorGame.colorGameTutorial = function () {};
 colorGame.colorGameTutorial.prototype = {
@@ -8,7 +14,7 @@ colorGame.colorGameTutorial.prototype = {
 
     preload: function () {
         tutorialProgessCounter = 1;
-        tutorialCardsArray = [["כחול", "#0000ff", "true"],["אדום", "#ff0000", "true"], ["ירוק", "#00ff00", "true"], ["צהוב", "#ff0000", "false"], ["סגול","#ff9900", "false"], ["שחור", "#ffff00", "false"], ["כתום", "#ff9900", "true"]];
+        tutorialCardsArray = [["כחול", "#0000ff", "true"],["אדום", "#ff0000", "true"], ["ירוק", "#00ff00", "true"], ["צהוב", "#ff0000", "false"], ["סגול","#ff9900", "false"], ["שחור", "#fcd503", "false"], ["כתום", "#ff9900", "true"]];
         tutorialCurrentCardNum = -1;
         userWasCorrect = false;
         endOfTutorial = false; 
@@ -50,6 +56,12 @@ colorGame.colorGameTutorial.prototype = {
         game.load.audio('tool5Sound', '../assets/colorGame/sounds/tooltip5.mp3'); 
         game.load.audio('tool6Sound', '../assets/colorGame/sounds/tooltip6.mp3'); 
 
+        game.load.audio('btnSound', '../assets/allGames/sounds/pressBtn.mp3'); 
+        game.load.audio('starSound', '../assets/allGames/sounds/swoosh.mp3'); 
+
+        game.load.audio('letsBegin', '../assets/allGames/sounds/letsStart.mp3'); 
+        game.load.audio('greatJob', '../assets/allGames/sounds/greatJob.mp3'); 
+
     },
 
     //****************************************CREATE*********************************************
@@ -66,7 +78,11 @@ colorGame.colorGameTutorial.prototype = {
         tool3Sound =  game.add.audio('tool3Sound');
         tool4Sound =  game.add.audio('tool4Sound');
         tool5Sound =  game.add.audio('tool5Sound');
-        tool6Sound =  game.add.audio('tool6Sound');   
+        tool6Sound =  game.add.audio('tool6Sound'); 
+
+        letsBeginSound = game.add.audio('letsBegin');
+        greatJobSound = game.add.audio('greatJob');
+        starSound = game.add.audio('starSound');
 
         BgTop = game.add.sprite(0, 65, 'Bg');
         BgTop.frame = 0;
@@ -184,15 +200,15 @@ colorGame.colorGameTutorial.prototype = {
         tooltip6 = game.add.sprite(44, 162, 'tooltip6');
         tooltip6.alpha = 0;
 
-        if(Cookies.get('first-time-color') == undefined || cameFromGame==true){
+        if(lastGameLastLevel == 0 || cameFromGameToTutorial == true){
+            cameFromGameToTutorial = false;
             tutorialSequence();  
-        }
-        if (Cookies.get('first-time-color') == undefined)
-        {
-            Cookies.set('first-time-color', 'true');
-        }else if(Cookies.get('first-time-color') != undefined && (cameFromGame==false)){
+        } else if((lastGameLastLevel != 0) && (cameFromGameToTutorial == false)){
             game.state.start('colorGameCountDown');    
-        }   
+        } else if(cameFromGameToPlayAgain == true){
+            cameFromGameToPlayAgain = false;
+            game.state.start('colorGameCountDown'); 
+        }
     },
 
     //****************************************UPDATE*********************************************
@@ -475,12 +491,10 @@ function tutorialSequence(){
         tool3Sound.stop();
         tool5Sound.stop();
 
-
         game.add.tween(tooltip2).to({alpha:0}, 400, Phaser.Easing.Linear.In, true, 0, 0, false);
         game.add.tween(tooltip3).to({alpha:0}, 400, Phaser.Easing.Linear.In, true, 0, 0, false);
         game.add.tween(tooltip5).to({alpha:0}, 400, Phaser.Easing.Linear.In, true, 0, 0, false);
         game.add.tween(tooltip4).to({alpha:1}, 400, Phaser.Easing.Linear.In, true, 800, 0, false);
-
 
         setTimeout(function(){ 
             tool4Sound.play();
@@ -499,7 +513,6 @@ function tutorialSequence(){
         game.add.tween(tutorialHeader).to({y:-300}, 400, Phaser.Easing.Linear.In, true, 1000, 0, false);
         game.add.tween(skipBtn).to({y:-287}, 400, Phaser.Easing.Linear.In, true, 1000, 0, false);
 
-
         var starTweenA = game.add.tween(nextLevelContainer).to({y:300}, 1000, Phaser.Easing.Circular.Out, true, 1600);
         starTweenA.onComplete.add(activateStarTweenB, this);
     }
@@ -509,6 +522,9 @@ function tutorialSequence(){
 //****************************************TWEENS*********************************************
 
 function activateStarTweenB () {
+    if (gameIsOn == false){
+        greatJobSound.play();  
+    }
     nextLevelContainer.y=300;
     game.add.tween(starLines).to({alpha:1}, 600, Phaser.Easing.Sinusoidal.Out, true, 0); 
     var starTweenB =  game.add.tween(nextLevelContainer).to({y:-400}, 1000, Phaser.Easing.Circular.Out, true, 1000); 
@@ -516,11 +532,9 @@ function activateStarTweenB () {
 }
 
 function afterStar () {
+     starSound.play();
     starLines.alpha = 0;
     if (gameIsOn){
-        //            if(pauseState == false){
-        //              currentBall = createBall();
-        //                createCardsStructure();
         cardsContainer.y = 900;
         cardsContainer.alpha = 1;
         var cardsReturn = game.add.tween(cardsContainer).to({y:0}, 600, Phaser.Easing.Circular.Out, true, 0); 
@@ -528,16 +542,15 @@ function afterStar () {
             yesBtn.input.enabled = true;
             noBtn.input.enabled = true;
             enableCardDrag(currentTopCard);
-            game.add.tween(instructionsTooltip2).to({alpha:1}, 600, Phaser.Easing.Circular.Out, true, 0);
+            game.add.tween(instructionsTooltip2).to({alpha:1}, 400, Phaser.Easing.Circular.Out, true, 0);
 
         }, this);
 
-        //            }       
     }else{
         tutorialProgessCounter++;
+        letsBeginSound.play();
         game.add.tween(letsStart).to({y:312}, 600, Phaser.Easing.Sinusoidal.Out, true, 0); 
         game.add.tween(startGameBtn).to({y:397}, 600, Phaser.Easing.Sinusoidal.Out, true, 0); 
-
     }
 }
 
@@ -545,7 +558,7 @@ function afterStar () {
 
 function tutorialOnDragStop(){
     //    disableCardDrag(currentTopCard);
-    if(tutorialCurrentCard.children[0].x > centerX-160){
+    if(tutorialCurrentCard.children[0].x >= centerX-160){
         console.log("right");
         //        emptyCard3.alpha = 0;
         correctFeedback();
@@ -554,7 +567,6 @@ function tutorialOnDragStop(){
         console.log("left");
         tutorialErrorFeedback();
         game.add.tween(tutorialCurrentCard).to({x:0}, 200, Phaser.Easing.Back.Out).to({x:1300}, 600, Phaser.Easing.Back.Out, false, 0).start();
-
     }
     tutorialProgessCounter = 5;
     tutorialSequence();
@@ -563,7 +575,7 @@ function tutorialOnDragStop(){
 //****************************************START GAME*********************************************
 
 function startGame(){
-    //    btnSound.play();
+    btnSound.play();
     tool1Sound.stop();
     tool2Sound.stop();
     tool3Sound.stop();

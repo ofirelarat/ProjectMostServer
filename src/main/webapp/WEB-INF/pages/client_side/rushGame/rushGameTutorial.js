@@ -1,4 +1,11 @@
-var tapToContinue, tapToContinueText, BgTop, BgBottom, tutorialProgessCounter, tooltip1, tooltip2, tooltip3, tooltip4, tooltip5, tooltip6, tooltip7, arrow, tutorialHeader, gameHeader, skipBtn, star, starLines, wellDoneText, nextLevelContainer, gameIsOn = false, letsStart, startGameBtn, needTapToContinueText = false, tapToContinueTimer, btnSound, brickContainer, arrow1, arrow2, arrow3, arrow4, arrow1Movement,arrow2Movement,arrow3Movement,arrow4Movement, glow_truck, glow_car, trail, trailMask, trailTween, secTrailTween, stage6alreadyStarted, stage7alreadyStarted, stage8alreadyStarted, stage9alreadyStarted, secTweenWasComplete, countdownState, cameFromGame=false;
+var tapToContinue, tapToContinueText, BgTop, BgBottom, tutorialProgessCounter, tooltip1, tooltip2, tooltip3, tooltip4, tooltip5, tooltip6, tooltip7, arrow, tutorialHeader, gameHeader, skipBtn, star, starLines, wellDoneText, nextLevelContainer, gameIsOn = false, letsStart, startGameBtn, needTapToContinueText = false, tapToContinueTimer, btnSound, brickContainer, arrow1, arrow2, arrow3, arrow4, arrow1Movement,arrow2Movement,arrow3Movement,arrow4Movement, glow_truck, glow_car, trail, trailMask, trailTween, secTrailTween, stage6alreadyStarted, stage7alreadyStarted, stage8alreadyStarted, stage9alreadyStarted, secTweenWasComplete, countdownState,  tool1Sound, tool2Sound, tool3Sound,tool4Sound,tool5Sound, tool6Sound, tool7Sound, letsBeginSound, greatJobSound, starSound, cameFromGameToTutorial = false, cameFromGameToPlayAgain = false;
+
+WebFontConfig = {
+    //  load Google Font
+    google: {
+        families: ['Heebo']
+    }
+};
 
 rushGame.rushGameTutorial = function () {};
 rushGame.rushGameTutorial.prototype = {
@@ -27,7 +34,6 @@ rushGame.rushGameTutorial.prototype = {
         game.load.image('glow_car', '../assets/rushGame/sprites/glow_car.png');
         game.load.image('arrow', '../assets/rushGame/sprites/arrow.png');
 
-        //    game.load.spritesheet('startGameBtn', '../assets/rushGame/spriteSheets/startGameBtn.png', 220.015, 220.015);
         game.load.spritesheet('startGameBtn', '../assets/rushGame/spriteSheets/startGameBtn.png', 220, 220);
 
         game.load.spritesheet('bottomBtn', '../assets/rushGame/spriteSheets/bottomBtn.png', 257, 75);
@@ -40,7 +46,7 @@ rushGame.rushGameTutorial.prototype = {
         game.load.image('skipBtn', '../assets/allGames/sprites/skipBtn.png');
 
 
-        game.load.audio('btnSound', '../assets/ballGame/sounds/pressBtn.wav'); 
+        game.load.audio('btnSound', '../assets/allGames/sounds/pressBtn.mp3'); 
         game.load.audio('brickHit', '../assets/rushGame/sounds/brickHit.mp3'); 
         game.load.audio('orangeBrickOut', '../assets/rushGame/sounds/orangeBrickOut.mp3'); 
         game.load.audio('tool1Sound', '../assets/rushGame/sounds/tooltip1.mp3'); 
@@ -50,6 +56,9 @@ rushGame.rushGameTutorial.prototype = {
         game.load.audio('tool5Sound', '../assets/rushGame/sounds/tooltip5.mp3'); 
         game.load.audio('tool6Sound', '../assets/rushGame/sounds/tooltip6.mp3'); 
 
+        game.load.audio('letsBegin', '../assets/allGames/sounds/letsStart.mp3'); 
+        game.load.audio('greatJob', '../assets/allGames/sounds/greatJob.mp3'); 
+        game.load.audio('starSound', '../assets/allGames/sounds/swoosh.mp3'); 
 
         stage6alreadyStarted = false;
         stage7alreadyStarted = false;
@@ -81,6 +90,10 @@ rushGame.rushGameTutorial.prototype = {
         tool6Sound =  game.add.audio('tool6Sound');
         tool7Sound =  game.add.audio('tool7Sound');
 
+        letsBeginSound = game.add.audio('letsBegin');
+        greatJobSound = game.add.audio('greatJob');
+        starSound = game.add.audio('starSound');
+
         BgTop = game.add.sprite(0, 65, 'Bg');
         BgTop.frame = 0;
         BgBottom = game.add.sprite(0, 512, 'Bg');
@@ -108,25 +121,20 @@ rushGame.rushGameTutorial.prototype = {
         starMask.drawRect(0, 0, 540, 480);
         nextLevelContainer.mask = starMask;
 
-
         letsStart = game.add.sprite(104.041, 1000, 'letsStart');
         startGameBtn = game.add.button(159.99, 1095, 'startGameBtn', startGame);
         startGameBtn.frame = 0;
         startGameBtn.onInputDown.add(function(){startGameBtn.frame = 1;}, startGameBtn);
         startGameBtn.onInputUp.add(function(){startGameBtn.frame = 0;}, startGameBtn);
 
-
         letsStart.mask = starMask;
         startGameBtn.mask = starMask;
-
 
         restarLevelBtn = game.add.button(8.494, 1100, 'bottomBtn', restarLevelFunc);
         stepBackBtn = game.add.button(274.506, 1100, 'bottomBtn', stepBackFunc);
 
-
         restarLevelBtn.onInputDown.add(function(){restarLevelBtn.frame = 1;}, restarLevelBtn);
         restarLevelBtn.onInputUp.add(function(){if(restartBtnWasClicked =! true){restarLevelBtn.frame = 0;}}, restarLevelBtn);
-
 
         stepBackBtn.onInputDown.add(function(){stepBackBtn.frame = 4;}, stepBackBtn);
         stepBackBtn.onInputUp.add(function(){if(stepBackBtnWasClicked != true){stepBackBtn.frame = 3;}}, stepBackBtn);         
@@ -134,11 +142,9 @@ rushGame.rushGameTutorial.prototype = {
         restarLevelBtn.frame = 2;  
         stepBackBtn.frame = 5; 
 
-
         //            BgFront = game.add.sprite(0, 65, 'FrontBg');
         gameHeader = game.add.sprite(0, 0, 'header');
         tutorialHeader = game.add.sprite(0, 0, 'tutorialHeader');
-
 
         tapToContinue = game.add.graphics(0, 0);
         tapToContinue.beginFill(0x874e9b, 0);
@@ -153,8 +159,6 @@ rushGame.rushGameTutorial.prototype = {
         glow_car.angle=90;
         glow_car.alpha=0;
 
-
-
         //timer for the gate to turn red when the ball hits it        
         tapToContinueTimer = game.time.create(false);
 
@@ -165,23 +169,33 @@ rushGame.rushGameTutorial.prototype = {
         tapToContinueText.text = 'כדי להתקדם - געו במסך';
         tapToContinueText.alpha = 0;
 
-
         countdownState= false;
 
-        if(Cookies.get('first-time-rush') == undefined || cameFromGame==true){
+        if(lastGameLastLevel == 0 || cameFromGameToTutorial == true){
+            cameFromGameToTutorial = false;
             tutorialSequence();  
-        }
-        if (Cookies.get('first-time-rush') == undefined)
-        {
-            Cookies.set('first-time-rush', 'true');
-        }else if(Cookies.get('first-time-rush') != undefined && (cameFromGame==false)){
+        } else if((lastGameLastLevel != 0) && (cameFromGameToTutorial == false)){
             game.state.start('rushGameCountDown');    
+        } else if(cameFromGameToPlayAgain == true){
+            cameFromGameToPlayAgain = false;
+            game.state.start('rushGameCountDown'); 
         }           
     },
 
     //****************************************UPDATE*********************************************
 
     update: function () {
+                if (tutorialProgessCounter == 4){     
+                    if(trailTween != undefined){
+                        trailTween.stop();
+                        trail.alpha=0;
+                    }
+        
+                    if(secTrailTween != undefined){
+                        secTrailTween.stop();
+                        trail.alpha=0;
+                    } 
+                }
         if (tutorialProgessCounter == 6){    
             glow_truck.x=brickContainer.children[5].x+20;
             glow_truck.y=brickContainer.children[5].y+264;
@@ -340,8 +354,16 @@ function createToturialLevel(){
 }
 
 function TutorialStartDrag(s){
-    trailTween.stop();
-    secTrailTween.stop();
+
+
+    if(trailTween != undefined){
+        trailTween.stop();
+    }
+
+    if(secTrailTween != undefined){
+        secTrailTween.stop();
+    }  
+
     trail.alpha=0;
 
     // declaring some variables here because I am using them 
@@ -416,6 +438,7 @@ function TutorialStopDrag(s){
             game.add.tween(tooltip6).to({alpha:0}, 600, Phaser.Easing.Linear.In, true, 0, 0, false);
 
             var bricksUp =game.add.tween(brickContainer).to({y:-287}, 600, Phaser.Easing.Linear.In, true, 0, 0, false); 
+
             var starTweenA = game.add.tween(nextLevelContainer).to({y:380}, 1000, Phaser.Easing.Circular.Out, true, 500);
             starTweenA.onComplete.add(activateStarTweenB, this);
             game.add.tween(tutorialHeader).to({y:-300}, 600, Phaser.Easing.Linear.In, true, 0, 0, false);
@@ -502,6 +525,7 @@ function tutorialSequence(){
 
     }else if (tutorialProgessCounter == 2){
 
+
         tool1Sound.stop();
         tapToContinueTimer.stop();
 
@@ -541,12 +565,28 @@ function tutorialSequence(){
 
     }else if (tutorialProgessCounter == 3){
 
-        trail.alpha=0;
+
+        console.log("trailTween" + trailTween);
+        console.log("secTrailTween" + secTrailTween);
+
+
+        if(trailTween != undefined){
+            trailTween.stop();
+            trail.alpha=0;
+        }
+
+        if(secTrailTween != undefined){
+            secTrailTween.stop();
+            trail.alpha=0;
+        } 
+
 
         tool2Sound.stop();
         tapToContinueTimer.stop();
-        trailTween.stop();
-//        trailTween.onComplete(function(){  secTrailTween.stop();});
+        if(trailTween != undefined){
+            trailTween.stop();
+        }
+        //        trailTween.onComplete(function(){  secTrailTween.stop();});
 
 
         tapToContinue.events.onInputDown.removeAll(); 
@@ -603,6 +643,16 @@ function tutorialSequence(){
         //----------------------------------------4 VERTICAL CAR------------------------------------------
 
     }else if (tutorialProgessCounter == 4){
+
+        if(trailTween != undefined){
+            trailTween.stop();
+            trail.alpha=0;
+        }
+
+        if(secTrailTween != undefined){
+            secTrailTween.stop();
+            trail.alpha=0;
+        } 
 
         tool3Sound.stop();
         tapToContinueTimer.stop();
@@ -720,7 +770,7 @@ function tutorialSequence(){
             tool5Sound.stop();
             tapToContinueTimer.stop();
 
-
+            tapToContinue.events.onInputDown.removeAll();  
             game.add.tween(tapToContinueText).to({alpha:0}, 600, Phaser.Easing.Linear.In, true, 0, 0, false);
 
             tooltip6 = game.add.sprite(44, 140, 'tooltip6');
@@ -732,7 +782,6 @@ function tutorialSequence(){
             setTimeout(function(){ 
                 tool6Sound.play();
             }, 1000);
-
 
             game.world.bringToTop(skipBtn);
             console.log("stage-6");
@@ -757,13 +806,16 @@ function tutorialSequence(){
             stage6alreadyStarted = true;
         })
 
+
         //----------------------------------------7------------------------------------------
 
     } else if (tutorialProgessCounter == 7){
 
         if(stage7alreadyStarted==false){
+            tool6Sound.stop();
+
             secTweenWasComplete = true;
-            console.log(" stage 7 ");
+            console.log("stage 7");
 
             game.add.tween(glow_car).to({alpha:1}, 500, Phaser.Easing.Linear.In, true, 0, 0, false);
             brickContainer.children[3].input.enableDrag();        
@@ -772,7 +824,7 @@ function tutorialSequence(){
         }
 
         if (secTweenWasComplete == true){
-            //       createTrail(x,y, color, width, height, scaleSize, direction, endPoint, makeInputEnabled)
+            //createTrail(x,y, color, width, height, scaleSize, direction, endPoint, makeInputEnabled)
             createTrail(194,460,0x4a3838,70,1, 500, "vertical", 1700, false);
         }
 
@@ -882,6 +934,11 @@ function showTapToContinueText(){
 //****************************************TWEENS*********************************************
 
 function activateStarTweenB () {
+    if (gameIsOn == false){
+        greatJobSound.play();  
+    } 
+
+
     nextLevelContainer.y=380;
     game.add.tween(starLines).to({alpha:1}, 600, Phaser.Easing.Sinusoidal.Out, true, 0); 
     var starTweenB =  game.add.tween(nextLevelContainer).to({y:-400}, 700, Phaser.Easing.Circular.Out, true, 1200); 
@@ -890,12 +947,14 @@ function activateStarTweenB () {
 
 function afterStar () {
     starLines.alpha = 0;
+    starSound.play();
     if (gameIsOn){
         if(pauseState == false){
             createlevel(difficultyLevel);
         }       
     }else{
         tutorialProgessCounter++;
+        letsBeginSound.play();
         game.add.tween(letsStart).to({y:360}, 600, Phaser.Easing.Sinusoidal.Out, true, 0); 
         game.add.tween(startGameBtn).to({y:440}, 600, Phaser.Easing.Sinusoidal.Out, true, 0); 
     }
@@ -912,7 +971,6 @@ function startGame(){
     tool4Sound.stop();
     tool5Sound.stop();
     tool6Sound.stop();
-
 
     tapToContinueTimer.stop();
 

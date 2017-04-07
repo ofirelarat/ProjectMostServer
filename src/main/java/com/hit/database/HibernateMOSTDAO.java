@@ -408,5 +408,25 @@ public class HibernateMOSTDAO implements IMOSTDAO {
 			session.close();
 		}
 		return images;
+	}
+
+	@Override
+	public void deleteUserImage(UserImage temp) throws DAOException {
+		Session session = factory.openSession();
+		
+		try{
+			session.beginTransaction();
+			String hql = String.format("From UserImage i Where i.userId = '%s' and i.imageName = '%s'", temp.getUserId(),temp.getImageName());
+			List<UserImage> imagesList = session.createQuery(hql).list();
+			if(!imagesList.isEmpty()){
+				session.delete(imagesList.get(0));
+			}
+			
+			session.getTransaction().commit();
+		}catch (Exception e) {
+			throw new DAOException(e.getMessage(), e);
+		}finally {
+			session.close();
+		}
 	}	
 }

@@ -1,101 +1,9 @@
-var memoGame = {}, gameID = "4", centerX = 540/2, centerY = 960/2, graphics, ballBgFront, errors, levelNum, nextLevelText, userID, time, 
-    sessionData, levelData, lastLevel = 3, currentdate, gameTimer, gameTimerEvent, picsJSONstructure, gameDurationInSeconds, progressBar, progressBarStroke, progressBarLoop, progressBarWidth, endGameProgressBarWidth, pauseState, pauseBtn, gameContainer, pauseContainer, resumeGameBtn, howToBtn, startAgainBtn, backHomeBtn, selectedPicName, timeWord, header, star, nextLevelContainer, starLines, timeIsOut = false, levelText, pauseText, levelTextMask, last10seconds, brick, bricksStructureArray = [], difficultyLevel, currentLevel, colNum, rowNum, coloredBricksNum, coloredBricksArray, userWasCorrect, brickSize, stageWidth, stageHeight, bricksStructureWidth, bricksStructureHeight, bricksStartPointX, bricksStartPointY, myInterval, bricksCounter, lastGameLastLevel = 4, doTutorial, userWasWrong, tappedBricksArray = [];
+var memoGame = {}, centerX = 540/2, centerY = 960/2, graphics, errors, levelNum, nextLevelText, levelData, gameTimer, gameTimerEvent, gameDurationInSeconds, progressBar, progressBarStroke, progressBarLoop, progressBarWidth, endGameProgressBarWidth, pauseState, pauseBtn, gameContainer, pauseContainer, resumeGameBtn, howToBtn, startAgainBtn, backHomeBtn, selectedPicName, timeWord, header, star, nextLevelContainer, starLines, timeIsOut, levelText, pauseText, levelTextMask, last10seconds, brick, bricksStructureArray = [], difficultyLevel, currentLevel, colNum, rowNum, coloredBricksNum, coloredBricksArray, userWasCorrect, brickSize, stageWidth, stageHeight, bricksStructureWidth, bricksStructureHeight, bricksStartPointX, bricksStartPointY, myInterval, bricksCounter, doTutorial, userWasWrong, tappedBricksArray = [], popup, popupBg, popupNoBtn, popupYesBtn, xBtn;
 
+var lastLevel = 10;
 
-//var picsArray= ["pic1.jpg", "pic2.jpg", "pic3.jpg"];
-var picsArray= [];
+var levelsArray=[{colNum:2,rowNum:2,coloredBricksNum:2},{colNum:3,rowNum:3,coloredBricksNum:3},{colNum:3,rowNum:3,coloredBricksNum:4},{colNum:3,rowNum:4,coloredBricksNum:4},{colNum:3,rowNum:4,coloredBricksNum:5},{colNum:4,rowNum:4,coloredBricksNum:5},{colNum:4,rowNum:4,coloredBricksNum:5},{colNum:4,rowNum:5,coloredBricksNum:5},{colNum:4,rowNum:5,coloredBricksNum:6},{colNum:5,rowNum:5,coloredBricksNum:6},{colNum:5,rowNum:6,coloredBricksNum:6},{colNum:5,rowNum:6,coloredBricksNum:7},{colNum:6,rowNum:6,coloredBricksNum:7},{colNum:6,rowNum:6,coloredBricksNum:8},{colNum:6,rowNum:7,coloredBricksNum:8},{colNum:6,rowNum:7,coloredBricksNum:9},{colNum:6,rowNum:7,coloredBricksNum:9}];
 
-var levelsArray = [
-    {
-        colNum: 2,
-        rowNum: 2,
-        coloredBricksNum: 2
-    },
-    {
-        colNum: 3,
-        rowNum: 3,
-        coloredBricksNum: 3
-    },
-    {
-        colNum: 3,
-        rowNum: 3,
-        coloredBricksNum: 4
-    },
-    {
-        colNum: 3,
-        rowNum: 4,
-        coloredBricksNum: 4
-    },
-    {
-        colNum: 4,
-        rowNum: 4,
-        coloredBricksNum: 4
-    },
-    {
-        colNum: 4,
-        rowNum: 4,
-        coloredBricksNum: 5
-    },
-    {
-        colNum: 4,
-        rowNum: 5,
-        coloredBricksNum: 5
-    },
-    {
-        colNum: 4,
-        rowNum: 5,
-        coloredBricksNum: 6
-    },
-    {
-        colNum: 5,
-        rowNum: 5,
-        coloredBricksNum: 6
-    },
-    {
-        colNum: 5,
-        rowNum: 6,
-        coloredBricksNum: 6
-    },
-    {
-        colNum: 5,
-        rowNum: 6,
-        coloredBricksNum: 7
-    },
-    {
-        colNum: 6,
-        rowNum: 6,
-        coloredBricksNum: 7
-    },
-    {
-        colNum: 6,
-        rowNum: 6,
-        coloredBricksNum: 8
-    },
-    {
-        colNum: 6,
-        rowNum: 7,
-        coloredBricksNum: 8
-    },
-    {
-        colNum: 6,
-        rowNum: 7,
-        coloredBricksNum: 9
-    },
-    {
-        colNum: 7,
-        rowNum: 7,
-        coloredBricksNum: 9
-    }
-];
-
-
-WebFontConfig = {
-
-    //  load Google Font
-    google: {
-        families: ['Heebo']
-    }
-};
 
 memoGame.memoGame = function () {};
 memoGame.memoGame.prototype = {
@@ -113,16 +21,13 @@ memoGame.memoGame.prototype = {
         }else if(userStartPoint == 3){
             difficultyLevel = 5;
         }
-        
+
         pauseState = false;
         errors = 0;
         levelNum = 1;
-        sessionData = "";
         levelData = "";
         gameIsOn = true; 
-        currentdate = new Date();
-        picsJSONstructure = "";
-        gameDurationInSeconds = 100;   
+        gameDurationInSeconds = 150;   //2.5 minutes
         last10seconds = true
         //   difficultyLevel = 1;
         userWasCorrect = 0;
@@ -131,6 +36,7 @@ memoGame.memoGame.prototype = {
         userWasWrong = false;
         whereIs = "game";
         counter = 0;
+        timeIsOut = false;
 
         selectedPicName = chooseRandomPic(); //choosing a random picture for the end of game feedback
 
@@ -143,17 +49,8 @@ memoGame.memoGame.prototype = {
         game.load.image('backHomeBtn', '../assets/memoGame/sprites/backHomeBtn.png');    
         game.load.image('progressBarStroke', '../assets/allGames/sprites/timeBarStroke.png');  
 
-
-
-        //    game.load.audio('btnSound', '../assets/ballGame/sounds/pressBtn.wav'); 
-        //    game.load.audio('hitWallsSound', '../assets/ballGame/sounds/hitWallsSound.mp3'); 
-        //    game.load.audio('hitGateSound', '../assets/ballGame/sounds/hitGateSound.mp3'); 
-
-        //---------------------------------------------------------------------------------------------
-
-
-        fromServer();
-
+        game.load.image('backHomePopup', '../assets/allGames/sprites/backHomePopup.png');    
+        game.load.image('popupBtn', '../assets/allGames/sprites/popupBtn.png');
     },
 
     //****************************************CREATE*********************************************
@@ -163,13 +60,6 @@ memoGame.memoGame.prototype = {
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.world.setBounds(0, 0, 540, 960);
-
-
-        //            btnSound = game.add.audio('btnSound');
-        //            hitGateSound = game.add.audio('hitGateSound');
-        //            hitWallsSound = game.add.audio('hitWallsSound'); 
-        //            hitWallsSound.volume = 0.1;
-
 
         // adding pics to the stage
         var BgTop = game.add.sprite(0, 65, 'Bg');
@@ -219,14 +109,29 @@ memoGame.memoGame.prototype = {
 
         createPauseScreen();
 
-//        difficultyLevel = 1;
+        //        difficultyLevel = 1;
         currentLevel = levelsArray[difficultyLevel];
         colNum = currentLevel.colNum;
         rowNum = currentLevel.rowNum;
         coloredBricksNum = currentLevel.coloredBricksNum;
 
+        popupBg = game.add.sprite(0, 65, 'backHomePopup');
+        popupYesBtn = game.add.button(274.53 , 423, 'popupBtn', backHome);
+        popupNoBtn = game.add.button(83.43, 423, 'popupBtn', backToPauseScreen);
+        xBtn = game.add.button(404, 243, 'popupBtn', backToPauseScreen);
+        xBtn.width = 65;
+        xBtn.height = 65;
+        popup = game.add.group(); 
+        popup.add(popupBg);
+        popup.add(popupNoBtn);
+        popup.add(popupYesBtn);
+        popup.add(xBtn);
+        popup.alpha = 0;
+        popupYesBtn.input.enabled = false;
+        popupNoBtn.input.enabled = false;
+        xBtn.input.enabled = false;
+        
         createBoard(difficultyLevel);
-
     },
 
     //****************************************UPDATE*********************************************
@@ -249,6 +154,7 @@ function createBoard(difficultyLevel){
     //    brickSize = 67;
     //    stageWidth = 540;
     //    stageHeight = 895;
+
     bricksStructureWidth = brickSize * colNum;
     bricksStructureHeight = brickSize * rowNum;
     bricksStartPointX = (stageWidth / 2) - (bricksStructureWidth / 2) + (brickSize / 2) - brickSize;
@@ -269,19 +175,29 @@ function createBoard(difficultyLevel){
     }
 
     for(var i = 1; i < colNum + 1; i++){
+
         for (var j = 1; j < rowNum + 1; j++){
             brick = game.add.sprite(bricksStartPointX+(brickSize*i), bricksStartPointY+(brickSize*j), 'brick');
             brick.frame = 1;   
             brick.anchor.set(0.5);
+
             brick.name = "brick" + i + j;
             //            brick.inputEnabled = true;
             brick.events.onInputDown.add(brickTap); 
             brick.scale.set(0);
             if(whereIs == "game"){
                 gameContainer.add(brick);
+
             }
             bricksStructureArray[i-1][j-1] = brick;
+
         }
+    }
+
+
+    if((timeIsOut) || (pauseState)){
+        console.log("return from createBoard");
+        return;
     }
 
     replaceBoard("startLevel");
@@ -291,12 +207,22 @@ function createBoard(difficultyLevel){
 function turnBricksToColor(){
     //    console.log(" =" + );
     setColoredBricksLocations();
+    if((timeIsOut) || (pauseState)){
+        console.log("return from turnBricksToColor");
+        return;
+    }
     for(var i = 0; i < coloredBricksArray.length; i++){
         turnToColor(coloredBricksArray[i], "false");
     }
 }
 
 function turnToColor(currentBrick, userTapped){
+    wooshSound.play();
+
+    if((timeIsOut) || (pauseState)){
+        console.log("return from turnToColor");
+        return;
+    }
     var brickTurnTween1 = game.add.tween((currentBrick).scale).to({x:0}, 300, Phaser.Easing.Circular.Out, true);
     brickTurnTween1.onComplete.add(showColoredBrick, this);
 
@@ -304,6 +230,10 @@ function turnToColor(currentBrick, userTapped){
         currentBrick.frame = 0;    
         var brickTurnTween2 = game.add.tween((currentBrick).scale).to({x:1}, 300, Phaser.Easing.Circular.Out, true, 0); 
         if(userTapped == "false"){
+            if((timeIsOut) || (pauseState)){
+                console.log("return from showColoredBrick");
+                return;
+            }
             brickTurnTween2.onComplete.add(turnBricksBack.bind(this, currentBrick), this);
         }
     }
@@ -311,17 +241,24 @@ function turnToColor(currentBrick, userTapped){
 
 function turnBricksBack(currentBrick){
     var brickAppearanceTime = 1000;
+    if((timeIsOut) || (pauseState)){
+        console.log("return from turnBricksBack");
+        return;
+    }
     var brickTurnBackTween1 = game.add.tween((currentBrick).scale).to({x:0}, 300, Phaser.Easing.Circular.Out, true, brickAppearanceTime);
     brickTurnBackTween1.onComplete.add(showWhiteBrick, this);
 
     function showWhiteBrick(){
         counter++;
-        console.log(counter);
+        //        console.log(counter);
         currentBrick.frame = 1;
+        if((timeIsOut) || (pauseState)){
+            console.log("return from showWhiteBrick");
+            return;
+        }
         var brickTurnBackTween2 = game.add.tween((currentBrick).scale).to({x:1}, 300, Phaser.Easing.Circular.Out, true);
         brickTurnBackTween2.onComplete.add(function(){
             enableBricksTap(); 
-            console.log("counter = " + counter);
             if (counter == 2){
                 doTutorial = true;
             }
@@ -344,7 +281,6 @@ function setColoredBricksLocations(){
         var currentColoredBrick = bricksStructureArray[randCol][randRow];
 
         for (var j = 0; j < coloredBricksArray.length; j++){ //checks if the brick that was chosen was chosen before
-            console.log("loop");
             if (currentColoredBrick == coloredBricksArray[j]){
                 randCol = getRandomNumber(0, colNum-1);
                 randRow = getRandomNumber(0, rowNum-1);
@@ -372,7 +308,7 @@ function getReadyForNewStage(){
 //****************************************TAP ON BRICK*********************************************
 
 function brickTap(tappedBrick){
-    console.log(tappedBrick.name);
+    //    console.log(tappedBrick.name);
     var correctBrick = false;
     tappedBricksArray.push(tappedBrick);
 
@@ -389,8 +325,7 @@ function brickTap(tappedBrick){
     }else{ //user tapped a wrong brick
         errorFeedback(tappedBrick);
     }    
-    console.log(userWasCorrect);
-    console.log(coloredBricksNum);
+
     if(userWasCorrect == coloredBricksNum){//end of level
         disableBricksTap();
         correctFeedback();
@@ -401,6 +336,7 @@ function brickTap(tappedBrick){
 
 function correctFeedback(){
     console.log("correct");
+    correctSound.play();
 
     var showFeed = game.add.tween(feedback.scale).to({x:1, y:1}, 300, Phaser.Easing.Back.Out, true, 400, 0, false);
     showFeed.onComplete.add(hideFeedback, this);
@@ -424,6 +360,9 @@ function correctFeedback(){
 }
 
 function errorFeedback(tappedBrick){
+    errorSound.play();
+    errorSound.volume=0.3;
+
     tappedBrick.frame = 2;
     disableBricksTap();
     userWasWrong = true;
@@ -434,7 +373,6 @@ function errorFeedback(tappedBrick){
         for(var j = 0; j < tappedBricksArray.length; j++){
             if(coloredBricksArray[i] == tappedBricksArray[j]){
                 brickIsAlreadyColored = true;
-                console.log("brickIsAlreadyColored");
             }
         }
 
@@ -450,7 +388,7 @@ function errorFeedback(tappedBrick){
 
         doTutorial = true;
         setTimeout(function(){
-//            getReadyForNewStage();
+            //            getReadyForNewStage();
             replaceBoard("endLevel");
         }, 2500);   
 
@@ -459,27 +397,21 @@ function errorFeedback(tappedBrick){
 
 
 function enableBricksTap(){
-    console.log("enabled");
     for(var i = 0; i < bricksStructureArray.length; i++){
         for(var j = 0; j < bricksStructureArray[0].length; j++){
             bricksStructureArray[i][j].inputEnabled = true;
         }
     } 
-    pauseBtn.inputEnabled = true;
-    game.add.tween(pauseBtn).to({alpha: 1}, 500, Phaser.Easing.Circular.Out, true, 0);
-
 }
 
 function disableBricksTap(){
-    console.log("disabled");
-
     for(var i = 0; i < bricksStructureArray.length; i++){
         for(var j = 0; j < bricksStructureArray[0].length; j++){
             bricksStructureArray[i][j].inputEnabled = false;
         }
     } 
-    pauseBtn.inputEnabled = false;
-    game.add.tween(pauseBtn).to({alpha: 0.3}, 500, Phaser.Easing.Circular.Out, true, 0);
+    //    pauseBtn.inputEnabled = false;
+    //    game.add.tween(pauseBtn).to({alpha: 0.3}, 500, Phaser.Easing.Circular.Out, true, 0);
 }
 
 
@@ -491,7 +423,6 @@ function disableBricksTap(){
 //
 //****************************************REPLACE BOARD*********************************************
 //function replaceBoard(state){
-////    setTimeout(function(){ myInterval = setInterval(bricksTweens, 100, "endLevel"); }, 1000);
 //    console.log("state1= " + state);
 //
 //    bricksNum = colNum * rowNum;
@@ -502,7 +433,6 @@ function disableBricksTap(){
 ////****************************************ON LOOP*********************************************
 //
 //function onLoop(state){
-//    console.log("state2= " + state);
 //    var goodBrick = false;
 //    var col;
 //    var row;
@@ -566,29 +496,36 @@ function disableBricksTap(){
 
 //****************************************REPLACE BOARD*********************************************
 function replaceBoard(state){
-    pauseBtn.inputEnabled = false;
-    setTimeout(function(){ myInterval = setInterval(bricksTweens, 100, state); }, 500);
+    if((timeIsOut) || (pauseState)){
+        console.log("return from replaceBoard");
+        return;
+    }
+    if( difficultyLevel < 7){
+        setTimeout(function(){ myInterval = setInterval(bricksTweens, 80, state); }, 500);
+    }else{
+        setTimeout(function(){ myInterval = setInterval(bricksTweens, 50, state); }, 500);
+    }
     disableBricksTap();
 }
 
 //***********************************BRICKS TWEENS FOR APPEARING / HIDING*************************
 
 function bricksTweens(state){
-//    console.log("colNum = " + colNum);
-//    console.log("rowNum = " + rowNum);
+    //    showBrickSound.play();  
+
     var bricksNum = colNum * rowNum;
     var currBrick;
     var goodBrick = false;
     var col;
     var row;
 
-//    console.log("bricksNum= " + bricksNum);
-//    console.log("bricksCounter= " + bricksCounter);
-
     if(bricksCounter == bricksNum){ //if all the bricks are done
         clearInterval(myInterval); 
-        console.log("interval cleared naturaly");
         bricksCounter = 0;
+        if((timeIsOut) || (pauseState)){
+            console.log("return from bricksTweens");
+            return;
+        }
         if(state == "startLevel"){ //if the bricks are appearing
             setTimeout(function(){ turnBricksToColor(); }, 1000);
         }else{ //if the bricks are hiding
@@ -631,10 +568,8 @@ function nextLevel(){
     replaceBoard("endLevel");
     addLevelData();
 
-    if(levelNum != lastLevel){
-        levelNum++;
-    }
-
+    levelNum++;
+    levelUpSound.play();
     star = game.add.sprite(84, 28, 'star');
     star.anchor.set(0.5);
     star.angle = -15;
@@ -665,8 +600,10 @@ function nextLevel(){
 //****************************************ADD LEVEL DATA*********************************************
 
 function addLevelData(){
+    var totalCardsPerLevel = parseInt(errors) + 1;
+
     // get current data 
-    levelData = '{"countPerLevel":' + 0 + ',"errorsPerLevel":' + errors + '},';
+    levelData = '{"countPerLevel":' + totalCardsPerLevel + ',"errorsPerLevel":' + errors + '},';
 
     // add the data to the full JSON string
     sessionData += levelData;
@@ -678,6 +615,7 @@ function addLevelData(){
 function endTimer() {
     // Stop the timer when the delayed event triggers
     gameTimer.stop();
+    addLevelData();
     timeOut();
 }
 
@@ -699,6 +637,7 @@ function shrinkProgressBar() {
 //****************************************PAUSE FUNCTIONS*********************************************
 
 function togglePause() {
+    btnSound.play();
     game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
     pauseState = !pauseState;
     if(pauseState){ //enter pause state 
@@ -718,7 +657,6 @@ function togglePause() {
 
 
     }else{ //exit pause state
-        //           bricksCounter = 0;
         game.add.tween(pauseContainer).to( {x: 540}, 500, Phaser.Easing.Circular.Out, true, 0, 0, false);
         game.add.tween(gameContainer).to( { x: 0 }, 500, Phaser.Easing.Circular.Out, true, 0, 0, false);            
         gameTimer.resume();
@@ -728,17 +666,13 @@ function togglePause() {
         game.add.tween(pauseText).to({y:70}, 700, Phaser.Easing.Exponential.Out, true, 0, 0, false); 
         game.add.tween(levelText).to({y:13}, 700, Phaser.Easing.Exponential.Out, true, 0, 0, false);
 
-        //           setTimeout(function(){ myInterval = setInterval(bricksTweens, 100, "startLevel"); }, 1000);
-        //           removeBricks();
         disableBricksTap();           
         getReadyForNewStage();
         createBoard(difficultyLevel);
-        //           replaceBoard("startLevel");
     }
 
     function removeBricks(){
         //            clearInterval(myInterval);
-        console.log("intarval cleared");
         //        bricksCounter = bricksNum;
         for(var i = 0; i < bricksStructureArray.length; i++){
             for(var j = 0; j < bricksStructureArray[0].length; j++){
@@ -754,7 +688,7 @@ function createPauseScreen(){
     resumeGameBtn = game.add.button(86, 230, 'resumeGameBtn', togglePause);
     startAgainBtn = game.add.button(86, 330, 'startAgainBtn', startAgain)
     howToBtn = game.add.button(86, 430, 'howToBtn', startTutorial);
-    backHomeBtn = game.add.button(86, 530, 'backHomeBtn' , backHome);
+    backHomeBtn = game.add.button(86, 530, 'backHomeBtn' , areYouSure);
 
     pauseContainer = game.add.group();       
     pauseContainer.x = 540;
@@ -767,57 +701,51 @@ function createPauseScreen(){
 //**************************************** START AGAIN *************************************
 
 function startAgain(){
+    btnSound.play();
     game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
     pauseState = !pauseState;
     gameTimer.resume();
     game.time.events.resume();
     pauseBtn.frame = 0;
-    //   this.game.state.restart(true, false);  
-    game.state.start('memoGameCountDown');
+    cameFromGameToPlayAgain = true;
+    game.state.start('preloader');
 }
 
 function backHome(){
+    btnSound.play();
     gameIsOn = false;
     window.location ="../../client_side/homePage.html";
     //    window.location ="../../homePage.html";
 }
 
+function backToPauseScreen(){
+    popup.alpha = 0;
+}
+
+function areYouSure(){
+    popupYesBtn.input.enabled = true;
+    popupNoBtn.input.enabled = true;
+    xBtn.input.enabled = true;
+    popup.alpha = 1;
+}
+
 function startTutorial(){
+    btnSound.play();
     gameTimer.resume();
     game.time.events.resume();
     gameIsOn = false;
-    cameFromGame=true;
+    cameFromGameToTutorial = true;
     game.state.start('memoGameTutorial');
 }
 
-//****************************************END OF TIME SCREEN*****************************************
-
-function timeOut() {
-
-    timeIsOut = true;
-
-    game.world.add(progressBarStroke);
-    game.world.add(timeWord);
-
-    pauseText.alpha = 0;
-    game.add.tween(levelText).to({alpha:0}, 1000, Phaser.Easing.Linear.In, true, 500, 0, false);
-    game.add.tween(pauseBtn).to({alpha:0}, 1000, Phaser.Easing.Linear.In, true, 500, 0, false);
-    var containerTween = game.add.tween(gameContainer).to({alpha:0}, 1000, Phaser.Easing.Linear.In, true, 500, 0, false); 
-    containerTween.onComplete.add(goToTimeOutScreen, this);
-
-    function goToTimeOutScreen(){
-
-        game.state.start('memoGameEndGame');
-
+function Finish(state) {
+    if (state == "finishGame") {
+        levelData = '{"countPerLevel":' + 0 + ', "errorsPerLevel":' + 0 + '},';
+        sessionData += levelData;
     }
-}
 
-//****************************************FINISH GAME*********************************************
-
-function finishGame(){
-    sessionData = sessionData.substring(0, sessionData.length-1);
-    sessionData += "]}}"     
-    //sessionData = eval ("(" + sessionData + ")");
+    sessionData = sessionData.substring(0, sessionData.length - 1);
+    sessionData += ']}}';
 
     $.ajax({
         url: "http://project-most.herokuapp.com/game/addresult",
@@ -830,27 +758,40 @@ function finishGame(){
         }
     });
 
-    gameIsOn = false;
-
-    endGameProgressBarWidth = progressBar.width;
-
     game.world.add(progressBar);
     game.world.add(progressBarStroke);
     game.world.add(timeWord);
 
     pauseText.alpha = 0;
-    game.add.tween(levelText).to({alpha:0}, 1000, Phaser.Easing.Linear.In, true, 500, 0, false);
-    game.add.tween(pauseBtn).to({alpha:0}, 1000, Phaser.Easing.Linear.In, true, 500, 0, false);
-    var containerTween = game.add.tween(gameContainer).to({alpha:0}, 1000, Phaser.Easing.Linear.In, true, 500, 0, false);  
-    containerTween.onComplete.add(endGameScreen, this);
+    game.add.tween(levelText).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.In, true, 500, 0, false);
+    game.add.tween(pauseBtn).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.In, true, 500, 0, false);
+    var containerTween = game.add.tween(gameContainer).to({ alpha: 0 }, 1000, Phaser.Easing.Linear.In, true, 500, 0, false);
+    containerTween.onComplete.add(changeState, this);
 
-
-    function endGameScreen(){
-
-        game.state.start('memoGameEndGame');
-
+    if (state == "timeOut") {
+        //        timeIsOut = true;
+        //        clearInterval(myInterval);
+    } else {
+        gameIsOn = false;
+        endGameProgressBarWidth = progressBar.width;
     }
+    function changeState() {
+        game.state.start('memoGameEndGame');
+    }
+}
 
+//************************************************ TIME OUT SCREEN **************************************************
+function timeOut() {
+    timeIsOut = true;
+    clearInterval(myInterval);
+    console.log("clearInterval");
+    Finish("timeOut");
+}
+
+//****************************************FINISH GAME*********************************************
+
+function finishGame(){   
+    Finish("finishGame");  
 }
 
 //****************************************GET RANDOM NUMBER*********************************************
@@ -865,7 +806,6 @@ function tint(){
 
 function unTint(){
     this.tint = 0xFFFFFF;
-
 }
 
 //****************************************CHOOSE RANDOM PICTURE*****************************************
@@ -877,49 +817,5 @@ function chooseRandomPic() {
     }else{
         var picName = "default.jpg"
         return picName;
-    }
-}
-
-//****************************************FROM SERVER*********************************************
-
-function fromServer() {
-
-    //preparing to call server side page
-    var xmlhttp = new XMLHttpRequest();
-
-    //PLEASE VERIFY THAT PORT NUMBER IS CORRECT	
-    // *****************************************************************
-
-    var url = "http://project-most.herokuapp.com/userIdandLevel/" + gameID;
-
-    // *****************************************************************
-
-    xmlhttp.onreadystatechange = function () {
-
-        // וידוא שניתן לקרוא את הפונקציה
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            myFunction(xmlhttp.responseText);
-        }
-    }
-
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
-
-    //this function retreives information received from server side. received information is inside 'response'
-    function myFunction(response) {
-        var responseArray = response;      
-        console.log(response);
-
-        userID = responseArray[1];
-        lastGameLastLevel = responseArray[3];      
-
-        //creats the array of pictures names - to use in feedbacks
-        //for (var i = 0; i < myJSON.userPics.length; i++) {
-        //    picsArray.push(myJSON.userPics[i].picName)
-        //}
-
-        // creat new JSON structure
-        time = currentdate.getDate() + "/" + (currentdate.getMonth() + 1) + "/" + currentdate.getFullYear() + " - " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
-        sessionData = '{ "gameID": ' + gameID + ',"time": "' + time + '","userID": ' + userID + ',"data": {"levels": [';
     }
 }

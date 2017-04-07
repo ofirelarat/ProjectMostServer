@@ -40,5 +40,6 @@ public interface IMOSTDAO
 	
 	//Images table connection methods
 	public void addUserImage(UserImage temp) throws DAOException;
+	public void deleteUserImage(UserImage temp) throws DAOException;
 	public String[] getUserImages(int userId) throws DAOException;
 }

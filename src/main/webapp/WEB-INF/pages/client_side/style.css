@@ -17,17 +17,22 @@ body{
 h1,h2,h3,h4,h5,h6,div,span,p{
     font-family: 'Heebo', sans-serif !important;
 }
-
+h1{
+    font-size:85%;
+}
 h2{
-    font-size:45pt;
+    font-size: 6vw;
     text-align: center;
-    color:#685E60;
-    padding: 40px 0;
+    color: #685E60;
+    padding: 40px 0 15px 0;
     font-weight: 800;
     margin-top: 20px;
 
 }
 
+canvas{
+    margin: 0 auto;
+}
 
 ul.gamesBtn li a{
     /*    display: block;*/
@@ -41,7 +46,7 @@ ul.gamesBtn li a{
 ul.gamesBtn li a img{
     display: block;
     width: 95%;
-    margin: 30px auto;
+    margin: 25px auto;
 }
 
 ul.gamesBtn{
@@ -52,7 +57,7 @@ header{
     background-color: rgba(104, 94, 96, 0.43);
     height: 6%;
     color: white;
-    font-size: 35pt;
+    font-size: 35px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -66,23 +71,37 @@ header{
 }
 
 #toAllGames{
-   position: absolute;
-    top: 85%;
-    right: 50%;
-    transform: translate(51%);
-    height: 71px;
+    position: absolute;
+    /* top: 90%; */
+    /* right: 50%; */
+    /* transform: translate(50%); */
+    bottom: 0;
+    height: 90px;
     width: 100%;
     border-top: 2px dashed black;
     padding-top: 40px;
-    font-size: 32px;
+    /* padding-right: 30px; */
+    font-size: 30px;
+    text-align: center;
+    color: #685e60;
+/*
     background-image: url(assets/allGames/sprites/backHome.png);
     background-repeat: no-repeat;
-    background-size: 60px;
-    background-position: 90% 25px;
+    background-size: 92px;
+    background-position: 75% 25px;
+*/
+}
+
+#toAllGamesImg{
+    display: inline-block;
+    /* position: absolute; */
+    width: 50px;
+    bottom: 50px;
+    margin: -16px 16px;
 }
 
 h3{
-        font-size: 30px;
+    font-size: 30px;
     font-weight: 400;
     color: #685e60;
 }

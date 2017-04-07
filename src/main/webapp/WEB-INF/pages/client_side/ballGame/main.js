@@ -6,6 +6,7 @@ game.state.add('ballGame1', ballGame.ballGame1);
 game.state.add('ballGameEndGame', ballGame.ballGameEndGame);
 game.state.add('ballGameTutorial', ballGame.ballGameTutorial);
 game.state.add('ballGameCountDown', ballGame.ballGameCountDown);
+game.state.add('preloader', ballGame.preloader);
 
 
-game.state.start('ballGameTutorial');
+game.state.start('preloader');

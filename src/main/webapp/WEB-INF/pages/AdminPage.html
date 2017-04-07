@@ -1,34 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="he">
 <head>
-	<meta charset="windows-1255">
+	<meta charset="utf-8" />
 	<title>Admin Page</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="style.css">  
+    <link href="https://fonts.googleapis.com/css?family=Heebo" rel="stylesheet">
 </head>
-<body background="/pages/client_side/assets/ballGame/backgrounds/bg.jpg">
+<body>
+         <div class="our-page-header">
+׳׳™׳׳•׳ ׳™ ׳׳•׳—
+    </div>
+	<div class="container desktop">
 
-	<div class="container" style="max-width:500px;margin:60px auto;">
  	<div class="model-content">
  		<div class="modal-header">
- 			<h3 class="modal-title" style="text-align:center">נתוני משחק</h3>
+ 			<h3 class="modal-title">׳”׳•׳¨׳“׳× ׳ ׳×׳•׳ ׳™ ׳”׳׳©׳—׳§׳™׳</h3>
  		</div>
  		
  		<div class="modal-body">
  			<form action="http://project-most.herokuapp.com/view/userResultsCSV" method="get">
  				<div class="form-group">
- 					<input type="text" class="form-control" placeholder="אימייל של משתמש  עבורו תרצה לקבל את הנתונים" name="email" style="text-align:right"> 
+                    <label for="email">׳׳™׳–׳” ׳׳©׳×׳׳© ׳׳¢׳ ׳™׳™׳ ׳׳•׳×׳? </label>
+ 					<input type="text" class="form-control" placeholder="׳›׳×׳•׳‘׳× ׳”׳׳™׳™׳ ׳©׳ ׳”׳׳©׳×׳׳©" name="email"> 
  				</div>
  		
- 				<div class="modal-footer">
- 					<button class="btn btn-primary btn-block" style="text-align:center">הורד קובץ נתוני משחק למשתמש</button> 
- 				</div>
+ 				
+ 					<button class="btn btn-primary btn-block">
+                        ׳”׳•׳¨׳“׳× ׳ ׳×׳•׳ ׳™ ׳”׳׳©׳×׳׳©
+                    </button> 
+ 				
  			</form>
  		</div>
- 		<div class="modal-footer">
- 					<a href="http://project-most.herokuapp.com/view/ResultsCSV"><button class="btn btn-info" style="text-align:center">הורד קובץ נתוני משחק של כל המשתמשים</button></a>
+ 		<div class="modal-footer admin-footer">
+ 					<a href="http://project-most.herokuapp.com/view/ResultsCSV">
+                        <button class="btn btn-primary btn-colored">
+                        ׳”׳•׳¨׳“׳× ׳”׳ ׳×׳•׳ ׳™׳ ׳©׳ ׳›׳ ׳”׳׳©׳×׳׳©׳™׳
+                        </button>
+            </a>
 		</div>
 	</div>
 	</div>

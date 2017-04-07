@@ -148,7 +148,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="{userId}/getimages",method=RequestMethod.GET)
-	public String[] getUserImages(@PathVariable int userId){
+	public @ResponseBody String[] getUserImages(@PathVariable int userId){
 		String[] images = null;
 		try {
 			images = DAO.getUserImages(userId);
@@ -158,6 +158,18 @@ public class UserController {
 			e.printStackTrace();
 		}
 		return images;
+	}
+	
+	@RequestMapping(value="{userId}/deleteimage",method=RequestMethod.DELETE)
+	public void deleteUserImages(@PathVariable int userId,@RequestParam(value="imageName")String imageName){
+		UserImage image = new UserImage(userId,imageName);
+		try {
+			 DAO.deleteUserImage(image);
+			 } catch (DAOException e) {
+			 Logger logger = (Logger) LoggerFactory.getLogger("exception.userCotroller.addImage");
+			 logger.error(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 	
 	@RequestMapping(value="{userId}/addimage",method=RequestMethod.POST)

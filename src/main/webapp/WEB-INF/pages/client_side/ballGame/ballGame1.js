@@ -1,14 +1,6 @@
-var ballGame = {}, gameID = "1", currentBall, sliderBtn, slider, centerX = 540/2, centerY = 960/2, graphics, ballBgFront, topWall, bottomWall, rightWall, leftWall, rightGate, leftGate, velocity, errors, gateWidth, levelBallsNum, levelNum, nextLevelText, balls, userID, time, lastGameLastLevel = 0, sessionData, levelData, lastLevel = 5, time="", currentdate, gameTimer, gameTimerEvent, picsJSONstructure, gameDurationInSeconds, progressBar, progressBarStroke, progressBarLoop, progressBarWidth, endGameProgressBarWidth, pauseState, pauseBtn, gameContainer, pauseContainer, resumeGameBtn, howToBtn, startAgainBtn, backHomeBtn, selectedPicName, timeWord, header, star, nextLevelContainer, starLines, timeIsOut = false, levelText, pauseText, ballIcon1, ballIcon2, ballIcon3, catchedBallsCounter = 0, ballIconsArray = [], gateMask, currentBallIsAlive, levelTextMask, last10seconds, userStartPoint;
+var ballGame = {}, currentBall, sliderBtn, slider, centerX = 540/2, centerY = 960/2, graphics, ballBgFront, topWall, bottomWall, rightWall, leftWall, rightGate, leftGate, velocity, errors, gateWidth, levelBallsNum, levelNum, nextLevelText, balls, levelData, gameTimer, gameTimerEvent,  gameDurationInSeconds, progressBar, progressBarStroke, progressBarLoop, progressBarWidth, endGameProgressBarWidth, pauseState, pauseBtn, gameContainer, pauseContainer, resumeGameBtn, howToBtn, startAgainBtn, backHomeBtn, selectedPicName, timeWord, header, star, nextLevelContainer, starLines, timeIsOut, levelText, pauseText, ballIcon1, ballIcon2, ballIcon3, catchedBallsCounter = 0, ballIconsArray = [], gateMask, currentBallIsAlive, levelTextMask, last10seconds, userStartPoint, popup, popupBg, popupNoBtn, popupYesBtn, xBtn;
 
-//var picsArray= ["pic1.jpg", "pic2.jpg", "pic3.jpg"];
-var picsArray= [];
-
-WebFontConfig = {
-    //  load Google Font
-    google: {
-        families: ['Heebo']
-    }
-};
+var lastLevel = 10;
 
 ballGame.ballGame1 = function () {};
 ballGame.ballGame1.prototype = {
@@ -17,7 +9,7 @@ ballGame.ballGame1.prototype = {
 
     preload: function () {
 
-        userStartPoint = 3;
+        userStartPoint = 2;
 
         if (userStartPoint == 1){
             velocity = 200;
@@ -36,15 +28,11 @@ ballGame.ballGame1.prototype = {
         catchedBallsCounter = 0
         levelBallsNum = 0;
         levelNum = 1;
-        sessionData = "";
         levelData = "";
         gameIsOn = true; 
-        currentdate = new Date();
-        picsJSONstructure = "";
-        gameDurationInSeconds = 100;   
-        last10seconds = true
-
-
+        gameDurationInSeconds = 150;   //2.5 minutes
+        last10seconds = true;
+        timeIsOut = false;
 
         selectedPicName = chooseRandomPic(); //choosing a random picture for the end of game feedback
 
@@ -54,12 +42,13 @@ ballGame.ballGame1.prototype = {
         game.load.image('resumeGameBtn', '../assets/ballGame/sprites/resumeGameBtn.png');
         game.load.image('howToBtn', '../assets/ballGame/sprites/howToBtn.png');    
         game.load.image('startAgainBtn', '../assets/ballGame/sprites/startAgainBtn.png');
-        game.load.image('backHomeBtn', '../assets/ballGame/sprites/backHomeBtn.png');    
+        game.load.image('backHomeBtn', '../assets/ballGame/sprites/backHomeBtn.png');
+
+        game.load.image('backHomePopup', '../assets/allGames/sprites/backHomePopup.png');    
+        game.load.image('popupBtn', '../assets/allGames/sprites/popupBtn.png');    
 
         game.load.spritesheet('pauseBtn', '../assets/allGames/spriteSheets/pausePlay.png', 40, 40);
         game.load.image('progressBarStroke', '../assets/allGames/sprites/timeBarStroke.png');  
-        fromServer();
-
     },
 
     //****************************************CREATE*********************************************
@@ -70,13 +59,14 @@ ballGame.ballGame1.prototype = {
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.world.setBounds(0, 0, 540, 960);
 
-
         btnSound = game.add.audio('btnSound');
         hitGateSound = game.add.audio('hitGateSound');
+        //        hitGateSound.allowMultiple = true;
+        //        hitGateSound.addMarker('noy',0.05,0.04);
+
         hitWallsSound = game.add.audio('hitWallsSound'); 
         starSound = game.add.audio('starSound'); 
         hitWallsSound.volume = 0.1;
-
 
         // adding pics to the stage
         var ballBgTop = game.add.sprite(0, 65, 'ballBg');
@@ -128,8 +118,6 @@ ballGame.ballGame1.prototype = {
         ballIcon2.frame = 0;
         ballIcon3.frame = 0;
 
-
-
         ballIconsArray = [ballIcon1, ballIcon2, ballIcon3];
 
         game.physics.enable([topWall, leftWall, bottomWall, rightWall, rightGate, leftGate, sliderBtn], Phaser.Physics.ARCADE);
@@ -159,26 +147,21 @@ ballGame.ballGame1.prototype = {
         sliderBtn.events.onDragStart.add(onDragStart, this);
         sliderBtn.events.onDragStop.add(onDragStop, this);
 
-
         // Create a custom timer
         gameTimer = game.time.create();
-
         // Create a delayed event 2m and 30s from now
         gameTimerEvent = gameTimer.add(Phaser.Timer.SECOND * gameDurationInSeconds, endTimer, this);
-
         // Start the timer
         gameTimer.start();
 
         timeWord = game.add.sprite(487.171, 72, 'timeWord');
 
         progressBar = game.add.graphics(11, 85);
-        //           progressBar.lineStyle(3, 0x874e9b, 1);
         progressBar.beginFill(0x874e9b, 1);
         progressBar.drawRoundedRect(0, 0, 455, 12, 5);
         progressBarWidth = progressBar.width;
 
         progressBarStroke = game.add.sprite(9, 84, 'progressBarStroke');
-
 
         // creates a loop event for the progress bar
         progressBarLoop = game.time.events.loop(100, shrinkProgressBar, this);
@@ -204,8 +187,23 @@ ballGame.ballGame1.prototype = {
 
         createPauseScreen();
 
+        popupBg = game.add.sprite(0, 65, 'backHomePopup');
+        popupYesBtn = game.add.button(274.53 , 423, 'popupBtn', backHome);
+        popupNoBtn = game.add.button(83.43, 423, 'popupBtn', backToPauseScreen);
+        xBtn = game.add.button(404, 243, 'popupBtn', backToPauseScreen);
+        xBtn.width = 65;
+        xBtn.height = 65;
+        popup = game.add.group(); 
+        popup.add(popupBg);
+        popup.add(popupNoBtn);
+        popup.add(popupYesBtn);
+        popup.add(xBtn);
+        popup.alpha = 0;
+        popupYesBtn.input.enabled = false;
+        popupNoBtn.input.enabled = false;
+        xBtn.input.enabled = false;
+        
         currentBall = createBall();           
-
     },
 
     //****************************************UPDATE*********************************************
@@ -305,6 +303,7 @@ function ballHitsGate(){
         rightGate.frame = 1; //make the gate red when ball touches it
         leftGate.frame = 1;    
         hitGateSound.play();
+
         // a TimerEvent that turns the gate back to brown after 300 ms
         gameTimer.add(300, function(){
             rightGate.frame = 0;
@@ -346,8 +345,6 @@ function killBalls(){
         }  
     }
     catchedBallsCounter = 0;
-
-
 }
 
 //****************************************NEXT LEVEL*********************************************
@@ -359,6 +356,8 @@ function nextLevel(){
     //kills the "3 balls"
     killBalls();
     currentBallIsAlive = false;
+    levelNum++;
+    levelText.text = 'שלב ' + lastLevel + ' / ' + levelNum; 
 
     //increasing the difficulty level
     if (levelNum % 2 == 0){
@@ -436,10 +435,6 @@ function addLevelData(){
 
     errors = 0;
     levelBallsNum = 0;
-    if(levelNum != lastLevel){
-        levelNum++;
-        levelText.text = 'שלב ' + lastLevel + ' / ' + levelNum;            
-    }
 }
 
 //****************************************ON DRAG START *********************************************
@@ -457,6 +452,7 @@ function onDragStop(){
 function endTimer() {
     // Stop the timer when the delayed event triggers
     gameTimer.stop();
+    addLevelData();
     timeOut();
 }
 
@@ -479,6 +475,7 @@ function shrinkProgressBar() {
 //****************************************PAUSE FUNCTIONS*********************************************
 
 function togglePause() {
+    btnSound.play();
     game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
     pauseState = !pauseState;
     if(pauseState){
@@ -512,7 +509,7 @@ function createPauseScreen(){
     resumeGameBtn = game.add.button(86, 230, 'resumeGameBtn', togglePause);
     startAgainBtn = game.add.button(86, 330, 'startAgainBtn', startAgain)
     howToBtn = game.add.button(86, 430, 'howToBtn', startTutorial);
-    backHomeBtn = game.add.button(86, 530, 'backHomeBtn' , backHome);
+    backHomeBtn = game.add.button(86, 530, 'backHomeBtn' , areYouSure);
 
     pauseContainer = game.add.group();       
     pauseContainer.x = 540;
@@ -525,35 +522,53 @@ function createPauseScreen(){
 //**************************************** START AGAIN *************************************
 
 function startAgain(){
+    btnSound.play();
+
     game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
     pauseState = !pauseState;
     gameTimer.resume();
     game.time.events.resume();
     pauseBtn.frame = 0;
-    //   this.game.state.restart(true, false);  
-    game.state.start('ballGameCountDown');
+    cameFromGameToPlayAgain = true;
+    game.state.start('preloader');
 }
 
 function backHome(){
+    btnSound.play();
     gameIsOn = false;
     window.location ="../../client_side/homePage.html";
     // window.location ="../../homePage.html";
 }
 
+function backToPauseScreen(){
+    popup.alpha = 0;
+}
+
+function areYouSure(){
+    popupYesBtn.input.enabled = true;
+    popupNoBtn.input.enabled = true;
+    xBtn.input.enabled = true;
+    popup.alpha = 1;
+}
+
 function startTutorial(){
+    btnSound.play();
     gameTimer.resume();
     game.time.events.resume();
+    cameFromGameToTutorial = true;
     gameIsOn = false;
-    cameFromGame=true;
     game.state.start('ballGameTutorial');
 }
 
 //****************************************END OF GAME*****************************************
 
 function Finish(state) {
+    if (state == "finishGame") {
+        levelData = '{"countPerLevel":' + 0 + ', "errorsPerLevel":' + 0 + '},';
+        sessionData += levelData;
+    }
 
     sessionData = sessionData.substring(0, sessionData.length - 1);
-    //sessionData += ']}, "gameID": ' + gameID + ',"time": "' + time + '" ,"userID": ' + userID + '}';
     sessionData += ']}}';
 
     $.ajax({
@@ -626,51 +641,6 @@ function chooseRandomPic() {
         return picName;
     }
 }
-
-//****************************************FROM SERVER*********************************************
-
-function fromServer() {
-
-    //preparing to call server side page
-    var xmlhttp = new XMLHttpRequest();
-
-    //PLEASE VERIFY THAT PORT NUMBER IS CORRECT	
-    // *****************************************************************
-
-    var url = "http://project-most.herokuapp.com/userIdandLevel/" + gameID;
-
-    // *****************************************************************
-
-    xmlhttp.onreadystatechange = function () {
-
-        // וידוא שניתן לקרוא את הפונקציה
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            myFunction(xmlhttp.responseText);
-        }
-    }
-
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
-
-    //this function retreives information received from server side. received information is inside 'response'
-    function myFunction(response) {
-        var responseArray = response;      
-        console.log(response);
-
-        userID = responseArray[1];
-        lastGameLastLevel = responseArray[3];      
-
-        //creats the array of pictures names - to use in feedbacks
-        //for (var i = 0; i < myJSON.userPics.length; i++) {
-        //    picsArray.push(myJSON.userPics[i].picName)
-        //}
-
-        // creat new JSON structure
-        time = currentdate.getDate() + "/" + (currentdate.getMonth() + 1) + "/" + currentdate.getFullYear() + " - " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
-        sessionData = '{ "gameID": ' + gameID + ',"time": "' + time + '","userID": ' + userID + ',"data": {"levels": [';
-    }
-}
-
 
 //****************************************enterFullScreen *********************************************
 

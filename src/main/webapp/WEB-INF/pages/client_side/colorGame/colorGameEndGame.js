@@ -27,6 +27,7 @@ colorGame.colorGameEndGame.prototype = {
 
         selectedPic = game.add.sprite(centerX, 512.5, 'userSelectedPic');
         selectedPic.anchor.set(0.5);
+        resizeImage(selectedPic);
 
         whiteLineTop = game.add.sprite(0, 512, 'feedbackWhiteLine');
         whiteLineBottom = game.add.sprite(0, 512.5, 'feedbackWhiteLine');
@@ -40,7 +41,7 @@ colorGame.colorGameEndGame.prototype = {
         var timeWord = game.add.sprite(487.171, 72, 'timeWord');
 
         homePageBtn = game.add.button(270, 877, 'homePageBtn', gotoHome);
-        playAgainBtn = game.add.button(0, 877, 'playAgainBtn', gotoCountDown);
+        playAgainBtn = game.add.button(0, 877, 'playAgainBtn', playAgain);
 
         if (timeIsOut){
             levelText = game.add.text(1200, 730, '', {fontSize: '40px', fill:'#ffffff', font: 'Heebo'});
@@ -49,7 +50,11 @@ colorGame.colorGameEndGame.prototype = {
 
             lastTimeText = game.add.text(1200, 800, '', {fontSize: '30px', fill:'#ffffff', font: 'Heebo'});
             lastTimeText.anchor.setTo(1, 0);
-            lastTimeText.text = 'בפעם הקודמת הגעת לשלב ' + lastGameLastLevel; 
+            if (lastGameLastLevel == (lastLevel + 1)){
+                lastTimeText.text = 'בפעם הקודמת סיימת את המשחק'; 
+            }else{
+                lastTimeText.text = 'בפעם הקודמת הגעת לשלב ' + lastGameLastLevel; 
+            }
 
             feedbackText = game.add.sprite(1200, 180, 'timeOutText');
             feedbackText.anchor.setTo(1, 0);
@@ -64,9 +69,13 @@ colorGame.colorGameEndGame.prototype = {
             progressBar.drawRoundedRect(0, 0, 456, 12, 7);
             progressBar.width = endGameProgressBarWidth;  
 
-            lastTimeText = game.add.text(1200, 750, '', {fontSize: '30px', fill:'#675e5e', font: 'Heebo'});
+            lastTimeText = game.add.text(1200, 750, '', {fontSize: '30px', fill:'#ffffff', font: 'Heebo'});
             lastTimeText.anchor.setTo(1, 0);
-            lastTimeText.text = 'בפעם הקודמת הגעת לשלב ' + lastLevel + ' / ' + lastGameLastLevel ;
+            if (lastGameLastLevel == (lastLevel + 1)){
+                lastTimeText.text = 'בפעם הקודמת סיימת את המשחק'; 
+            }else{
+                lastTimeText.text = 'בפעם הקודמת הגעת לשלב ' + lastLevel + ' / ' + lastGameLastLevel ;
+            }
 
             var emitter = game.add.emitter(game.world.centerX, 0, 400);
 
@@ -89,10 +98,10 @@ colorGame.colorGameEndGame.prototype = {
             game.world.bringToTop(header);
         }
 
-//        progressBarStroke = game.add.graphics(11, 85);
-//        progressBarStroke.lineStyle(3, 0x000000, 0.5);
-//        progressBarStroke.drawRoundedRect(0, 0, 456, 12, 7);
-        
+        //        progressBarStroke = game.add.graphics(11, 85);
+        //        progressBarStroke.lineStyle(3, 0x000000, 0.5);
+        //        progressBarStroke.drawRoundedRect(0, 0, 456, 12, 7);
+
         progressBarStroke = game.add.sprite(9, 84, 'progressBarStroke');
 
         boingTimeOut = game.add.audio('boingTimeOut');
@@ -119,29 +128,55 @@ function showFeedback(){
 
     if (timeIsOut){
         game.add.tween(levelText).to( { x: 506 }, 500, Phaser.Easing.Linear.In, true, 2000, 0, false);
-        if(lastGameLastLevel != 0){      
+        if(lastGameLastLevel != 0 && lastGameLastLevel != undefined){      
             game.add.tween(lastTimeText).to( { x: 506 }, 500, Phaser.Easing.Linear.In, true,2000, 0, false);
         }
         game.time.events.add(1100, function(){
             boingTimeOut.play();
         });
     }else{
-        if(lastGameLastLevel != 0){    
+        if(lastGameLastLevel != 0 && lastGameLastLevel != undefined){
+        
             game.add.tween(lastTimeText).to( { x: 506 }, 1200, Phaser.Easing.Elastic.Out, true, 2300, 0, false);
         }
         finishGameSound.play();
     } 
 }
 
-function gotoCountDown(){
-    console.log("start again");
+function playAgain(){
     boingTimeOut.stop();
     finishGameSound.stop();
-    game.state.start('colorGameCountDown');
+     btnSound.play();
+    game.state.start('preloader');
 }
 
 function gotoHome(){
     boingTimeOut.stop();
     finishGameSound.stop();
+     btnSound.play();
     window.location ="../../client_side/homePage.html";
+}
+
+function resizeImage(image){
+    var width = image.width;
+    var height = image.height;
+
+    var maxWidth = 540;
+    var maxHeight = 400;
+
+    if (width > height) { // landscape
+        var ratio = width / maxWidth;
+        width = maxWidth;
+        height = height / ratio;
+    } else if (height > width) { // portrait
+        var ratio = height / maxHeight;
+        height = maxHeight;
+        width = width / ratio;
+    } else { // square
+        height = maxHeight;
+        width = maxHeight;
+    }
+
+    image.width = width;
+    image.height = height;
 }

@@ -4,6 +4,7 @@ game.state.add('colorGame', colorGame.colorGame);
 game.state.add('colorGameEndGame', colorGame.colorGameEndGame);
 game.state.add('colorGameTutorial', colorGame.colorGameTutorial);
 game.state.add('colorGameCountDown', colorGame.colorGameCountDown);
+game.state.add('preloader', colorGame.preloader);
 
 
-game.state.start('colorGameTutorial');
+game.state.start('preloader');

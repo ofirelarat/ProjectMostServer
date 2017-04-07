@@ -1,4 +1,4 @@
-var tapToContinue, tapToContinueText, BgTop, BgBottom, tutorialProgessCounter, tooltip1, tooltip2, tooltip3, tooltip4, tooltip5, tooltip6, tooltip7, arrow, tutorialHeader, gameHeader, skipBtn, star, starLines, wellDoneText, nextLevelContainer, gameIsOn = false, letsStart, startGameBtn, needTapToContinueText = false, tapToContinueTimer, btnSound, brickSize, stageWidth, stageHeight, difficultyLevel, TcurrentLevel, TcolNum, TrowNum, TcoloredBricksNum, bricksCounter, whereIs, userWasCorrect, successCounter, tool1Sound, tool2Sound, tool3Sound, tool4Sound, tool5Sound, cameFromGame=false, counter;
+var tapToContinue, tapToContinueText, BgTop, BgBottom, tutorialProgessCounter, tooltip1, tooltip2, tooltip3, tooltip4, tooltip5, tooltip6, tooltip7, arrow, tutorialHeader, gameHeader, skipBtn, star, starLines, wellDoneText, nextLevelContainer, gameIsOn = false, letsStart, startGameBtn, needTapToContinueText = false, tapToContinueTimer, btnSound, brickSize, stageWidth, stageHeight, difficultyLevel, TcurrentLevel, TcolNum, TrowNum, TcoloredBricksNum, bricksCounter, whereIs, userWasCorrect, successCounter, tool1Sound, tool2Sound, tool3Sound, tool4Sound, tool5Sound, letsBeginSound, greatJobSound, correctSound, errorSound, showBrickSound, levelUpSound, wooshSound, cameFromGameToTutorial = false, cameFromGameToPlayAgain = false, counter;
 
 var TutorialLevelsArray = [
     {
@@ -12,6 +12,14 @@ var TutorialLevelsArray = [
         coloredBricksNum: 3
     }];
 
+
+WebFontConfig = {
+    //  load Google Font
+    google: {
+        families: ['Heebo']
+    }
+};
+
 memoGame.memoGameTutorial = function () {};
 memoGame.memoGameTutorial.prototype = {
 
@@ -20,7 +28,7 @@ memoGame.memoGameTutorial.prototype = {
     preload: function () {
         tutorialProgessCounter = 1;
 
-        brickSize = 67;
+        brickSize = 83.75;
         stageWidth = 540;
         stageHeight = 895;
         bricksCounter = 0;
@@ -30,6 +38,8 @@ memoGame.memoGameTutorial.prototype = {
         successCounter = 0;
         userWasWrong = false;
         counter = 0;
+        levelNum = 1;
+        pauseState = false;
 
         game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
         game.load.spritesheet('pauseBtn', '../assets/allGames/spriteSheets/pausePlay.png', 40, 40);
@@ -44,7 +54,7 @@ memoGame.memoGameTutorial.prototype = {
         game.load.image('letsStart', '../assets/allGames/sprites/letsStart.png');
 
         game.load.spritesheet('startGameBtn', '../assets/memoGame/spriteSheets/startGameBtn.png', 220, 220);
-        game.load.spritesheet('brick', '../assets/memoGame/spriteSheets/brick.png', 67.2, 67.2);
+        game.load.spritesheet('brick', '../assets/memoGame/spriteSheets/brick.png', 84, 84);
         game.load.spritesheet('feedback', '../assets/allGames/spriteSheets/feedback.png',56, 56);
 
         game.load.image('tooltip1', '../assets/memoGame/sprites/tooltip1.png');
@@ -52,14 +62,22 @@ memoGame.memoGameTutorial.prototype = {
         game.load.image('tooltip3', '../assets/memoGame/sprites/tooltip3.png');
         game.load.image('tooltip4', '../assets/memoGame/sprites/tooltip4.png');
         game.load.image('tooltip5', '../assets/memoGame/sprites/tooltip5.png');
-        game.load.image('skipBtn', '../assets/allGames/sprites/skipBtn.png');
 
-        game.load.audio('btnSound', '../assets/ballGame/sounds/pressBtn.wav');
+        game.load.audio('btnSound', '../assets/allGames/sounds/pressBtn.mp3');
         game.load.audio('tool1Sound', '../assets/memoGame/sounds/tooltip1.mp3'); 
         game.load.audio('tool2Sound', '../assets/memoGame/sounds/tooltip2.mp3'); 
         game.load.audio('tool3Sound', '../assets/memoGame/sounds/tooltip3.mp3'); 
         game.load.audio('tool4Sound', '../assets/memoGame/sounds/tooltip4.mp3'); 
         game.load.audio('tool5Sound', '../assets/memoGame/sounds/tooltip5.mp3'); 
+
+        game.load.audio('letsBegin', '../assets/allGames/sounds/letsStart.mp3'); 
+        game.load.audio('greatJob', '../assets/allGames/sounds/greatJob.mp3'); 
+
+        game.load.audio('correct', '../assets/memoGame/sounds/correct.mp3');
+        game.load.audio('error', '../assets/memoGame/sounds/error.mp3'); 
+        game.load.audio('showBrick', '../assets/memoGame/sounds/showBrick.mp3');
+        game.load.audio('levelUp', '../assets/memoGame/sounds/levelUp.mp3');
+        game.load.audio('woosh', '../assets/memoGame/sounds/woosh.mp3');
 
     },
 
@@ -77,11 +95,21 @@ memoGame.memoGameTutorial.prototype = {
         tool5Sound =  game.add.audio('tool5Sound');
 
         btnSound = game.add.audio('btnSound');
+        levelUpSound = game.add.audio('levelUp');
+        wooshSound = game.add.audio('woosh');
+        wooshSound.volume =0.5;
+        correctSound = game.add.audio('correct');
+        errorSound = game.add.audio('error');
+        showBrickSound = game.add.audio('showBrick');
+
+        letsBeginSound = game.add.audio('letsBegin');
+        greatJobSound = game.add.audio('greatJob');
 
         BgTop = game.add.sprite(0, 65, 'Bg');
         BgTop.frame = 0;
         BgBottom = game.add.sprite(0, 512, 'Bg');
         BgBottom.frame = 1;
+
 
 
         star = game.add.sprite(0, 0, 'star');
@@ -141,14 +169,14 @@ memoGame.memoGameTutorial.prototype = {
         tooltip5 = game.add.sprite(44, 162, 'tooltip5');
         tooltip5.alpha = 0;
 
-        if(Cookies.get('first-time-memo') == undefined || cameFromGame == true){
+        if(lastGameLastLevel == 0 || cameFromGameToTutorial == true){
+            cameFromGameToTutorial = false;
             tutorialSequence();  
-        }
-        if (Cookies.get('first-time-memo') == undefined)
-        {
-            Cookies.set('first-time-memo', 'true');
-        }else if(Cookies.get('first-time-memo') != undefined && (cameFromGame == false)){
+        } else if((lastGameLastLevel != 0) && (cameFromGameToTutorial == false)){
             game.state.start('memoGameCountDown');    
+        } else if(cameFromGameToPlayAgain == true){
+            cameFromGameToPlayAgain = false;
+            game.state.start('memoGameCountDown'); 
         }   
 
     },
@@ -156,9 +184,9 @@ memoGame.memoGameTutorial.prototype = {
     //****************************************UPDATE*********************************************
 
     update: function () {
-            if (doTutorial == true){
-                tutorialSequence();
-            }
+        if (doTutorial == true){
+            tutorialSequence();
+        }
     }    
 };
 
@@ -272,6 +300,7 @@ function tutorialSequence(){
 //****************************************TWEENS*********************************************
 
 function activateStarTweenB () {
+    greatJobSound.play();  
     nextLevelContainer.y = 300;
     game.add.tween(starLines).to({alpha:1}, 600, Phaser.Easing.Sinusoidal.Out, true, 0); 
     var starTweenB =  game.add.tween(nextLevelContainer).to({y:-400}, 700, Phaser.Easing.Circular.Out, true, 1000); 
@@ -281,11 +310,13 @@ function activateStarTweenB () {
 function afterStar () {
     game.add.tween(letsStart).to({y:312}, 600, Phaser.Easing.Sinusoidal.Out, true, 0); 
     game.add.tween(startGameBtn).to({y:397}, 600, Phaser.Easing.Sinusoidal.Out, true, 0); 
+    letsBeginSound.play();
 }
 
 //****************************************START GAME*********************************************
 
 function startGame(){
+    pauseState = true;
     tool1Sound.stop();
     tool2Sound.stop();
     tool3Sound.stop();

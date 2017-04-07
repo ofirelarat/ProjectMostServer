@@ -1,0 +1,14 @@
+{
+  "lang": "he",
+  "dir": "rtl",
+  "name": "אימוני מוח",
+  "description": "This app helps you train your brain.",
+  "icon": {
+    "src": "assets/icon.jpg",
+    "sizes": "192x192"
+  },
+    
+  "start_url": "homePage.html",
+  "display": "standalone",
+  "orientation": "portrait"
+ }

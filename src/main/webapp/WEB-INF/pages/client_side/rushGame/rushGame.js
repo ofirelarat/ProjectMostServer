@@ -1,11 +1,6 @@
-var rushGame = {}, gameID = "3", centerX = 540/2, centerY = 960/2, graphics, levelNum, nextLevelText, userID, time, 
-    sessionData, levelData, lastLevel = 3, currentdate, gameTimer, gameTimerEvent, picsJSONstructure, gameDurationInSeconds, progressBar, progressBarStroke, progressBarLoop, progressBarWidth, endGameProgressBarWidth, pauseState, pauseBtn, gameContainer, brickContainer, pauseContainer, resumeGameBtn, howToBtn, startAgainBtn, backHomeBtn, selectedPicName, timeWord, header, star, nextLevelContainer, starLines, timeIsOut = false, levelText, pauseText, levelTextMask, last10seconds, car, truck, levelArray, stepCounter, orangeCar, brickMask,brickHitSound, orangeBrickOutSound, restartBtnWasClicked, stepBackBtnWasClicked, startX, endX, startY, endY, currentBrick, lastGameLastLevel = 4, tool1Sound, tool2Sound, tool3Sound, tool4Sound, tool5Sound, tool6Sound, difficultyLevel, userStartPoint;
-var HORIZONTAL = 0;
-var VERTICAL = 1;
-var tileSize = 80;
+var rushGame = {}, centerX = 540/2, centerY = 960/2, graphics, levelNum, nextLevelText, levelData, gameTimer, gameTimerEvent, gameDurationInSeconds, progressBar, progressBarStroke, progressBarLoop, progressBarWidth, endGameProgressBarWidth, pauseState, pauseBtn, gameContainer, brickContainer, pauseContainer, resumeGameBtn, howToBtn, startAgainBtn, backHomeBtn, selectedPicName, timeWord, header, star, nextLevelContainer, starLines, timeIsOut, levelText, pauseText, levelTextMask, last10seconds, car, truck, levelArray, stepCounter, orangeCar, brickMask,brickHitSound, orangeBrickOutSound, restartBtnWasClicked, stepBackBtnWasClicked, startX, endX, startY, endY, currentBrick, tool1Sound, tool2Sound, tool3Sound, tool4Sound, tool5Sound, tool6Sound, difficultyLevel, userStartPoint, HORIZONTAL = 0, VERTICAL = 1, tileSize = 80, restarLevelBtn, stepBackBtn, orangeBrick, popup, popupBg, popupNoBtn, popupYesBtn, xBtn; 
 
-//var picsArray= ["pic1.jpg", "pic2.jpg", "pic3.jpg"];
-var picsArray= [];
+var lastLevel = 10;
 
 // these are the cars to place on the board.
 // each car is an object with the following properties:
@@ -13,1688 +8,36 @@ var picsArray= [];
 // col: car leftmost column
 // dir: car direction, can be HORIZONTAL or VERTICAL
 // spr: name of the image to assign to car sprite
+var carsArray1=[{row:0,col:2,dir:VERTICAL,len:2,spr:"car"},{row:1,col:4,dir:HORIZONTAL,len:2,spr:"car"},{row:2,col:2,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:2,col:4,dir:VERTICAL,len:2,spr:"car"},{row:4,col:0,dir:HORIZONTAL,len:3,spr:"truck"},{row:4,col:3,dir:HORIZONTAL,len:2,spr:"car"}],carsArray2=[{row:0,col:0,dir:VERTICAL,len:3,spr:"truck"},{row:0,col:3,dir:VERTICAL,len:2,spr:"car"},{row:0,col:4,dir:HORIZONTAL,len:2,spr:"car"},{row:1,col:1,dir:HORIZONTAL,len:2,spr:"car"},{row:1,col:5,dir:VERTICAL,len:2,spr:"car"},{row:2,col:3,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:2,col:1,dir:VERTICAL,len:3,spr:"truck"},{row:2,col:2,dir:VERTICAL,len:2,spr:"car"},{row:3,col:3,dir:HORIZONTAL,len:3,spr:"truck"},{row:4,col:2,dir:VERTICAL,len:2,spr:"car"},{row:4,col:3,dir:HORIZONTAL,len:3,spr:"truck"}],carsArray3=[{row:0,col:1,dir:HORIZONTAL,len:2,spr:"car"},{row:0,col:3,dir:VERTICAL,len:2,spr:"car"},{row:2,col:2,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:1,col:1,dir:VERTICAL,len:2,spr:"car"},{row:1,col:4,dir:HORIZONTAL,len:2,spr:"car"},{row:2,col:5,dir:VERTICAL,len:2,spr:"car"},{row:4,col:5,dir:VERTICAL,len:2,spr:"car"},{row:4,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:4,col:2,dir:VERTICAL,len:2,spr:"car"}],carsArray4=[{row:0,col:0,dir:HORIZONTAL,len:3,spr:"truck"},{row:0,col:5,dir:VERTICAL,len:3,spr:"truck"},{row:1,col:2,dir:VERTICAL,len:3,spr:"truck"},{row:2,col:0,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:3,col:0,dir:VERTICAL,len:2,spr:"car"},{row:3,col:4,dir:HORIZONTAL,len:2,spr:"car"},{row:5,col:0,dir:HORIZONTAL,len:3,spr:"truck"},{row:4,col:4,dir:VERTICAL,len:2,spr:"car"}],carsArray5=[{row:0,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:1,col:0,dir:VERTICAL,len:3,spr:"truck"},{row:4,col:0,dir:VERTICAL,len:2,spr:"car"},{row:2,col:1,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:1,col:3,dir:VERTICAL,len:3,spr:"truck"},{row:5,col:2,dir:HORIZONTAL,len:3,spr:"truck"},{row:0,col:5,dir:VERTICAL,len:3,spr:"truck"},{row:4,col:4,dir:HORIZONTAL,len:2,spr:"car"}],carsArray6=[{row:1,col:3,dir:VERTICAL,len:3,spr:"truck"},{row:2,col:1,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:1,col:4,dir:VERTICAL,len:3,spr:"truck"},{row:3,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:3,col:2,dir:VERTICAL,len:2,spr:"car"},{row:4,col:1,dir:VERTICAL,len:2,spr:"car"},{row:5,col:2,dir:HORIZONTAL,len:2,spr:"car"}],carsArray7=[{row:0,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:1,col:0,dir:VERTICAL,len:3,spr:"truck"},{row:4,col:0,dir:VERTICAL,len:2,spr:"car"},{row:2,col:1,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:1,col:3,dir:VERTICAL,len:3,spr:"truck"},{row:5,col:2,dir:HORIZONTAL,len:3,spr:"truck"},{row:0,col:5,dir:VERTICAL,len:3,spr:"truck"},{row:4,col:4,dir:HORIZONTAL,len:2,spr:"car"}],carsArray8=[{row:2,col:1,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:3,col:1,dir:HORIZONTAL,len:2,spr:"car"},{row:4,col:1,dir:VERTICAL,len:2,spr:"car"},{row:2,col:3,dir:VERTICAL,len:3,spr:"truck"},{row:5,col:2,dir:HORIZONTAL,len:2,spr:"car"},{row:3,col:5,dir:VERTICAL,len:3,spr:"truck"}],carsArray9=[{row:0,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:0,col:3,dir:VERTICAL,len:3,spr:"truck"},{row:0,col:5,dir:VERTICAL,len:2,spr:"car"},{row:1,col:0,dir:VERTICAL,len:3,spr:"truck"},{row:1,col:4,dir:VERTICAL,len:3,spr:"truck"},{row:2,col:1,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:3,col:1,dir:HORIZONTAL,len:3,spr:"truck"},{row:2,col:5,dir:VERTICAL,len:2,spr:"car"},{row:4,col:0,dir:VERTICAL,len:2,spr:"car"},{row:4,col:4,dir:HORIZONTAL,len:2,spr:"car"},{row:5,col:4,dir:HORIZONTAL,len:2,spr:"car"}],carsArray10=[{row:0,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:1,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:0,col:3,dir:VERTICAL,len:2,spr:"car"},{row:1,col:4,dir:VERTICAL,len:3,spr:"truck"},{row:1,col:5,dir:VERTICAL,len:3,spr:"truck"},{row:2,col:1,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:2,col:3,dir:VERTICAL,len:3,spr:"truck"},{row:3,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:4,col:0,dir:VERTICAL,len:2,spr:"car"},{row:3,col:2,dir:VERTICAL,len:2,spr:"car"},{row:5,col:3,dir:HORIZONTAL,len:3,spr:"truck"}],carsArray11=[{row:0,col:1,dir:VERTICAL,len:2,spr:"car"},{row:0,col:2,dir:HORIZONTAL,len:2,spr:"car"},{row:0,col:4,dir:VERTICAL,len:2,spr:"car"},{row:0,col:5,dir:VERTICAL,len:2,spr:"car"},{row:2,col:1,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:1,col:3,dir:VERTICAL,len:2,spr:"car"},{row:2,col:5,dir:VERTICAL,len:2,spr:"car"},{row:3,col:2,dir:HORIZONTAL,len:2,spr:"car"},{row:4,col:3,dir:VERTICAL,len:2,spr:"car"}],carsArray12=[{row:0,col:3,dir:HORIZONTAL,len:2,spr:"car"},{row:0,col:5,dir:VERTICAL,len:3,spr:"truck"},{row:1,col:2,dir:HORIZONTAL,len:2,spr:"car"},{row:1,col:4,dir:VERTICAL,len:2,spr:"car"},{row:2,col:2,dir:VERTICAL,len:2,spr:"car"},{row:2,col:0,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:2,col:3,dir:VERTICAL,len:2,spr:"car"},{row:3,col:4,dir:HORIZONTAL,len:2,spr:"car"},{row:3,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:4,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:5,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:4,col:2,dir:VERTICAL,len:2,spr:"car"},{row:4,col:3,dir:HORIZONTAL,len:3,spr:"truck"},{row:5,col:3,dir:HORIZONTAL,len:3,spr:"truck"}],carsArray13=[{row:0,col:1,dir:VERTICAL,len:2,spr:"car"},{row:0,col:2,dir:HORIZONTAL,len:2,spr:"car"},{row:0,col:4,dir:HORIZONTAL,len:2,spr:"car"},{row:1,col:3,dir:VERTICAL,len:2,spr:"car"},{row:1,col:4,dir:HORIZONTAL,len:2,spr:"car"},{row:2,col:0,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:2,col:4,dir:VERTICAL,len:3,spr:"truck"},{row:2,col:5,dir:VERTICAL,len:2,spr:"car"},{row:3,col:0,dir:VERTICAL,len:3,spr:"truck"},{row:3,col:1,dir:HORIZONTAL,len:3,spr:"truck"},{row:4,col:2,dir:VERTICAL,len:2,spr:"car"},{row:4,col:5,dir:VERTICAL,len:2,spr:"car"}],carsArray14=[{row:0,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:0,col:2,dir:VERTICAL,len:2,spr:"car"},{row:0,col:4,dir:HORIZONTAL,len:2,spr:"car"},{row:1,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:1,col:5,dir:VERTICAL,len:3,spr:"truck"},{row:2,col:1,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:2,col:0,dir:VERTICAL,len:3,spr:"truck"},{row:3,col:1,dir:HORIZONTAL,len:3,spr:"truck"},{row:5,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:4,col:3,dir:VERTICAL,len:2,spr:"car"},{row:4,col:4,dir:HORIZONTAL,len:2,spr:"car"},{row:5,col:4,dir:HORIZONTAL,len:2,spr:"car"}],carsArray15=[{row:0,col:0,dir:VERTICAL,len:3,spr:"truck"},{row:0,col:1,dir:HORIZONTAL,len:2,spr:"car"},{row:0,col:3,dir:VERTICAL,len:3,spr:"truck"},{row:2,col:1,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:3,col:2,dir:VERTICAL,len:2,spr:"car"},{row:3,col:3,dir:HORIZONTAL,len:3,spr:"truck"},{row:5,col:2,dir:HORIZONTAL,len:3,spr:"truck"},{row:4,col:5,dir:VERTICAL,len:2,spr:"car"}],carsArray16=[{row:0,col:0,dir:VERTICAL,len:2,spr:"car"},{row:0,col:1,dir:HORIZONTAL,len:2,spr:"car"},{row:0,col:5,dir:VERTICAL,len:3,spr:"truck"},{row:2,col:0,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:1,col:2,dir:VERTICAL,len:3,spr:"truck"},{row:3,col:3,dir:HORIZONTAL,len:3,spr:"truck"},{row:5,col:0,dir:HORIZONTAL,len:3,spr:"truck"},{row:4,col:4,dir:VERTICAL,len:2,spr:"car"}],carsArray17=[{row:0,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:0,col:2,dir:HORIZONTAL,len:2,spr:"car"},{row:0,col:4,dir:VERTICAL,len:2,spr:"car"},{row:1,col:2,dir:VERTICAL,len:2,spr:"car"},{row:2,col:3,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:1,col:5,dir:VERTICAL,len:3,spr:"truck"},{row:2,col:1,dir:VERTICAL,len:2,spr:"car"},{row:3,col:3,dir:HORIZONTAL,len:2,spr:"car"},{row:3,col:0,dir:VERTICAL,len:3,spr:"truck"},{row:5,col:1,dir:HORIZONTAL,len:2,spr:"car"},{row:4,col:3,dir:VERTICAL,len:2,spr:"car"},{row:4,col:4,dir:HORIZONTAL,len:2,spr:"car"},{row:5,col:4,dir:HORIZONTAL,len:2,spr:"car"}],carsArray18=[{row:0,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:0,col:2,dir:VERTICAL,len:2,spr:"car"},{row:1,col:4,dir:HORIZONTAL,len:2,spr:"car"},{row:2,col:0,dir:VERTICAL,len:2,spr:"car"},{row:2,col:1,dir:VERTICAL,len:2,spr:"car"},{row:2,col:2,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:3,col:2,dir:HORIZONTAL,len:2,spr:"car"},{row:2,col:4,dir:VERTICAL,len:2,spr:"car"},{row:2,col:5,dir:VERTICAL,len:2,spr:"car"},{row:4,col:2,dir:VERTICAL,len:2,spr:"car"},{row:4,col:4,dir:HORIZONTAL,len:2,spr:"car"},{row:5,col:0,dir:HORIZONTAL,len:2,spr:"car"}],carsArray19=[{row:0,col:1,dir:HORIZONTAL,len:2,spr:"car"},{row:0,col:3,dir:HORIZONTAL,len:2,spr:"car"},{row:1,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:1,col:2,dir:HORIZONTAL,len:2,spr:"car"},{row:2,col:2,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:1,col:4,dir:VERTICAL,len:3,spr:"truck"},{row:1,col:5,dir:VERTICAL,len:3,spr:"truck"},{row:2,col:0,dir:VERTICAL,len:3,spr:"truck"},{row:2,col:1,dir:VERTICAL,len:3,spr:"truck"},{row:3,col:2,dir:VERTICAL,len:2,spr:"car"},{row:3,col:3,dir:VERTICAL,len:2,spr:"car"},{row:4,col:4,dir:HORIZONTAL,len:2,spr:"car"},{row:5,col:1,dir:HORIZONTAL,len:2,spr:"car"},{row:5,col:3,dir:HORIZONTAL,len:2,spr:"car"}],carsArray20=[{row:0,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:0,col:2,dir:HORIZONTAL,len:2,spr:"car"},{row:0,col:4,dir:VERTICAL,len:2,spr:"car"},{row:0,col:5,dir:VERTICAL,len:3,spr:"truck"},{row:1,col:2,dir:HORIZONTAL,len:2,spr:"car"},{row:2,col:3,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:1,col:0,dir:VERTICAL,len:2,spr:"car"},{row:2,col:1,dir:VERTICAL,len:2,spr:"car"},{row:2,col:2,dir:VERTICAL,len:3,spr:"truck"},{row:3,col:3,dir:HORIZONTAL,len:3,spr:"truck"},{row:5,col:0,dir:HORIZONTAL,len:2,spr:"car"}],carsArray21=[{row:0,col:0,dir:VERTICAL,len:2,spr:"car"},{row:0,col:1,dir:HORIZONTAL,len:3,spr:"truck"},{row:1,col:2,dir:HORIZONTAL,len:2,spr:"car"},{row:1,col:4,dir:HORIZONTAL,len:2,spr:"car"},{row:2,col:0,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:2,col:2,dir:VERTICAL,len:2,spr:"car"},{row:3,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:4,col:0,dir:HORIZONTAL,len:3,spr:"truck"},{row:5,col:0,dir:HORIZONTAL,len:3,spr:"truck"},{row:3,col:3,dir:VERTICAL,len:3,spr:"truck"},{row:4,col:4,dir:VERTICAL,len:2,spr:"car"},{row:4,col:5,dir:VERTICAL,len:2,spr:"car"}],carsArray22=[{row:0,col:2,dir:VERTICAL,len:2,spr:"car"},{row:0,col:3,dir:HORIZONTAL,len:2,spr:"car"},{row:1,col:4,dir:VERTICAL,len:2,spr:"car"},{row:2,col:1,dir:VERTICAL,len:2,spr:"car"},{row:2,col:2,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:3,col:2,dir:HORIZONTAL,len:2,spr:"car"},{row:3,col:4,dir:VERTICAL,len:2,spr:"car"},{row:4,col:1,dir:HORIZONTAL,len:3,spr:"truck"}],carsArray23=[{row:0,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:0,col:2,dir:VERTICAL,len:2,spr:"car"},{row:0,col:3,dir:VERTICAL,len:3,spr:"truck"},{row:1,col:0,dir:VERTICAL,len:3,spr:"truck"},{row:2,col:1,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:3,col:1,dir:HORIZONTAL,len:3,spr:"truck"},{row:5,col:3,dir:HORIZONTAL,len:3,spr:"truck"}],carsArray24=[{row:0,col:2,dir:HORIZONTAL,len:3,spr:"truck"},{row:0,col:5,dir:VERTICAL,len:3,spr:"truck"},{row:1,col:2,dir:VERTICAL,len:2,spr:"car"},{row:1,col:3,dir:HORIZONTAL,len:2,spr:"car"},{row:2,col:3,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:3,col:2,dir:VERTICAL,len:2,spr:"car"},{row:3,col:3,dir:VERTICAL,len:2,spr:"car"},{row:3,col:4,dir:HORIZONTAL,len:2,spr:"car"},{row:4,col:4,dir:HORIZONTAL,len:2,spr:"car"},{row:5,col:2,dir:HORIZONTAL,len:3,spr:"truck"}],carsArray25=[{row:0,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:1,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:0,col:2,dir:VERTICAL,len:2,spr:"car"},{row:0,col:4,dir:HORIZONTAL,len:2,spr:"car"},{row:2,col:1,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:2,col:0,dir:VERTICAL,len:3,spr:"truck"},{row:2,col:4,dir:VERTICAL,len:2,spr:"car"},{row:3,col:1,dir:HORIZONTAL,len:3,spr:"truck"},{row:1,col:5,dir:VERTICAL,len:3,spr:"truck"},{row:4,col:1,dir:VERTICAL,len:2,spr:"car"},{row:4,col:3,dir:VERTICAL,len:2,spr:"car"},{row:4,col:4,dir:HORIZONTAL,len:2,spr:"car"},{row:5,col:4,dir:HORIZONTAL,len:2,spr:"car"}],carsArray26=[{row:0,col:0,dir:VERTICAL,len:2,spr:"car"},{row:0,col:1,dir:HORIZONTAL,len:2,spr:"car"},{row:0,col:3,dir:VERTICAL,len:3,spr:"truck"},{row:1,col:1,dir:HORIZONTAL,len:2,spr:"car"},{row:2,col:0,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:2,col:2,dir:VERTICAL,len:2,spr:"car"},{row:3,col:3,dir:HORIZONTAL,len:2,spr:"car"},{row:2,col:5,dir:VERTICAL,len:3,spr:"truck"},{row:4,col:2,dir:VERTICAL,len:2,spr:"car"},{row:5,col:3,dir:HORIZONTAL,len:3,spr:"truck"}],carsArray27=[{row:0,col:2,dir:HORIZONTAL,len:3,spr:"truck"},{row:0,col:5,dir:VERTICAL,len:2,spr:"car"},{row:1,col:1,dir:HORIZONTAL,len:2,spr:"car"},{row:2,col:1,dir:HORIZONTAL,len:2,spr:"orangeCar"},{row:1,col:4,dir:VERTICAL,len:3,spr:"truck"},{row:2,col:5,dir:VERTICAL,len:2,spr:"car"},{row:3,col:0,dir:HORIZONTAL,len:2,spr:"car"},{row:3,col:2,dir:HORIZONTAL,len:2,spr:"car"},{row:4,col:2,dir:VERTICAL,len:2,spr:"car"},{row:4,col:3,dir:HORIZONTAL,len:3,spr:"truck"},{row:5,col:3,dir:HORIZONTAL,len:3,spr:"truck"}];
 
-
-var carsArray1 = [
-    {
-        row: 0, 
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 1,
-        col: 0,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 4,
-        col: 0,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 2,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "orangeCar"
-    },
-    {
-        row: 1,
-        col: 3,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 5,
-        col: 2,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 0,
-        col: 5,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 4,
-        col: 4,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    }
-];
-
-//begginer 3
-var carsArray2 = [
-
-    {
-        row: 2,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "orangeCar"
-    },
-
-    {
-        row: 3,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },   
-
-    {
-        row: 4,
-        col: 1,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 2,
-        col: 3,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 5,
-        col: 2,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 3,
-        col: 5,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    }
-];
-
-//begginer 5
-var carsArray3 = [
-    {
-        row: 0,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 0,
-        col: 3,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },    
-    {
-        row: 0,
-        col: 5,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },    
-    {
-        row: 1,
-        col: 0,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 1,
-        col: 4,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },  
-    {
-        row: 2,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "orangeCar"
-    },
-
-    {
-        row: 3,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    },   
-
-    {
-        row: 2,
-        col: 5,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 4,
-        col: 0,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 4,
-        col: 4,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 5,
-        col: 4,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    }
-];
-
-//begginer 6
-var carsArray4 = [
-    {
-        row: 0,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 1,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },    
-    {
-        row: 0,
-        col: 3,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },    
-    {
-        row: 1,
-        col: 4,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 1,
-        col: 5,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 2,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "orangeCar"
-    },
-
-    {
-        row: 2,
-        col: 3,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },   
-
-    {
-        row: 3,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 4,
-        col: 0,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 3,
-        col: 2,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 5,
-        col: 3,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    }
-];
-
-//begginer 7
-var carsArray5 = [
-    {
-        row: 0,
-        col: 1,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 0,
-        col: 2,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },    
-    {
-        row: 0,
-        col: 4,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },    
-    {
-        row: 0,
-        col: 5,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 2,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "orangeCar"
-    },
-
-    {
-        row: 1,
-        col: 3,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },   
-
-    {
-        row: 2,
-        col: 5,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 3,
-        col: 2,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 4,
-        col: 3,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    }
-];
-
-//begginer 8
-var carsArray6 = [
-    {
-        row: 0,
-        col: 3,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 0,
-        col: 5,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },    
-    {
-        row: 1,
-        col: 2,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },    
-    {
-        row: 1,
-        col: 4,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },     
-    {
-        row: 2,
-        col: 2,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 2,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "orangeCar"
-    },
-    {
-        row: 2,
-        col: 3,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },   
-
-    {
-        row: 3,
-        col: 4,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 3,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 4,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 5,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 4,
-        col: 2,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 4,
-        col: 3,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 5,
-        col: 3,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    }
-];
-
-//begginer 9
-var carsArray7 = [
-    {
-        row: 0,
-        col: 1,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 0,
-        col: 2,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },    
-    {
-        row: 0,
-        col: 4,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },    
-    {
-        row: 1,
-        col: 3,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },     
-    {
-        row: 1,
-        col: 4,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 2,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "orangeCar"
-    },
-
-    {
-        row: 2,
-        col: 4,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },   
-
-    {
-        row: 2,
-        col: 5,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 3,
-        col: 0,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 3,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    },  
-    {
-        row: 4,
-        col: 2,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 4,
-        col: 5,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    }
-];
-
-//begginer 10
-var carsArray8 = [
-    {
-        row: 0,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 0,
-        col: 2,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },    
-    {
-        row: 0,
-        col: 4,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },    
-    {
-        row: 1,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },     
-    {
-        row: 1,
-        col: 5,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 2,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "orangeCar"
-    },
-
-    {
-        row: 2,
-        col: 0,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },   
-
-    {
-        row: 3,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 5,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 4,
-        col: 3,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },  
-    {
-        row: 4,
-        col: 4,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 5,
-        col: 4,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    }
-];
-
-//Intermediate 11
-var carsArray9 = [
-    {
-        row: 0,
-        col: 0,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 0,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },    
-    {
-        row: 0,
-        col: 3,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },    
-    {
-        row: 2,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "orangeCar"
-    },
-
-    {
-        row: 3,
-        col: 2,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },   
-
-    {
-        row: 3,
-        col: 3,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 5,
-        col: 2,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 4,
-        col: 5,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    }
-];
-
-//Intermediate 12
-var carsArray10 = [
-    {
-        row: 0,
-        col: 0,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 0,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },    
-    {
-        row: 0,
-        col: 5,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },  
-    {
-        row: 2,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "orangeCar"
-    },
-    {
-        row: 1,
-        col: 2,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },   
-    {
-        row: 3,
-        col: 3,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 5,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 4,
-        col: 4,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    }
-];
-
-//Intermediate 13
-var carsArray11 = [
-    {
-        row: 0,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 0,
-        col: 2,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },    
-    {
-        row: 0,
-        col: 4,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },  
-    {
-        row: 1,
-        col: 2,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },  
-    {
-        row: 2,
-        col: 3,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "orangeCar"
-    },
-    {
-        row: 1,
-        col: 5,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },   
-    {
-        row: 2,
-        col: 1,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 3,
-        col: 3,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 3,
-        col: 0,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 5,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 4,
-        col: 3,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 4,
-        col: 4,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 5,
-        col: 4,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    }
-];
-
-//Intermediate 14
-var carsArray12 = [
-    {
-        row: 0,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 0,
-        col: 2,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },    
-    {
-        row: 1,
-        col: 4,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },  
-    {
-        row: 2,
-        col: 0,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },  
-    {
-        row: 2,
-        col: 1,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    }, 
-    {
-        row: 2,
-        col: 2,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "orangeCar"
-    },
-    {
-        row: 3,
-        col: 2,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },   
-    {
-        row: 2,
-        col: 4,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 2,
-        col: 5,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 4,
-        col: 2,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 4,
-        col: 4,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 5,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    }
-];
-
-//Intermediate 15
-var carsArray13 = [
-    {
-        row: 0,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 0,
-        col: 3,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },    
-    {
-        row: 1,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },  
-    {
-        row: 1,
-        col: 2,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },  
-    {
-        row: 2,
-        col: 2,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "orangeCar"
-    },
-    {
-        row: 1,
-        col: 4,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },   
-    {
-        row: 1,
-        col: 5,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 2,
-        col: 0,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },   
-    {
-        row: 2,
-        col: 1,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    }, 
-    {
-        row: 3,
-        col: 2,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 3,
-        col: 3,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 4,
-        col: 4,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 5,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 5,
-        col: 3,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    }
-];
-
-//Intermediate 16 
-var carsArray14 = [
-    {
-        row: 0,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 0,
-        col: 2,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },    
-    {
-        row: 0,
-        col: 4,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },  
-    {
-        row: 0,
-        col: 5,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },  
-    {
-        row: 1,
-        col: 2,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },  
-    {
-        row: 2,
-        col: 3,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "orangeCar"
-    },
-    {
-        row: 1,
-        col: 0,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },   
-    {
-        row: 2,
-        col: 1,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 2,
-        col: 2,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },   
-    {
-        row: 3,
-        col: 3,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    }, 
-    {
-        row: 5,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    }
-];
-
-//Intermediate 17
-var carsArray15 = [
-    {
-        row: 0,
-        col: 0,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 0,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    },    
-    {
-        row: 1,
-        col: 2,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },  
-    {
-        row: 1,
-        col: 4,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },  
-    {
-        row: 2,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "orangeCar"
-    },
-    {
-        row: 2,
-        col: 2,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },   
-    {
-        row: 3,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 4,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    },   
-    {
-        row: 5,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    }, 
-    {
-        row: 3,
-        col: 3,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 4,
-        col: 4,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 4,
-        col: 5,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    }
-];
-
-//Intermediate 19
-var carsArray16 = [
-    {
-        row: 0,
-        col: 2,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 0,
-        col: 3,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },    
-    {
-        row: 1,
-        col: 4,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },  
-    {
-        row: 2,
-        col: 1,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },  
-    {
-        row: 2,
-        col: 2,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "orangeCar"
-    },
-    {
-        row: 3,
-        col: 2,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },   
-    {
-        row: 3,
-        col: 4,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 4,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    }
-];
-
-//Advanced 21
-var carsArray17 = [
-    {
-        row: 0,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 0,
-        col: 2,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },    
-    {
-        row: 0,
-        col: 3,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },  
-    {
-        row: 1,
-        col: 0,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },  
-    {
-        row: 2,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "orangeCar"
-    },
-    {
-        row: 3,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    },   
-    {
-        row: 5,
-        col: 3,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    }
-];
-
-//Advanced 23
-var carsArray18 = [
-    {
-        row: 0,
-        col: 2,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 0,
-        col: 5,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },    
-    {
-        row: 1,
-        col: 2,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },  
-    {
-        row: 1,
-        col: 3,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },  
-    {
-        row: 2,
-        col: 3,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "orangeCar"
-    }, 
-    {
-        row: 3,
-        col: 2,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    }, 
-    {
-        row: 3,
-        col: 3,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 3,
-        col: 4,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    }, 
-    {
-        row: 4,
-        col: 4,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },   
-    {
-        row: 5,
-        col: 2,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    }
-];
-
-//Advanced 25
-var carsArray19 = [
-    {
-        row: 0,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 1,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },    
-    {
-        row: 0,
-        col: 2,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },  
-    {
-        row: 0,
-        col: 4,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },  
-    {
-        row: 2,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "orangeCar"
-    }, 
-    {
-        row: 2,
-        col: 0,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    }, 
-    {
-        row: 2,
-        col: 4,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 3,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    }, 
-    {
-        row: 1,
-        col: 5,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },   
-    {
-        row: 4,
-        col: 1,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },  
-    {
-        row: 4,
-        col: 3,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 4,
-        col: 4,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 5,
-        col: 4,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    }
-];
-
-//Advanced 27
-var carsArray20 = [
-    {
-        row: 0,
-        col: 0,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 0,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },    
-    {
-        row: 0,
-        col: 3,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },  
-    {
-        row: 1,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },  
-    {
-        row: 2,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "orangeCar"
-    }, 
-    {
-        row: 2,
-        col: 2,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    }, 
-    {
-        row: 3,
-        col: 3,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 2,
-        col: 5,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    }, 
-    {
-        row: 4,
-        col: 2,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },   
-    {
-        row: 5,
-        col: 3,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    }
-];
-
-// שלב 36 במשחק בטלפון
-var carsArray21 = [
-    {
-        row: 0,
-        col: 2,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 0,
-        col: 5,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 1,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 2,
-        col: 1,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "orangeCar"
-    },
-    {
-        row: 1,
-        col: 4,
-        dir: VERTICAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 2,
-        col: 5,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 3,
-        col: 0,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 3,
-        col: 2,
-        dir: HORIZONTAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 4,
-        col: 2,
-        dir: VERTICAL,
-        len: 2,
-        spr: "car"
-    },
-    {
-        row: 4,
-        col: 3,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    },
-    {
-        row: 5,
-        col: 3,
-        dir: HORIZONTAL,
-        len: 3,
-        spr: "truck"
-    }
-];
-
-
-var levelsArray = [carsArray1 ,carsArray2, carsArray3, carsArray4, carsArray5, carsArray6, carsArray7,carsArray8 ,carsArray9, carsArray10, carsArray11, carsArray12, carsArray13, carsArray14, carsArray15 ,carsArray16, carsArray17, carsArray18, carsArray19, carsArray20, carsArray21];
-
-var restarLevelBtn, stepBackBtn, orangeBrick; 
-
-WebFontConfig = {
-
-    //  load Google Font
-    google: {
-        families: ['Heebo']
-    }
-};
+var levelsArray = [carsArray1 ,carsArray2, carsArray3, carsArray4, carsArray5, carsArray6, carsArray7,carsArray8 ,carsArray9, carsArray10, carsArray11, carsArray12, carsArray13, carsArray14, carsArray15 ,carsArray16, carsArray17, carsArray18, carsArray19, carsArray20, carsArray21, carsArray22, carsArray23,carsArray24,carsArray25,carsArray26,carsArray27];
 
 rushGame.rushGame = function () {};
 rushGame.rushGame.prototype = {
 
     //****************************************PRELOAD*********************************************
-preload: function () {
+    preload: function () {
 
         userStartPoint = 1;
 
-        if (userStartPoint==1){
+        if (userStartPoint == 1){
             difficultyLevel = 0;
-        }else if (userStartPoint==2){
+        }else if (userStartPoint == 2){
             difficultyLevel = 5;
-        }else if(userStartPoint==3){
+        }else if(userStartPoint == 3){
             difficultyLevel = 10;
         }
 
         pauseState = false;
         levelNum = 1;
-        sessionData = "";
         levelData = "";
         gameIsOn = true; 
-        currentdate = new Date();
-        picsJSONstructure = "";
-        gameDurationInSeconds = 100;   
+        gameDurationInSeconds = 210;   //3.5 minutes
         last10seconds = true
         stepCounter=0;
         restartBtnWasClicked = false;
         stepBackBtnWasClicked=false;
+        timeIsOut = false;
 
         selectedPicName = chooseRandomPic(); //choosing a random picture for the end of game feedback
 
@@ -1706,15 +49,11 @@ preload: function () {
         game.load.image('startAgainBtn', '../assets/rushGame/sprites/startAgainBtn.png');
         game.load.image('backHomeBtn', '../assets/rushGame/sprites/backHomeBtn.png');    
 
+        game.load.image('backHomePopup', '../assets/allGames/sprites/backHomePopup.png');    
+        game.load.image('popupBtn', '../assets/allGames/sprites/popupBtn.png'); 
 
         game.load.spritesheet('pauseBtn', '../assets/allGames/spriteSheets/pausePlay.png', 40, 40);
         game.load.image('progressBarStroke', '../assets/allGames/sprites/timeBarStroke.png');    
-
-
-        //---------------------------------------------------------------------------------------------//
-
-        fromServer();
-
     },
 
     //****************************************CREATE*********************************************
@@ -1728,8 +67,7 @@ preload: function () {
         btnSound = game.add.audio('btnSound');
 
         orangeBrickOutSound = game.add.audio('orangeBrickOut');
-        orangeBrickOutSound.volume=0.3;       
-
+        orangeBrickOutSound.volume = 0.3;       
 
         // adding pics to the stage
         var BgTop = game.add.sprite(0, 65, 'Bg');
@@ -1805,7 +143,23 @@ preload: function () {
         gameContainer.add(bgFront);
         gameContainer.sendToBack(bgFront);
 
-        createPauseScreen();        
+        createPauseScreen();  
+
+        popupBg = game.add.sprite(0, 65, 'backHomePopup');
+        popupYesBtn = game.add.button(274.53 , 423, 'popupBtn', backHome);
+        popupNoBtn = game.add.button(83.43, 423, 'popupBtn', backToPauseScreen);
+        xBtn = game.add.button(404, 243, 'popupBtn', backToPauseScreen);
+        xBtn.width = 65;
+        xBtn.height = 65;
+        popup = game.add.group(); 
+        popup.add(popupBg);
+        popup.add(popupNoBtn);
+        popup.add(popupYesBtn);
+        popup.add(xBtn);
+        popup.alpha = 0;
+        popupYesBtn.input.enabled = false;
+        popupNoBtn.input.enabled = false;
+        xBtn.input.enabled = false;
     },
 
     //****************************************UPDATE*********************************************
@@ -2071,8 +425,6 @@ function stopDrag(s){
 
 
 //**************************************** BUTTONS *********************************************
-
-
 function restarLevelFunc() {
     btnSound.play();
     restartBtnWasClicked = true;
@@ -2083,6 +435,8 @@ function restarLevelFunc() {
 }
 
 function stepBackFunc() {
+    btnSound.play();
+
     stepBackBtnWasClicked = true;
     stepBackBtn.input.enabled = false;
     stepBackBtn.frame = 5;
@@ -2091,8 +445,7 @@ function stepBackFunc() {
         restarLevelBtn.input.enabled = false;
         restarLevelBtn.frame =2;
     }
-    
-    btnSound.play();
+
     currentBrick.x = startX;
     currentBrick.y = startY;
 
@@ -2127,6 +480,10 @@ function nextLevel(){
     restarLevelBtn.input.enabled = false;
     stepBackBtn.input.enabled = false;
 
+    levelNum++;
+    difficultyLevel++;
+    levelText.text = 'שלב ' + lastLevel + ' / ' + levelNum; 
+
     game.world.bringToTop(header);
     addLevelData();
 
@@ -2145,9 +502,7 @@ function nextLevel(){
 
     nextLevelContainer.x = 100;
     nextLevelContainer.y = 1500;
-
     nextLevelContainer.mask = brickMask;
-
 
     gameContainer.add(nextLevelContainer);
 
@@ -2155,7 +510,6 @@ function nextLevel(){
     game.world.bringToTop(pauseText);
     game.world.bringToTop(levelText);  
     game.world.bringToTop(brickContainer);
-    //   
 
     game.add.tween(restarLevelBtn).to({y:1000}, 700, Phaser.Easing.Circular.Out, true, 300);
     game.add.tween(stepBackBtn).to({y:1000}, 700, Phaser.Easing.Circular.Out, true, 300);
@@ -2164,6 +518,7 @@ function nextLevel(){
     brickTweenA.onComplete.add(activateStarTween, this);
 
     function activateStarTween(){
+        starSound.play();
         var starTweenA = game.add.tween(nextLevelContainer).to({y:380}, 1000, Phaser.Easing.Circular.Out, true, 0);
         starTweenA.onComplete.add(activateStarTweenB, this);
 
@@ -2176,8 +531,6 @@ function nextLevel(){
         game.add.tween(restarLevelBtn).to({y:875}, 700, Phaser.Easing.Circular.Out, true, 3000);
         game.add.tween(stepBackBtn).to({y:875}, 700, Phaser.Easing.Circular.Out, true, 3000);
     }
-
-
 }
 
 //****************************************ADD LEVEL DATA*********************************************
@@ -2190,14 +543,14 @@ function addLevelData(){
     sessionData += levelData;
     stepCounter = 0;
 
-    if(levelNum != lastLevel){
-        levelNum++;
-        console.log("difficulty-before:"+difficultyLevel)
-        difficultyLevel++;
-        console.log("difficulty-after:"+difficultyLevel)
-
-        levelText.text = 'שלב ' + lastLevel + ' / ' + levelNum;            
-    }
+    //    if(levelNum != lastLevel){
+    //        levelNum++;
+    //        console.log("difficulty-before:" + difficultyLevel)
+    //        difficultyLevel++;
+    //        console.log("difficulty-after:" + difficultyLevel)
+    //
+    //        levelText.text = 'שלב ' + lastLevel + ' / ' + levelNum;            
+    //    }
 }
 
 //****************************************TIME FUNCTIONS*********************************************
@@ -2205,6 +558,7 @@ function addLevelData(){
 function endTimer() {
     // Stop the timer when the delayed event triggers
     gameTimer.stop();
+    addLevelData();
     timeOut();
 }
 
@@ -2227,6 +581,8 @@ function shrinkProgressBar() {
 //****************************************PAUSE FUNCTIONS*********************************************
 
 function togglePause() {
+    btnSound.play();
+
     game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
     pauseState = !pauseState;
     if(pauseState){
@@ -2257,7 +613,7 @@ function createPauseScreen(){
     resumeGameBtn = game.add.button(86, 230, 'resumeGameBtn', togglePause);
     startAgainBtn = game.add.button(86, 330, 'startAgainBtn', startAgain)
     howToBtn = game.add.button(86, 430, 'howToBtn', startTutorial);
-    backHomeBtn = game.add.button(86, 530, 'backHomeBtn' , backHome);
+    backHomeBtn = game.add.button(86, 530, 'backHomeBtn', areYouSure);
 
     pauseContainer = game.add.group();       
     pauseContainer.x = 540;
@@ -2270,27 +626,41 @@ function createPauseScreen(){
 //**************************************** START AGAIN *************************************
 
 function startAgain(){
+    btnSound.play();
     game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
     pauseState = !pauseState;
     gameTimer.resume();
     game.time.events.resume();
     pauseBtn.frame = 0;
-    //   this.game.state.restart(true, false);  
-    game.state.start('rushGameCountDown');
+    cameFromGameToPlayAgain = true;
+    game.state.start('preloader');
 
 }
 
 function backHome(){
+    btnSound.play();
     gameIsOn = false;
     window.location ="../../client_side/homePage.html";
     //    window.location ="../../homePage.html"
 }
 
+function backToPauseScreen(){
+    popup.alpha = 0;
+}
+
+function areYouSure(){
+    popupYesBtn.input.enabled = true;
+    popupNoBtn.input.enabled = true;
+    xBtn.input.enabled = true;
+    popup.alpha = 1;
+}
+
 function startTutorial(){
+    btnSound.play();
     gameTimer.resume();
     game.time.events.resume();
     gameIsOn = false;
-    cameFromGame=true;
+    cameFromGameToTutorial = true;
     game.state.start('rushGameTutorial');
 }
 
@@ -2298,6 +668,11 @@ function startTutorial(){
 //****************************************END OF GAME*****************************************
 
 function Finish(state) {
+    if (state == "finishGame") {
+        levelData = '{"countPerLevel":' + 0 + ', "errorsPerLevel":' + 0 + '},';
+        sessionData += levelData;
+    }
+
     sessionData = sessionData.substring(0, sessionData.length - 1);
     sessionData += "]}}"
 
@@ -2370,55 +745,4 @@ function chooseRandomPic() {
         var picName = "default.jpg"
         return picName;
     }
-}
-
-//****************************************FROM SERVER*********************************************
-
-function fromServer() {
-
-    //preparing to call server side page
-    var xmlhttp = new XMLHttpRequest();
-
-    //PLEASE VERIFY THAT PORT NUMBER IS CORRECT	
-    // *****************************************************************
-
-    var url = "http://project-most.herokuapp.com/userIdandLevel/" + gameID;
-
-    // *****************************************************************
-
-    xmlhttp.onreadystatechange = function () {
-
-        // וידוא שניתן לקרוא את הפונקציה
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            myFunction(xmlhttp.responseText);
-        }
-    }
-
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
-
-    //this function retreives information received from server side. received information is inside 'response'
-    function myFunction(response) {
-        var responseArray = response;      
-        console.log(response);
-
-        userID = responseArray[1];
-        lastGameLastLevel = responseArray[3];      
-
-        //creats the array of pictures names - to use in feedbacks
-        //for (var i = 0; i < myJSON.userPics.length; i++) {
-        //    picsArray.push(myJSON.userPics[i].picName)
-        //}
-
-        // creat new JSON structure
-        time = currentdate.getDate() + "/" + (currentdate.getMonth() + 1) + "/" + currentdate.getFullYear() + " - " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
-        sessionData = '{ "gameID": ' + gameID + ',"time": "' + time + '","userID": ' + userID + ',"data": {"levels": [';
-    }
-}
-
-
-//****************************************enterFullScreen *********************************************
-
-function enterFullScreen() {
-    document.documentElement.webkitRequestFullscreen();
 }

@@ -1,9 +1,14 @@
 <!doctype html>
 <html lang="he">
     <head>
+        <title>אימוני מוח</title>
         <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
         <script src="../client_side/jQuery/jquery-1.12.0.min.js"></script>
         <script src="../client_side/phaser/phaser.min.js"></script>
+        <link rel="manifest" href="manifest.json">
+        <link rel="icon" sizes="192x192" href="assets/icon.jpg">
         <link  rel="stylesheet" href="reset.css">
         <link  rel="stylesheet" href="style.css">
         <link href="https://fonts.googleapis.com/css?family=Heebo:400,700" rel="stylesheet">
@@ -11,8 +16,8 @@
     <body onload="rndGame()">
         <div id="container">
             <header>
-                <h1>שם האפליקציה</h1>
-<!--                <img src="assets/allGames/sprites/desktop.ini"/>-->
+                <h1>אימוני מוח</h1>
+                <!--                <img src="assets/allGames/sprites/desktop.ini"/>-->
             </header>
 
 
@@ -22,7 +27,7 @@
                 <ul class="gamesBtn">
                     <li id="RndGameBtn"><a href=""><img></a></li> 
                 </ul>
-                <div id="toAllGames">לכל המשחקים</div>
+                <div id="toAllGames"><img id="toAllGamesImg" src="assets/allGames/sprites/backHome.png">לכל המשחקים</div>
             </div>
 
             <div id="allGames">
@@ -36,41 +41,37 @@
                     <li id="li_memo"><a href="memoGame/index.html"><img src="assets/allGames/sprites/memoBtn.png"></a></li>
                 </ul>
             </div>
-
         </div>
-
     </body>
 
     <script>
+        $(document).ready(function(){
+            var picsSourceArray=["assets/allGames/sprites/ballBtn.png", "assets/allGames/sprites/colorBtn.png", "assets/allGames/sprites/rushBtn.png","assets/allGames/sprites/memoBtn.png"];
+            var picsHref=["ballGame/index.html", "colorGame/index.html", "rushGame/index.html","memoGame/index.html"];
 
-        var picsSourceArray=["assets/allGames/sprites/ballBtn.png", "assets/allGames/sprites/colorBtn.png", "assets/allGames/sprites/rushBtn.png","assets/allGames/sprites/memoBtn.png"];
-        var picsHref=["ballGame/index.html", "colorGame/index.html", "rushGame/index.html","memoGame/index.html"];
+            function rndGame(){  
+                screen.lockOrientation("portrait");
+                var previousPage = document.referrer;
+                if (previousPage != ""){
+                    $("#randomGame").css("display","none");
+                    $("#allGames").css("display","block");
+                }
 
-        function rndGame(){  
+                var x = randCell(); 
+                $("#RndGameBtn img").attr("src",picsSourceArray[x])
+                $("#RndGameBtn a").attr("href",picsHref[x])
+            };
 
-            var previousPage = document.referrer;
-            if (previousPage != ""){
-                $("#randomGame").css("display","none");
-                $("#allGames").css("display","block");
+            function randCell() {
+                var x = Math.floor((Math.random() * 4));
+                return x
             }
 
-            var x = randCell(); 
-            $("#RndGameBtn img").attr("src",picsSourceArray[x])
-            $("#RndGameBtn a").attr("href",picsHref[x])
-        };
-
-        function randCell() {
-            var x = Math.floor((Math.random() * 4));
-            return x
-        }
-
-        $("#toAllGames").click(function(){
-            $("#randomGame").css("display","none");
-            $("#allGames").css("display","block");
+            $("#toAllGames").click(function(){
+                $("#randomGame").css("display","none");
+                $("#allGames").css("display","block");
+            });
         });
-
     </script>
-
-
 
 </html>

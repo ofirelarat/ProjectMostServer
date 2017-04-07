@@ -1,4 +1,11 @@
-var tapToContinue, tapToContinueText, ballBgTop, ballBgBottom, rightGate, leftGate, sliderBtn, ball, gateMask, gateWidth = 130, tutorialProgessCounter, tooltip1, tooltip2, tooltip3, tooltip4, tooltip5, tooltip6, tooltip7, arrow, tutorialHeader, gameHeader, gateColorTimer, ballIcon1, ballIcon2, ballIcon3, sliderBtnStrokeTween, skipBtn, star, starLines, wellDoneText, nextLevelContainer, gameIsOn = false, letsStart, startGameBtn, needTapToContinueText = false, tapToContinueTimer, screenPatch, btnSound,hitGateSound, hitWallsSound, starSound, bmd, tool1Sound, tool2Sound, tool3Sound,tool4Sound,tool5Sound, tool6Sound, tool7Sound, cameFromGame=false;
+var tapToContinue, tapToContinueText, ballBgTop, ballBgBottom, rightGate, leftGate, sliderBtn, ball, gateMask, gateWidth = 130, tutorialProgessCounter, tooltip1, tooltip2, tooltip3, tooltip4, tooltip5, tooltip6, tooltip7, arrow, tutorialHeader, gameHeader, gateColorTimer, ballIcon1, ballIcon2, ballIcon3, sliderBtnStrokeTween, skipBtn, star, starLines, wellDoneText, nextLevelContainer, gameIsOn = false, letsStart, startGameBtn, needTapToContinueText = false, tapToContinueTimer, screenPatch, btnSound, hitGateSound, hitWallsSound, starSound, bmd, tool1Sound, tool2Sound, tool3Sound,tool4Sound,tool5Sound, tool6Sound, tool7Sound, letsBeginSound, greatJobSound, cameFromGameToTutorial = false, cameFromGameToPlayAgain = false;
+
+WebFontConfig = {
+    //  load Google Font
+    google: {
+        families: ['Heebo']
+    }
+};
 
 ballGame.ballGameTutorial = function () {};
 ballGame.ballGameTutorial.prototype = {
@@ -6,6 +13,7 @@ ballGame.ballGameTutorial.prototype = {
     //****************************************PRELOAD*********************************************
 
     preload: function () {
+
         tutorialProgessCounter = 1;
 
         game.load.spritesheet('ballBg', '../assets/ballGame/backgrounds/bg.jpg', 540, 447.5);
@@ -24,7 +32,7 @@ ballGame.ballGameTutorial.prototype = {
         game.load.image('tooltip5', '../assets/ballGame/sprites/tooltip5.png');
         game.load.image('tooltip6', '../assets/ballGame/sprites/tooltip6.png');
         game.load.image('tooltip7', '../assets/ballGame/sprites/tooltip7.png');
-        //    game.load.image('arrow', '../assets/ballGame/sprites/arrow.png');
+
         game.load.image('skipBtn', '../assets/allGames/sprites/skipBtn.png');
         game.load.image('star', '../assets/ballGame/sprites/star.png');    
         game.load.image('starLines', '../assets/allGames/sprites/star_lines.png');
@@ -36,7 +44,7 @@ ballGame.ballGameTutorial.prototype = {
         game.load.spritesheet('sliderBtn', '../assets/ballGame/spriteSheets/sliderBtn.png', 90, 90);
         game.load.spritesheet('startGameBtn', '../assets/ballGame/spriteSheets/startGameBtn.png', 220.015, 220.015);
 
-        game.load.audio('btnSound', '../assets/ballGame/sounds/pressBtn.wav'); 
+        game.load.audio('btnSound', '../assets/allGames/sounds/pressBtn.mp3'); 
         game.load.audio('hitWallsSound', '../assets/ballGame/sounds/hitWallsSound.mp3'); 
         game.load.audio('hitGateSound', '../assets/ballGame/sounds/hitGateSound.mp3'); 
         game.load.audio('starSound', '../assets/allGames/sounds/swoosh.mp3'); 
@@ -48,6 +56,10 @@ ballGame.ballGameTutorial.prototype = {
         game.load.audio('tool5Sound', '../assets/ballGame/sounds/tooltip5.mp3'); 
         game.load.audio('tool6Sound', '../assets/ballGame/sounds/tooltip6.mp3'); 
         game.load.audio('tool7Sound', '../assets/ballGame/sounds/tooltip7.mp3'); 
+
+        game.load.audio('letsBegin', '../assets/allGames/sounds/letsStart.mp3'); 
+        game.load.audio('greatJob', '../assets/allGames/sounds/greatJob.mp3'); 
+
     },
 
     //****************************************CREATE*********************************************
@@ -71,6 +83,9 @@ ballGame.ballGameTutorial.prototype = {
         tool5Sound =  game.add.audio('tool5Sound');
         tool6Sound =  game.add.audio('tool6Sound');
         tool7Sound =  game.add.audio('tool7Sound');
+
+        letsBeginSound = game.add.audio('letsBegin');
+        greatJobSound = game.add.audio('greatJob');
 
         ballBgTop = game.add.sprite(0, 65, 'ballBg');
         ballBgTop.frame = 0;
@@ -180,15 +195,26 @@ ballGame.ballGameTutorial.prototype = {
         tapToContinueText.text = 'כדי להתקדם - געו במסך';
         tapToContinueText.alpha = 0;
 
-        if(Cookies.get('first-time-ball') == undefined || cameFromGame==true){
+        //        if(Cookies.get('first-time-ball') == undefined || cameFromGameToTutorial==true){
+        //            tutorialSequence();  
+        //        }
+        //        if (Cookies.get('first-time-ball') == undefined)
+        //        {
+        //            Cookies.set('first-time-ball', 'true');
+        //        }else if(Cookies.get('first-time-ball') != undefined && (cameFromGameToTutorial==false)){
+        //            game.state.start('ballGameCountDown');    
+        //        }
+        
+        if(lastGameLastLevel == 0 || cameFromGameToTutorial == true){
+            cameFromGameToTutorial = false;
             tutorialSequence();  
-        }
-        if (Cookies.get('first-time-ball') == undefined)
-        {
-            Cookies.set('first-time-ball', 'true');
-        }else if(Cookies.get('first-time-ball') != undefined && (cameFromGame==false)){
+        } else if((lastGameLastLevel != 0) && (cameFromGameToTutorial == false)){
             game.state.start('ballGameCountDown');    
+        } else if(cameFromGameToPlayAgain == true){
+            cameFromGameToPlayAgain = false;
+            game.state.start('ballGameCountDown'); 
         }
+
     },
 
     //****************************************UPDATE*********************************************
@@ -210,7 +236,6 @@ ballGame.ballGameTutorial.prototype = {
 
     }    
 };
-
 
 
 //****************************************TUTORIAL SEQUENCE*********************************************
@@ -240,6 +265,8 @@ function tutorialSequence(){
         tool1Sound.stop();
         tapToContinueTimer.stop();
 
+        tapToContinue.inputEnabled = false;   
+
         tapToContinue.events.onInputDown.removeAll();  
         game.add.tween(tapToContinueText).to({alpha:0}, 600, Phaser.Easing.Linear.In, true, 0, 0, false);
 
@@ -255,6 +282,11 @@ function tutorialSequence(){
         }, 1000);
 
         var move = game.add.tween(ball).to({x:100, y:400}, 2000, Phaser.Easing.Linear.In, true, 800, 0, false);
+
+        move.onComplete.add(function(){
+            tapToContinue.inputEnabled = true;   
+        }, this);
+
         var tween = game.add.tween(ball).to({alpha:1}, 600, Phaser.Easing.Linear.In, true, 800, 0, false);
         tutorialProgessCounter++;  
         tween.onComplete.add(function(){
@@ -364,7 +396,7 @@ function tutorialSequence(){
         setTimeout(function(){ 
             tool6Sound.play();
             tool6Sound.onStop.addOnce(showTapToContinueText, this);
-        }, 1000);
+        }, 500);
 
         game.world.bringToTop(tapToContinue);
         game.world.bringToTop(skipBtn);
@@ -404,8 +436,14 @@ function tutorialSequence(){
 
     }else if (tutorialProgessCounter == 8){
 
+        tool7Sound.stop();
+        tapToContinueTimer.stop();
+
         tapToContinue.inputEnabled = false;   
+        console.log("before alpha")
         game.add.tween(tapToContinueText).to({alpha:0}, 600, Phaser.Easing.Linear.In, true, 0, 0, false);
+        console.log("after alpha");
+
         game.world.bringToTop(ballBgFront);
         game.world.bringToTop(screenPatch);
 
@@ -423,6 +461,7 @@ function tutorialSequence(){
         starSound.play();
         var starTweenA = game.add.tween(nextLevelContainer).to({y:300}, 1000, Phaser.Easing.Circular.Out, true, 100);
         starTweenA.onComplete.add(activateStarTweenB, this);
+
     }
 
 }
@@ -443,6 +482,12 @@ function showTapToContinueText(){
 //****************************************TWEENS*********************************************
 
 function activateStarTweenB () {
+    if (gameIsOn == false){
+        greatJobSound.play();  
+    }
+     
+    
+    
     nextLevelContainer.y=300;
     var lineTween =  game.add.tween(starLines).to({alpha:1}, 600, Phaser.Easing.Sinusoidal.Out, true, 0);
     lineTween.onComplete.add(function(){starSound.play();}, this);
@@ -459,6 +504,7 @@ function afterStar () {
         }       
     }else{
         tutorialProgessCounter++;
+        letsBeginSound.play();
         game.add.tween(letsStart).to({y:312}, 600, Phaser.Easing.Sinusoidal.Out, true, 0); 
         game.add.tween(startGameBtn).to({y:397}, 600, Phaser.Easing.Sinusoidal.Out, true, 0); 
     }
@@ -545,3 +591,7 @@ function startGame(){
     btnSound.play();
     game.state.start('ballGameCountDown');
 }
+
+
+
+

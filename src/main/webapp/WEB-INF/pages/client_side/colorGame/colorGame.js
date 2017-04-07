@@ -1,18 +1,9 @@
-var colorGame = {}, gameID = "2", centerX = 540/2, centerY = 960/2, graphics, errors, levelNum, nextLevelText, userID, time, 
-    sessionData, levelData, lastLevel = 3, currentdate, gameTimer, gameTimerEvent, picsJSONstructure, gameDurationInSeconds, progressBar, progressBarStroke, progressBarLoop, progressBarWidth, endGameProgressBarWidth, pauseState, pauseBtn, gameContainer, pauseContainer, resumeGameBtn, howToBtn, startAgainBtn, backHomeBtn, selectedPicName, timeWord, header, star, nextLevelContainer, starLines, timeIsOut = false, levelText, pauseText, levelTextMask, last10seconds, lastGameLastLevel = 0;
+var colorGame = {}, centerX = 540/2, centerY = 960/2, graphics, errors, levelNum, nextLevelText, levelData, gameTimer, gameTimerEvent, gameDurationInSeconds, progressBar, progressBarStroke, progressBarLoop, progressBarWidth, endGameProgressBarWidth, pauseState, pauseBtn, gameContainer, pauseContainer, resumeGameBtn, howToBtn, startAgainBtn, backHomeBtn, selectedPicName, timeWord, header, star, nextLevelContainer, starLines, timeIsOut, levelText, pauseText, levelTextMask, last10seconds, colorsArray, difficultyLevel, selectedMeaningLocation, selectedColorLocation, meaning_text, meaning_color, color_text, color_color, colorTextbox, meaningTextbox1, colorCircle1, colorTextbox1, meaningTextbox2, colorCircle2, colorTextbox2, meaningTextbox3, colorCircle3, colorTextbox3, NoBtn, yesBtn, card1, card2, card3, cardBg, cardsArray = [], currentCardNum, cardsGroup, feedback, redFeed, currentTopCard, correctsCounter, last3Corrects, colorTooltip, meaningTooltip, instructionsTooltip1, instructionsTooltip2, cardY, cardX, isMatch, checkMatchCounter, checkMatchNum, cardsPerLevel, popup, popupBg, popupNoBtn, popupYesBtn, xBtn;
 
-var colorsArray, difficultyLevel, selectedMeaningLocation, selectedColorLocation, meaning_text, meaning_color, color_text, color_color, colorTextbox, meaningTextbox1, colorCircle1, colorTextbox1, meaningTextbox2, colorCircle2, colorTextbox2, meaningTextbox3, colorCircle3, colorTextbox3, NoBtn, yesBtn, card1, card2, card3, cardBg, cardsArray = [], currentCardNum, cardsGroup, feedback, redFeed, currentTopCard, correctsCounter, last3Corrects, colorTooltip, meaningTooltip, instructionsTooltip1, instructionsTooltip2, cardY, cardX, isMatch, checkMatchCounter, checkMatchNum;
-
-//var picsArray= ["pic1.jpg", "pic2.jpg", "pic3.jpg"];
-var picsArray= [];
-
-WebFontConfig = {
-
-    //  load Google Font
-    google: {
-        families: ['Heebo']
-    }
-};
+var lastLevel = 3;
+var cardsInLevel1 = 15;
+var cardsInLevel2 = 20;
+var cardsInLevel3 = 25;
 
 colorGame.colorGame = function () {};
 colorGame.colorGame.prototype = {
@@ -21,18 +12,14 @@ colorGame.colorGame.prototype = {
 
     preload: function () {
 
-    
         pauseState = false;
         errors = 0;
         levelNum = 1;
-        sessionData = "";
         levelData = "";
         gameIsOn = true; 
-        currentdate = new Date();
-        picsJSONstructure = "";
-        gameDurationInSeconds = 100;
-        last10seconds = true
-        colorsArray = [["כחול", "#0000ff"],["אדום", "#ff0000"], ["ירוק", "#00ff00"], ["צהוב", "#fcd503"], ["סגול","#a64dff"], ["כתום", "#ff9900"], ["שחור", "#000000"]];
+        gameDurationInSeconds = 120; //2 minutes
+        last10seconds = true;
+        colorsArray = [["כחול", "#0000ff"],["אדום", "#ff0000"], ["ירוק", "#61bd4f"], ["צהוב", "#fcd503"], ["סגול","#a64dff"], ["כתום", "#ff9900"], ["שחור", "#000000"]];
         difficultyLevel = 1;
         selectedPicName = chooseRandomPic(); //choosing a random picture for the end of game feedback
         currentCardNum = 1;
@@ -40,6 +27,8 @@ colorGame.colorGame.prototype = {
         last3Corrects = 0;
         checkMatchCounter = 0;
         checkMatchNum = 2;
+        timeIsOut = false;
+        cardsPerLevel = cardsInLevel1;
 
         game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 
@@ -49,12 +38,11 @@ colorGame.colorGame.prototype = {
         game.load.image('startAgainBtn', '../assets/colorGame/sprites/startAgainBtn.png');
         game.load.image('backHomeBtn', '../assets/colorGame/sprites/backHomeBtn.png');    
 
+        game.load.image('backHomePopup', '../assets/allGames/sprites/backHomePopup.png');    
+        game.load.image('popupBtn', '../assets/allGames/sprites/popupBtn.png');
+
         game.load.spritesheet('pauseBtn', '../assets/allGames/spriteSheets/pausePlay.png', 40, 40);
         game.load.image('progressBarStroke', '../assets/allGames/sprites/timeBarStroke.png');    
-
-
-        fromServer();
-
     },
 
     //****************************************CREATE*********************************************
@@ -64,13 +52,6 @@ colorGame.colorGame.prototype = {
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.world.setBounds(0, 0, 540, 960);
-
-
-        //            btnSound = game.add.audio('btnSound');
-        //            hitGateSound = game.add.audio('hitGateSound');
-        //            hitWallsSound = game.add.audio('hitWallsSound'); 
-        //            hitWallsSound.volume = 0.1;
-
 
         // adding pics to the stage
         var BgTop = game.add.sprite(0, 65, 'Bg');
@@ -90,7 +71,6 @@ colorGame.colorGame.prototype = {
         levelTextMask.drawRect(0, 0, 250, 62);
         levelText.mask = levelTextMask;
         pauseText.mask = levelTextMask;
-
 
         pauseBtn = game.add.button(11, 11, 'pauseBtn', togglePause); 
         pauseBtn.frame = 0; //setting the specific frame of the spriteSheet
@@ -115,9 +95,6 @@ colorGame.colorGame.prototype = {
         progressBar.drawRoundedRect(0, 0, 456, 12, 7);
         progressBarWidth = progressBar.width;
 
-        //        progressBarStroke = game.add.graphics(11, 85);
-        //        progressBarStroke.lineStyle(3, 0x000000, 0.5);
-        //        progressBarStroke.drawRoundedRect(0, 0, 456, 12, 7);
         progressBarStroke = game.add.sprite(9, 84, 'progressBarStroke');
 
         // creates a loop event for the progress bar
@@ -154,8 +131,6 @@ colorGame.colorGame.prototype = {
 
         enableCardDrag(currentTopCard);
 
-        //            cardsArray = [card1, card2, card3];
-
         gameContainer = game.add.group();
         gameContainer.add(progressBar);
         gameContainer.add(progressBarStroke);
@@ -171,6 +146,22 @@ colorGame.colorGame.prototype = {
         gameContainer.add(redFeed);
 
         createPauseScreen();
+
+        popupBg = game.add.sprite(0, 65, 'backHomePopup');
+        popupYesBtn = game.add.button(274.53 , 423, 'popupBtn', backHome);
+        popupNoBtn = game.add.button(83.43, 423, 'popupBtn', backToPauseScreen);
+        xBtn = game.add.button(404, 243, 'popupBtn', backToPauseScreen);
+        xBtn.width = 65;
+        xBtn.height = 65;
+        popup = game.add.group(); 
+        popup.add(popupBg);
+        popup.add(popupNoBtn);
+        popup.add(popupYesBtn);
+        popup.add(xBtn);
+        popup.alpha = 0;
+        popupYesBtn.input.enabled = false;
+        popupNoBtn.input.enabled = false;
+        xBtn.input.enabled = false;
     },
 
     //****************************************UPDATE*********************************************
@@ -190,6 +181,15 @@ colorGame.colorGame.prototype = {
 
     }
 };
+
+function goToFullScreen() {
+    console.log("full");
+    if (game.scale.isFullScreen) {
+        game.scale.stopFullScreen();
+    } else {
+        game.scale.startFullScreen(false);
+    }
+}
 
 function createCardsStructure(){
     card1 = game.add.group();
@@ -315,15 +315,12 @@ function createCardContent(currentlevel, currentCard, meaningTextbox, colorCircl
         colorTextbox.anchor.set(0.5);
     }
 
-
     return (currentCard.match);
 }
 
 //****************************************YES/NO BUTTONS*********************************************
 
 function yesBtnFunc(clickSource) {
-    console.log("clickSource =" + clickSource);
-
     instructionsTooltip1.alpha = 0;
     instructionsTooltip2.alpha = 0;
     yesBtn.input.enabled = false;
@@ -451,25 +448,17 @@ function growCard(){
     if(currentCardNum == 1){
         game.add.tween(card2.scale).to({x:1, y:1}, 200, Phaser.Easing.Back.Out, true, 0, 0, false);
         game.add.tween(card2).to({x:160, y:0}, 200, Phaser.Easing.Back.Out, true, 0, 0, false);
-
-        //            currentCardNum = 2;
         currentTopCard = card2;
 
     }else if(currentCardNum == 2){
         game.add.tween(card3.scale).to({x:1, y:1}, 200, Phaser.Easing.Back.Out, true, 0, 0, false);
         game.add.tween(card3).to({x:160, y:0}, 200, Phaser.Easing.Back.Out, true, 0, 0, false);
-
-        //         currentCardNum = 3;
         currentTopCard = card3;
 
     }else{
-
         game.add.tween(card1.scale).to({x:1, y:1}, 200, Phaser.Easing.Back.Out, true, 0, 0, false);
         game.add.tween(card1).to({x:160, y:0}, 200, Phaser.Easing.Back.Out, true, 0, 0, false);
-
-        //         currentCardNum = 1; 
         currentTopCard = card1;
-
     }   
 }
 
@@ -521,14 +510,11 @@ function onDragStop(){
 
 function correctFeedback(){
     correctsCounter++;
-    //    correctSound.play();
+    correctSound.play();
 
-    if (correctsCounter >= 13){
+    if (correctsCounter >= (cardsPerLevel - 2)){
         last3Corrects ++;
     }
-
-    console.log("corrects: " + correctsCounter);
-    console.log("last3Corrects: " + last3Corrects);
 
     if((levelNum == lastLevel) && (last3Corrects == 3)){
         addLevelData();
@@ -539,7 +525,6 @@ function correctFeedback(){
         } 
     }
 
-    console.log("correct");  
     feedback.frame = 1;
     var showFeed = game.add.tween(feedback.scale).to({x:1, y:1}, 200, Phaser.Easing.Back.Out, true, 0, 0, false);
     showFeed.onComplete.add(hideFeedback, this);
@@ -551,8 +536,7 @@ function correctFeedback(){
 
 function errorFeedback(){
     errors++;
-    //     errorSound.play();
-    console.log("error");  
+    errorSound.play();
     last3Corrects = 0;
     feedback.frame = 0;
     var showFeed = game.add.tween(feedback.scale).to({x:1, y:1}, 200, Phaser.Easing.Back.Out, true, 0, 0, false);
@@ -575,6 +559,15 @@ function nextLevel(){
     levelText.text = 'שלב ' + lastLevel + ' / ' + levelNum;
     difficultyLevel++;   //increasing the difficulty level
 
+    if(levelNum == 2){
+        cardsPerLevel = cardsInLevel2;
+    }else if(levelNum == 3){
+        cardsPerLevel = cardsInLevel3;
+    }
+
+    console.log("levelNum = " + levelNum);
+    console.log("cardsPerLevel = " + cardsPerLevel);
+
     star = game.add.sprite(0, 0, 'star');
     starLines = game.add.sprite(0, 0, 'starLines');
     starLines.alpha = 0;
@@ -587,13 +580,10 @@ function nextLevel(){
     nextLevelContainer.add(starLines);
     nextLevelContainer.add(nextLevelText);     
 
-//         game.world.add(currentTopCard);
     cardsContainer = game.add.group();
     cardsContainer.add(meaningTooltip);
     cardsContainer.add(colorTooltip);
     cardsContainer.add(cardsGroup);
-
-    //      cardsContainer.alpha = 0;
 
     nextLevelContainer.x = 100;
     nextLevelContainer.y = 1500;
@@ -601,7 +591,6 @@ function nextLevel(){
     gameContainer.add(nextLevelContainer);
     gameContainer.add(cardsContainer);
 
-    //        afterCard();
     var cardsTween = game.add.tween(cardsContainer).to({y:-900}, 700, Phaser.Easing.Circular.Out, true, 200);
     //      var cardsTween = game.add.tween(cardsContainer).to({alpha:0}, 100, Phaser.Easing.Circular.Out, true, 600);
     cardsTween.onComplete.add(afterCard, this);
@@ -617,9 +606,8 @@ function nextLevel(){
     game.world.bringToTop(pauseBtn);
     game.world.bringToTop(pauseText);
     game.world.bringToTop(levelText);
-
-
 }
+
 function afterCard(){
     card1.destroy();
     card2.destroy();
@@ -627,6 +615,7 @@ function afterCard(){
     createCardsStructure();
 
     var starTweenA =game.add.tween(nextLevelContainer).to({y:300}, 1000, Phaser.Easing.Circular.Out, true, 100);
+    starSound.play();
     starTweenA.onComplete.add(activateStarTweenB, this);   
 }
 
@@ -647,8 +636,8 @@ function addLevelData(){
 //****************************************TIME FUNCTIONS*********************************************
 
 function endTimer() {
-    // Stop the timer when the delayed event triggers
-    gameTimer.stop();
+    gameTimer.stop(); // Stop the timer
+    addLevelData();
     timeOut();
 }
 
@@ -670,6 +659,8 @@ function shrinkProgressBar() {
 //****************************************PAUSE FUNCTIONS*********************************************
 
 function togglePause() {
+
+    btnSound.play();
     game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
     pauseState = !pauseState;
     if(pauseState){
@@ -691,7 +682,6 @@ function togglePause() {
 
         game.add.tween(pauseText).to({y:70}, 700, Phaser.Easing.Exponential.Out, true, 0, 0, false); 
         game.add.tween(levelText).to({y:13}, 700, Phaser.Easing.Exponential.Out, true, 0, 0, false);
-
     }
 }
 
@@ -700,7 +690,7 @@ function createPauseScreen(){
     resumeGameBtn = game.add.button(86, 230, 'resumeGameBtn', togglePause);
     startAgainBtn = game.add.button(86, 330, 'startAgainBtn', startAgain)
     howToBtn = game.add.button(86, 430, 'howToBtn', startTutorial);
-    backHomeBtn = game.add.button(86, 530, 'backHomeBtn' , backHome);
+    backHomeBtn = game.add.button(86, 530, 'backHomeBtn' , areYouSure);
 
     pauseContainer = game.add.group();       
     pauseContainer.x = 540;
@@ -713,35 +703,53 @@ function createPauseScreen(){
 //**************************************** START AGAIN *************************************
 
 function startAgain(){
+    btnSound.play();
     game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
     pauseState = !pauseState;
     gameTimer.resume();
     game.time.events.resume();
     pauseBtn.frame = 0;
-    //   this.game.state.restart(true, false);  
-    game.state.start('colorGameCountDown');
+    cameFromGameToPlayAgain = true;
+    game.state.start('preloader');
 }
 
 function backHome(){
+    btnSound.play();
     gameIsOn = false;
     window.location ="../../client_side/homePage.html";
     //    window.location ="../../homePage.html";
 }
 
+function backToPauseScreen(){
+    popup.alpha = 0;
+}
+
+function areYouSure(){
+    popupYesBtn.input.enabled = true;
+    popupNoBtn.input.enabled = true;
+    xBtn.input.enabled = true;
+    popup.alpha = 1;
+}
+
 function startTutorial(){
+    btnSound.play();
     gameTimer.resume();
     game.time.events.resume();
     gameIsOn = false;
-    cameFromGame=true;
+    cameFromGameToTutorial = true;
     game.state.start('colorGameTutorial');
 }
 
 //****************************************END OF GAME*****************************************
 
 function Finish(state) {
+    if (state == "finishGame") {
+        levelData = '{"countPerLevel":' + 0 + ', "errorsPerLevel":' + 0 + '},';
+        sessionData += levelData;
+    }
+
     sessionData = sessionData.substring(0, sessionData.length - 1);
     sessionData += "]}}"
-    //sessionData = eval ("(" + sessionData + ")");
 
     $.ajax({
         url: "http://project-most.herokuapp.com/game/addresult",
@@ -770,23 +778,22 @@ function Finish(state) {
     game.add.tween(pauseBtn).to({ alpha: 0 }, 700, Phaser.Easing.Linear.In, true, 0, 0, false);
 
     //   cardsGroup.alpha = 0;
-//    var cardsTween = game.add.tween(cardsContainer).to({y:-900}, 700, Phaser.Easing.Circular.Out, true, 200);
-//    cardsTween.onComplete.add(removeContainer, this);
+    //    var cardsTween = game.add.tween(cardsContainer).to({y:-900}, 700, Phaser.Easing.Circular.Out, true, 200);
+    //    cardsTween.onComplete.add(removeContainer, this);
 
-//    function removeContainer() {
-            setTimeout(function(){cardsGroup.alpha = 0;}, 300);   
-    
-        var containerTween = game.add.tween(gameContainer).to({ alpha: 0 }, 400, Phaser.Easing.Linear.In, true, 300, 0, false);
-        containerTween.onComplete.add(changeState, this);
+    //    function removeContainer() {
+    setTimeout(function(){cardsGroup.alpha = 0;}, 300);   
 
-        function changeState() {
-            
-            game.state.start('colorGameEndGame');
-        }
-//    }
+    var containerTween = game.add.tween(gameContainer).to({ alpha: 0 }, 400, Phaser.Easing.Linear.In, true, 300, 0, false);
+    containerTween.onComplete.add(changeState, this);
+
+    function changeState() {
+        game.state.start('colorGameEndGame');
+    }
+    //    }
 }
 
-//************************************************ TIME OUT SCREEN **************************************************
+//************************************************ TIME OUT **************************************************
 function timeOut() {
     Finish("timeOut");
 }
@@ -811,67 +818,16 @@ function tint(){
 
 function unTint(){
     this.tint = 0xFFFFFF;
-
 }
 
 //****************************************CHOOSE RANDOM PICTURE*****************************************
 
 function chooseRandomPic() {
-    if(picsArray.length>0){
+    if(picsArray.length > 0){
         var picNum = getRandomNumber(0, picsArray.length-1);
         return picsArray[picNum];
     }else{
         var picName = "default.jpg"
         return picName;
     }
-}
-
-//****************************************FROM SERVER*********************************************
-
-function fromServer() {
-
-    //preparing to call server side page
-    var xmlhttp = new XMLHttpRequest();
-
-    //PLEASE VERIFY THAT PORT NUMBER IS CORRECT	
-    // *****************************************************************
-
-    var url = "http://project-most.herokuapp.com/userIdandLevel/" + gameID;
-
-    // *****************************************************************
-
-    xmlhttp.onreadystatechange = function () {
-        // וידוא שניתן לקרוא את הפונקציה
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            myFunction(xmlhttp.responseText);
-        }
-    }
-
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
-
-    //this function retreives information received from server side. received information is inside 'response'
-    function myFunction(response) {
-        var responseArray = response;      
-        console.log(response);
-
-        userID = responseArray[1];
-        lastGameLastLevel = responseArray[3];      
-
-        //creats the array of pictures names - to use in feedbacks
-        //for (var i = 0; i < myJSON.userPics.length; i++) {
-        //    picsArray.push(myJSON.userPics[i].picName)
-        //}
-
-        // creat new JSON structure
-        time = currentdate.getDate() + "/" + (currentdate.getMonth() + 1) + "/" + currentdate.getFullYear() + " - " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
-        sessionData = '{ "gameID": ' + gameID + ',"time": "' + time + '","userID": ' + userID + ',"data": {"levels": [';
-    }
-}
-
-
-//****************************************enterFullScreen *********************************************
-
-function enterFullScreen() {
-    document.documentElement.webkitRequestFullscreen();
 }

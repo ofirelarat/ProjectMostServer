@@ -34,9 +34,8 @@ ballGame.ballGameCountDown.prototype = {
         ready = game.add.sprite(260, 320, 'ready');
         ready.anchor.set(0.5, 0.5);
 
-
         tickSound = game.add.audio('tickSound');
-        tickSound.volume =0.3;
+        tickSound.volume = 0.3;
         numberMovement();
     },
 
@@ -60,6 +59,7 @@ function numberMovement(){
             hide2.onComplete.add(show1, this);
         }, this);
     }
+    
     function show1 () {
         var nextNum = game.add.tween(number.scale).to({x:0, y:0}, 100, Phaser.Easing.Out, true, 400, 0, false);
         nextNum.onComplete.add(function(){
@@ -79,7 +79,3 @@ function startNewGame(){
         game.state.start('ballGame1');
     });
 }
-
-
-
-
