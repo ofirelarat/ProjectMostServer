@@ -82,7 +82,6 @@ rushGame.rushGameEndGame.prototype = {
             var emitter = game.add.emitter(game.world.centerX, 0, 400);
 
             emitter.width = game.world.width;
-            // emitter.angle = 30; // uncomment to set an angle for the rain.
 
             emitter.makeParticles('rain');
 

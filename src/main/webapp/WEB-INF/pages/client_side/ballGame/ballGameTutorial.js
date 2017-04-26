@@ -440,9 +440,7 @@ function tutorialSequence(){
         tapToContinueTimer.stop();
 
         tapToContinue.inputEnabled = false;   
-        console.log("before alpha")
         game.add.tween(tapToContinueText).to({alpha:0}, 600, Phaser.Easing.Linear.In, true, 0, 0, false);
-        console.log("after alpha");
 
         game.world.bringToTop(ballBgFront);
         game.world.bringToTop(screenPatch);

@@ -61,8 +61,6 @@ ballGame.ballGame1.prototype = {
 
         btnSound = game.add.audio('btnSound');
         hitGateSound = game.add.audio('hitGateSound');
-        //        hitGateSound.allowMultiple = true;
-        //        hitGateSound.addMarker('noy',0.05,0.04);
 
         hitWallsSound = game.add.audio('hitWallsSound'); 
         starSound = game.add.audio('starSound'); 
@@ -299,7 +297,6 @@ function ballHitsGate(){
 
     if (rightGate.body.touching.up == true || leftGate.body.touching.up == true){    
         errors++;
-        //    console.log("errors: " + errors);
         rightGate.frame = 1; //make the gate red when ball touches it
         leftGate.frame = 1;    
         hitGateSound.play();
@@ -465,7 +462,6 @@ function shrinkProgressBar() {
         game.time.events.remove(progressBarLoop);
     }   
 
-
     if ((progressBar.width <= ((progressBarWidth / gameDurationInSeconds) * 10)) && (last10seconds == true)){
         last10seconds = false;
         game.add.tween(progressBar).to({alpha:0.4}, 400, Phaser.Easing.Linear.In, true, 0, 20, true);
@@ -537,7 +533,6 @@ function backHome(){
     btnSound.play();
     gameIsOn = false;
     window.location ="../../client_side/homePage.html";
-    // window.location ="../../homePage.html";
 }
 
 function backToPauseScreen(){

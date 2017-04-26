@@ -5,19 +5,20 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width">
         <meta name="mobile-web-app-capable" content="yes">
-        <script src="../client_side/jQuery/jquery-1.12.0.min.js"></script>
-        <script src="../client_side/phaser/phaser.min.js"></script>
+        <script src="jQuery/jquery-1.12.0.min.js"></script>
+        <script src="phaser/phaser.min.js"></script>
         <link rel="manifest" href="manifest.json">
-        <link rel="icon" sizes="192x192" href="assets/icon.jpg">
-        <link  rel="stylesheet" href="reset.css">
-        <link  rel="stylesheet" href="style.css">
+        <link rel="icon" sizes="192x192" href="assets/logo.png">
+        <link rel="stylesheet" href="reset.css">
+        <link rel="stylesheet" href="style.css">
         <link href="https://fonts.googleapis.com/css?family=Heebo:400,700" rel="stylesheet">
     </head>
+    
     <body onload="rndGame()">
         <div id="container">
             <header>
-                <h1>אימוני מוח</h1>
-                <!--                <img src="assets/allGames/sprites/desktop.ini"/>-->
+                <h1><img src="assets/logo.png"/> אימוני מוח</h1>
+                 
             </header>
 
 
@@ -35,42 +36,40 @@
                 <ul class="gamesBtn">
                     <li id="li_ball"><a href="ballGame/index.html"><img src="assets/allGames/sprites/ballBtn.png"></a></li> 
                     <li id="li_color"><a href="colorGame/index.html"><img src="assets/allGames/sprites/colorBtn.png"></a></li> 
-                    <!--                <li id="li_rush"><a href=""><img src="assets/allGames/sprites/rushBtn.png"></a></li> -->
                     <li id="li_rush"><a href="rushGame/index.html"><img src="assets/allGames/sprites/rushBtn.png"></a></li> 
-                    <!--                <li id="li_memo"><a href=""><img src="assets/allGames/sprites/memoBtn.png"></a></li>-->
                     <li id="li_memo"><a href="memoGame/index.html"><img src="assets/allGames/sprites/memoBtn.png"></a></li>
                 </ul>
             </div>
         </div>
     </body>
 
+
     <script>
-        $(document).ready(function(){
-            var picsSourceArray=["assets/allGames/sprites/ballBtn.png", "assets/allGames/sprites/colorBtn.png", "assets/allGames/sprites/rushBtn.png","assets/allGames/sprites/memoBtn.png"];
-            var picsHref=["ballGame/index.html", "colorGame/index.html", "rushGame/index.html","memoGame/index.html"];
+        var picsSourceArray = ["assets/allGames/sprites/ballBtn.png", "assets/allGames/sprites/colorBtn.png", "assets/allGames/sprites/rushBtn.png","assets/allGames/sprites/memoBtn.png"];
+        var picsHref = ["ballGame/index.html", "colorGame/index.html", "rushGame/index.html","memoGame/index.html"];
 
-            function rndGame(){  
-                screen.lockOrientation("portrait");
-                var previousPage = document.referrer;
-                if (previousPage != ""){
-                    $("#randomGame").css("display","none");
-                    $("#allGames").css("display","block");
-                }
+        function rndGame(){  
 
-                var x = randCell(); 
-                $("#RndGameBtn img").attr("src",picsSourceArray[x])
-                $("#RndGameBtn a").attr("href",picsHref[x])
-            };
-
-            function randCell() {
-                var x = Math.floor((Math.random() * 4));
-                return x
+            var previousPage = document.referrer;
+            if (previousPage != ""){
+                $("#randomGame").css("display", "none");
+                $("#allGames").css("display", "block");
             }
 
-            $("#toAllGames").click(function(){
-                $("#randomGame").css("display","none");
-                $("#allGames").css("display","block");
-            });
+            var x = randCell(); 
+            $("#RndGameBtn img").attr("src", picsSourceArray[x])
+            $("#RndGameBtn a").attr("href", picsHref[x])
+
+        }
+
+        function randCell() {
+            var x = Math.floor((Math.random() * 4));
+            return x
+        }
+
+        $("#toAllGames").click(function(){
+            $("#randomGame").css("display", "none");
+            $("#allGames").css("display", "block");
         });
     </script>
 

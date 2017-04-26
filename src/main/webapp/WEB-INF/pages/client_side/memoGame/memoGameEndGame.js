@@ -28,8 +28,6 @@ memoGame.memoGameEndGame.prototype = {
         selectedPic = game.add.sprite(centerX, 512.5, 'userSelectedPic');
         selectedPic.anchor.set(0.5);
         resizeImage(selectedPic);
-        //        selectedPic.width = 40;
-        //        selectedPic.height = auto;
 
         whiteLineTop = game.add.sprite(0, 512, 'feedbackWhiteLine');
         whiteLineBottom = game.add.sprite(0, 512.5, 'feedbackWhiteLine');
@@ -81,7 +79,6 @@ memoGame.memoGameEndGame.prototype = {
             var emitter = game.add.emitter(game.world.centerX, 0, 400);
 
             emitter.width = game.world.width;
-            // emitter.angle = 30; // uncomment to set an angle for the rain.
 
             emitter.makeParticles('rain');
 

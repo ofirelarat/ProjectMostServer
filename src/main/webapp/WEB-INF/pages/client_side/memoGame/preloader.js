@@ -31,44 +31,44 @@ memoGame.preloader.prototype = {
 
 //****************************************FROM SERVER*********************************************
 
-function fromServer() {
-
-    //preparing to call server side page
-    var xmlhttp = new XMLHttpRequest();
-
-    //PLEASE VERIFY THAT PORT NUMBER IS CORRECT	
-    // *****************************************************************
-
-    var url = "http://project-most.herokuapp.com/userIdandLevel/" + gameID;
-
-    // *****************************************************************
-
-    xmlhttp.onreadystatechange = function () {
-        // וידוא שניתן לקרוא את הפונקציה
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            myFunction(xmlhttp.responseText);
-        }
-    }
-
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
-
-    //this function retreives information received from server side. received information is inside 'response'
-    function myFunction(response) {
-        var responseArray = response;      
-        console.log(response);
-
-        userID = responseArray[1];
-        lastGameLastLevel = responseArray[3];
-
-        picsFromServer();
-
-        // creates new JSON structure
-        time = currentdate.getDate() + "/" + (currentdate.getMonth() + 1) + "/" + currentdate.getFullYear() + " - " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
-        sessionData = '{ "gameID": ' + gameID + ',"time": "' + time + '","userID": ' + userID + ',"data": {"levels": [';
-        game.state.start('memoGameTutorial');
-    }
-}
+//function fromServer() {
+//
+//    //preparing to call server side page
+//    var xmlhttp = new XMLHttpRequest();
+//
+//    //PLEASE VERIFY THAT PORT NUMBER IS CORRECT	
+//    // *****************************************************************
+//
+//    var url = "http://project-most.herokuapp.com/userIdandLevel/" + gameID;
+//
+//    // *****************************************************************
+//
+//    xmlhttp.onreadystatechange = function () {
+//        // וידוא שניתן לקרוא את הפונקציה
+//        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+//            myFunction(xmlhttp.responseText);
+//        }
+//    }
+//
+//    xmlhttp.open("GET", url, true);
+//    xmlhttp.send();
+//
+//    //this function retreives information received from server side. received information is inside 'response'
+//    function myFunction(response) {
+//        var responseArray = response;      
+//        console.log(response);
+//
+//        userID = responseArray[1];
+//        lastGameLastLevel = responseArray[3];
+//
+//        picsFromServer();
+//
+//        // creates new JSON structure
+//        time = currentdate.getDate() + "/" + (currentdate.getMonth() + 1) + "/" + currentdate.getFullYear() + " - " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+//        sessionData = '{ "gameID": ' + gameID + ',"time": "' + time + '","userID": ' + userID + ',"data": {"levels": [';
+//        game.state.start('memoGameTutorial');
+//    }
+//}
 
 function picsFromServer() {
 
@@ -105,10 +105,10 @@ function picsFromServer() {
     }
 }
 
-//function fromServer() {
-//    userID = 8;
-//    lastGameLastLevel = 6; 
-////    lastGameLastLevel = 0; 
-//    game.state.start('memoGameTutorial');
-//
-//}
+function fromServer() {
+    userID = 8;
+    lastGameLastLevel = 6; 
+//    lastGameLastLevel = 0; 
+    game.state.start('memoGameTutorial');
+
+}

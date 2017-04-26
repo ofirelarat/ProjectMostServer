@@ -6,8 +6,6 @@ memoGame.memoGameCountDown.prototype = {
     //****************************************PRELOAD*********************************************
 
     preload: function () {
-
-        //     game.load.image('countDownBg', '../assets/colorGame/backgrounds/bg.jpg');
         game.load.image('ready', '../assets/allGames/sprites/ready.png');
         game.load.spritesheet('numbers', '../assets/memoGame/spriteSheets/numbers.png', 220, 220);
         game.load.audio('tickSound', '../assets/allGames/sounds/countDown.mp3'); 

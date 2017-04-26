@@ -6,8 +6,6 @@ rushGame.rushGameCountDown.prototype = {
     //****************************************PRELOAD*********************************************
 
     preload: function () {
-
-        //     game.load.image('countDownBg', '../assets/colorGame/backgrounds/bg.jpg');
         game.load.image('ready', '../assets/allGames/sprites/ready.png');
         game.load.spritesheet('numbers', '../assets/rushGame/spriteSheets/numbers.png', 220, 220);
         game.load.audio('tickSound', '../assets/allGames/sounds/countDown.mp3'); 
@@ -34,7 +32,6 @@ rushGame.rushGameCountDown.prototype = {
         ready = game.add.sprite(260, 320, 'ready');
         ready.anchor.set(0.5, 0.5);
 
-
         tickSound = game.add.audio('tickSound');
         tickSound.volume =0.3;
         numberMovement();
@@ -45,7 +42,6 @@ rushGame.rushGameCountDown.prototype = {
 //****************************************numberMovement*********************************************
 
 function numberMovement(){
-
     
     var show3 = game.add.tween(number.scale).to({x:1, y:1}, 200, Phaser.Easing.Back.Out, true, 500, 0, false);
     game.time.events.add(200, function(){
@@ -81,7 +77,3 @@ function startNewGame(){
         game.state.start('rushGame');
     });
 }
-
-
-
-

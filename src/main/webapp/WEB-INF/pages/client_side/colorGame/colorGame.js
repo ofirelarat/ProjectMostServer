@@ -182,15 +182,6 @@ colorGame.colorGame.prototype = {
     }
 };
 
-function goToFullScreen() {
-    console.log("full");
-    if (game.scale.isFullScreen) {
-        game.scale.stopFullScreen();
-    } else {
-        game.scale.startFullScreen(false);
-    }
-}
-
 function createCardsStructure(){
     card1 = game.add.group();
     card2 = game.add.group();
@@ -270,13 +261,11 @@ function createCardContent(currentlevel, currentCard, meaningTextbox, colorCircl
         checkMatchNum = getRandomNumber(2, 3);  
 
         if (isMatch == false){ //if there was no match -> creating a match
-            console.log("there was no match");
             selectedMeaningLocation = getRandomNumber(0, colorsArray.length - 1);
             selectedColorLocation = selectedMeaningLocation; 
             currentCard.match = true;
         }else{ //there was a match
             isMatch = false;
-            console.log("was a match!!!");
         }
     }   
 
@@ -494,7 +483,6 @@ function disableCardDrag(currentTopCard){
 
 function onDragStop(){
     if((currentTopCard.children[0].x != centerX-160) && (currentTopCard.children[0].y != 0)){
-        console.log("card disabled");
         disableCardDrag(currentTopCard);
     }
     cardY = currentTopCard.children[0].y;
@@ -564,9 +552,6 @@ function nextLevel(){
     }else if(levelNum == 3){
         cardsPerLevel = cardsInLevel3;
     }
-
-    console.log("levelNum = " + levelNum);
-    console.log("cardsPerLevel = " + cardsPerLevel);
 
     star = game.add.sprite(0, 0, 'star');
     starLines = game.add.sprite(0, 0, 'starLines');

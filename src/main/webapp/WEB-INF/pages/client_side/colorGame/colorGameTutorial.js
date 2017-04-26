@@ -224,7 +224,6 @@ colorGame.colorGameTutorial.prototype = {
 
 function createTutorialCards(userWasCorrect){
     tutorialCurrentCardNum++;
-    console.log("tutorialCurrentCardNum" + tutorialCurrentCardNum);
 
     if((userWasCorrect) && (tutorialCurrentCardNum < 3)){
         tutorialCurrentCardNum = 3
@@ -483,7 +482,6 @@ function tutorialSequence(){
 
     }else if (tutorialProgessCounter == 4){
         emptyCard3.alpha = 0;
-        console.log("alpha=" + emptyCard3.alpha);
         tYesBtn.input.enabled = false;
         tNoBtn.input.enabled = false;
 
@@ -499,8 +497,6 @@ function tutorialSequence(){
         setTimeout(function(){ 
             tool4Sound.play();
         }, 1000);
-
-        console.log("card =" + tutorialCurrentCard);
 
         //----------------------------------------5------------------------------------------
     }else if (tutorialProgessCounter == 5){
@@ -557,14 +553,10 @@ function afterStar () {
 //****************************************ON DRAG STOP*********************************************
 
 function tutorialOnDragStop(){
-    //    disableCardDrag(currentTopCard);
     if(tutorialCurrentCard.children[0].x >= centerX-160){
-        console.log("right");
-        //        emptyCard3.alpha = 0;
         correctFeedback();
         tutorialMoveCard = game.add.tween(tutorialCurrentCard).to({x:660, y:120}, 400, Phaser.Easing.Back.Out, true, 0, 0, false);
     }else if (tutorialCurrentCard.children[0].x < centerX-160){
-        console.log("left");
         tutorialErrorFeedback();
         game.add.tween(tutorialCurrentCard).to({x:0}, 200, Phaser.Easing.Back.Out).to({x:1300}, 600, Phaser.Easing.Back.Out, false, 0).start();
     }

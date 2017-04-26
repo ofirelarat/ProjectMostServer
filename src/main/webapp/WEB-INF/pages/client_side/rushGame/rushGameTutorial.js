@@ -142,7 +142,6 @@ rushGame.rushGameTutorial.prototype = {
         restarLevelBtn.frame = 2;  
         stepBackBtn.frame = 5; 
 
-        //            BgFront = game.add.sprite(0, 65, 'FrontBg');
         gameHeader = game.add.sprite(0, 0, 'header');
         tutorialHeader = game.add.sprite(0, 0, 'tutorialHeader');
 
@@ -185,17 +184,17 @@ rushGame.rushGameTutorial.prototype = {
     //****************************************UPDATE*********************************************
 
     update: function () {
-                if (tutorialProgessCounter == 4){     
-                    if(trailTween != undefined){
-                        trailTween.stop();
-                        trail.alpha=0;
-                    }
-        
-                    if(secTrailTween != undefined){
-                        secTrailTween.stop();
-                        trail.alpha=0;
-                    } 
-                }
+        if (tutorialProgessCounter == 4){     
+            if(trailTween != undefined){
+                trailTween.stop();
+                trail.alpha=0;
+            }
+
+            if(secTrailTween != undefined){
+                secTrailTween.stop();
+                trail.alpha=0;
+            } 
+        }
         if (tutorialProgessCounter == 6){    
             glow_truck.x=brickContainer.children[5].x+20;
             glow_truck.y=brickContainer.children[5].y+264;
@@ -349,8 +348,6 @@ function createToturialLevel(){
 
     restarLevelBtn.frame = 2;  
     stepBackBtn.frame = 5;
-
-
 }
 
 function TutorialStartDrag(s){
@@ -495,8 +492,6 @@ function TutorialStopDrag(s){
         tutorialProgessCounter++;
         tutorialSequence();
     }
-
-
 }
 
 
@@ -586,8 +581,6 @@ function tutorialSequence(){
         if(trailTween != undefined){
             trailTween.stop();
         }
-        //        trailTween.onComplete(function(){  secTrailTween.stop();});
-
 
         tapToContinue.events.onInputDown.removeAll(); 
         game.add.tween(tapToContinueText).to({alpha:0}, 600, Phaser.Easing.Linear.In, true, 0, 0, false);
@@ -713,14 +706,11 @@ function tutorialSequence(){
         arrow3Movement=  game.add.tween(arrow3).to({y:336}, 600, Phaser.Easing.Sinusoidal.InOut, true, 800, 100, true);  
         arrow4Movement=  game.add.tween(arrow4).to({y:614}, 600, Phaser.Easing.Sinusoidal.InOut, true, 800, 100, true);  
 
-
         tutorialProgessCounter++;  
 
         tooltipTween.onComplete.add(function(){
             tapToContinue.events.onInputDown.add(tutorialSequence); 
         }, this);
-
-
 
         //----------------------------------------5------------------------------------------
     }else if (tutorialProgessCounter == 5){
@@ -763,7 +753,6 @@ function tutorialSequence(){
         //----------------------------------------6-- start playing-----------------------------------------
 
     }else if (tutorialProgessCounter == 6){
-
 
         if(stage6alreadyStarted==false){
 

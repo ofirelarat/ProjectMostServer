@@ -29,7 +29,6 @@ memoGame.memoGame.prototype = {
         gameIsOn = true; 
         gameDurationInSeconds = 150;   //2.5 minutes
         last10seconds = true
-        //   difficultyLevel = 1;
         userWasCorrect = 0;
         bricksCounter = 0;
         doTutorial = false;
@@ -130,7 +129,7 @@ memoGame.memoGame.prototype = {
         popupYesBtn.input.enabled = false;
         popupNoBtn.input.enabled = false;
         xBtn.input.enabled = false;
-        
+
         createBoard(difficultyLevel);
     },
 
@@ -147,14 +146,8 @@ memoGame.memoGame.prototype = {
     }
 };
 
-
 //****************************************CREATE BOARD*********************************************
 function createBoard(difficultyLevel){
-
-    //    brickSize = 67;
-    //    stageWidth = 540;
-    //    stageHeight = 895;
-
     bricksStructureWidth = brickSize * colNum;
     bricksStructureHeight = brickSize * rowNum;
     bricksStartPointX = (stageWidth / 2) - (bricksStructureWidth / 2) + (brickSize / 2) - brickSize;
@@ -167,7 +160,6 @@ function createBoard(difficultyLevel){
     if(whereIs == "game"){
         gameContainer.add(feedback);
     }
-
 
     bricksStructureArray = new Array(colNum);
     for (var h = 0; h < colNum; h++) {
@@ -182,18 +174,14 @@ function createBoard(difficultyLevel){
             brick.anchor.set(0.5);
 
             brick.name = "brick" + i + j;
-            //            brick.inputEnabled = true;
             brick.events.onInputDown.add(brickTap); 
             brick.scale.set(0);
             if(whereIs == "game"){
                 gameContainer.add(brick);
-
             }
             bricksStructureArray[i-1][j-1] = brick;
-
         }
     }
-
 
     if((timeIsOut) || (pauseState)){
         console.log("return from createBoard");
@@ -205,7 +193,6 @@ function createBoard(difficultyLevel){
 
 
 function turnBricksToColor(){
-    //    console.log(" =" + );
     setColoredBricksLocations();
     if((timeIsOut) || (pauseState)){
         console.log("return from turnBricksToColor");
@@ -250,7 +237,6 @@ function turnBricksBack(currentBrick){
 
     function showWhiteBrick(){
         counter++;
-        //        console.log(counter);
         currentBrick.frame = 1;
         if((timeIsOut) || (pauseState)){
             console.log("return from showWhiteBrick");
@@ -258,6 +244,7 @@ function turnBricksBack(currentBrick){
         }
         var brickTurnBackTween2 = game.add.tween((currentBrick).scale).to({x:1}, 300, Phaser.Easing.Circular.Out, true);
         brickTurnBackTween2.onComplete.add(function(){
+
             enableBricksTap(); 
             if (counter == 2){
                 doTutorial = true;
@@ -308,7 +295,6 @@ function getReadyForNewStage(){
 //****************************************TAP ON BRICK*********************************************
 
 function brickTap(tappedBrick){
-    //    console.log(tappedBrick.name);
     var correctBrick = false;
     tappedBricksArray.push(tappedBrick);
 
@@ -335,7 +321,6 @@ function brickTap(tappedBrick){
 //****************************************CORRECT FEEDBACK*********************************************
 
 function correctFeedback(){
-    console.log("correct");
     correctSound.play();
 
     var showFeed = game.add.tween(feedback.scale).to({x:1, y:1}, 300, Phaser.Easing.Back.Out, true, 400, 0, false);
@@ -381,14 +366,12 @@ function errorFeedback(tappedBrick){
         }
     }        
     errors++;
-    console.log("errors= " + errors);
     if(whereIs == "game"){
         setTimeout(function(){replaceBoard("endLevel");}, 1000);   
     }else{
 
         doTutorial = true;
         setTimeout(function(){
-            //            getReadyForNewStage();
             replaceBoard("endLevel");
         }, 2500);   
 
@@ -410,89 +393,7 @@ function disableBricksTap(){
             bricksStructureArray[i][j].inputEnabled = false;
         }
     } 
-    //    pauseBtn.inputEnabled = false;
-    //    game.add.tween(pauseBtn).to({alpha: 0.3}, 500, Phaser.Easing.Circular.Out, true, 0);
 }
-
-
-//********************************************TRIAL*******************************************************
-//    var bricksNum;
-//    var currBrick;
-
-//********************************************TRIAL*******************************************************************
-//
-//****************************************REPLACE BOARD*********************************************
-//function replaceBoard(state){
-//    console.log("state1= " + state);
-//
-//    bricksNum = colNum * rowNum;
-//    disableBricksTap();
-//    onLoop(state);
-//}
-//
-////****************************************ON LOOP*********************************************
-//
-//function onLoop(state){
-//    var goodBrick = false;
-//    var col;
-//    var row;
-//
-//      if(bricksCounter < bricksNum){
-//            while(goodBrick == false){ //do while the brick that was randomized was chosen before
-//            //randomize a brick
-//            col = getRandomNumber(0, colNum-1);
-//            row = getRandomNumber(0, rowNum-1);
-//            currBrick = bricksStructureArray[col][row];
-//
-//                if (state == "startLevel"){ //if the bricks are appearing
-//                     if(currBrick.scale.x == 0){ //if the brick that was randomized is not showing yet - show it
-//                        goodBrick = true;
-//                        
-//                    }
-//                }else{ //if the bricks are hiding
-//                    if(currBrick.scale.x == 1){ //if the brick that was randomized is not hidden yet - hide it
-//                        goodBrick = true;
-//                    }
-//                }    
-//            }
-//     }
-//       bricksCounter++;   
-//       bricksTweens(state);
-//       console.log("looping!");
-//}
-//
-////**********************************BRICKS TWEENS FOR APPEARING / HIDING********************************
-//
-//function bricksTweens(state){
-//    
-//    if((bricksCounter-1) == bricksNum){ //if all the bricks are done
-//        console.log("interval cleared naturaly");
-//        bricksCounter = 0;
-//        if(state == "startLevel"){ //if the bricks are appearing
-//            setTimeout(function(){ turnBricksToColor(); }, 1000);
-//            
-//        }else{ //if the bricks are hiding
-//            getReadyForNewStage();
-//            createBoard(difficultyLevel);
-//        }
-//    }else{
-//       
-//            if (state == "startLevel"){ //if the bricks are appearing
-//                    var brickTween = game.add.tween((currBrick).scale).to({x:1, y:1}, 150, Phaser.Easing.Circular.Out, true, 0);
-//            }else{ //if the bricks are hiding
-//                    var brickTween = game.add.tween((currBrick).scale).to({x:0, y:0}, 150, Phaser.Easing.Circular.Out, true, 0);
-//        }
-//             brickTween.onComplete.add(onLoop.bind(this, state), this);
-//    }
-//    
-//}
-
-//********************************************TRIAL*************************************************************************
-
-
-
-//********************************************INTERVAL***********************************************************************
-
 
 //****************************************REPLACE BOARD*********************************************
 function replaceBoard(state){
@@ -511,8 +412,6 @@ function replaceBoard(state){
 //***********************************BRICKS TWEENS FOR APPEARING / HIDING*************************
 
 function bricksTweens(state){
-    //    showBrickSound.play();  
-
     var bricksNum = colNum * rowNum;
     var currBrick;
     var goodBrick = false;
@@ -557,9 +456,6 @@ function bricksTweens(state){
     }
 }
 
-//********************************************INTERVAL*******************************************************
-
-
 
 //****************************************NEXT LEVEL*********************************************
 
@@ -579,10 +475,8 @@ function nextLevel(){
     nextLevelText.text = levelNum;
 
     nextLevelContainer = game.add.group();
-
     nextLevelContainer.add(star);
     nextLevelContainer.add(nextLevelText);
-
     nextLevelContainer.y = -80;
 
     gameContainer.add(nextLevelContainer);
@@ -672,8 +566,6 @@ function togglePause() {
     }
 
     function removeBricks(){
-        //            clearInterval(myInterval);
-        //        bricksCounter = bricksNum;
         for(var i = 0; i < bricksStructureArray.length; i++){
             for(var j = 0; j < bricksStructureArray[0].length; j++){
                 bricksStructureArray[i][j].scale.set(0);
@@ -715,7 +607,6 @@ function backHome(){
     btnSound.play();
     gameIsOn = false;
     window.location ="../../client_side/homePage.html";
-    //    window.location ="../../homePage.html";
 }
 
 function backToPauseScreen(){
@@ -769,8 +660,7 @@ function Finish(state) {
     containerTween.onComplete.add(changeState, this);
 
     if (state == "timeOut") {
-        //        timeIsOut = true;
-        //        clearInterval(myInterval);
+
     } else {
         gameIsOn = false;
         endGameProgressBarWidth = progressBar.width;
@@ -784,7 +674,6 @@ function Finish(state) {
 function timeOut() {
     timeIsOut = true;
     clearInterval(myInterval);
-    console.log("clearInterval");
     Finish("timeOut");
 }
 

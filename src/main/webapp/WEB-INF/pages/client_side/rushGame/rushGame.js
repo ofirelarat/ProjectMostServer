@@ -1,3 +1,5 @@
+//based on http://www.emanueleferonato.com/2015/08/27/learn-how-phaser-manages-draggable-objects-by-making-the-html5-engine-behind-rush-hour-game/http://www.emanueleferonato.com/2015/08/27/learn-how-phaser-manages-draggable-objects-by-making-the-html5-engine-behind-rush-hour-game/ by EMANUELE FERONATO
+
 var rushGame = {}, centerX = 540/2, centerY = 960/2, graphics, levelNum, nextLevelText, levelData, gameTimer, gameTimerEvent, gameDurationInSeconds, progressBar, progressBarStroke, progressBarLoop, progressBarWidth, endGameProgressBarWidth, pauseState, pauseBtn, gameContainer, brickContainer, pauseContainer, resumeGameBtn, howToBtn, startAgainBtn, backHomeBtn, selectedPicName, timeWord, header, star, nextLevelContainer, starLines, timeIsOut, levelText, pauseText, levelTextMask, last10seconds, car, truck, levelArray, stepCounter, orangeCar, brickMask,brickHitSound, orangeBrickOutSound, restartBtnWasClicked, stepBackBtnWasClicked, startX, endX, startY, endY, currentBrick, tool1Sound, tool2Sound, tool3Sound, tool4Sound, tool5Sound, tool6Sound, difficultyLevel, userStartPoint, HORIZONTAL = 0, VERTICAL = 1, tileSize = 80, restarLevelBtn, stepBackBtn, orangeBrick, popup, popupBg, popupNoBtn, popupYesBtn, xBtn; 
 
 var lastLevel = 10;
@@ -112,15 +114,11 @@ rushGame.rushGame.prototype = {
         // creates a loop event for the progress bar
         progressBarLoop = game.time.events.loop(100, shrinkProgressBar, this);
 
-        //          $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-
         restarLevelBtn = game.add.button(8.494, 875, 'bottomBtn', restarLevelFunc);
         stepBackBtn = game.add.button(274.506, 875, 'bottomBtn', stepBackFunc);
 
-
         restarLevelBtn.onInputDown.add(function(){restarLevelBtn.frame = 1;}, restarLevelBtn);
         restarLevelBtn.onInputUp.add(function(){if(restartBtnWasClicked =! true){restarLevelBtn.frame = 0;}}, restarLevelBtn);
-
 
         stepBackBtn.onInputDown.add(function(){stepBackBtn.frame = 4;}, stepBackBtn);
         stepBackBtn.onInputUp.add(function(){if(stepBackBtnWasClicked != true){stepBackBtn.frame = 3;}}, stepBackBtn);         
@@ -196,13 +194,10 @@ function createlevel(difficulty){
     brickContainer.x=29;
     brickContainer.y=1500;
 
-    console.log("difficulty: " + difficulty);
-
     for(var i = 0; i < levelsArray[difficulty].length; i++){
         // to keep the code clear, I assign carsArray[i] to a variable simply called "car"
         var car = levelsArray[difficulty][i];
         // looping through car length
-
 
         for(var j = 0; j < car.len; j++){
 
@@ -234,8 +229,7 @@ function createlevel(difficulty){
             dir: car.dir,
             len: car.len
         }
-        // assigning a random color to the car
-        //               carSprite.tint = carColors[game.rnd.between(0, carColors.length - 1)];
+       
         // the car has input enabled
         carSprite.inputEnabled = true;
         // the car can be dragged
@@ -282,9 +276,6 @@ function createlevel(difficulty){
         stepBackBtnWasClicked = false;
 
     }
-
-
-
 }
 
 
@@ -355,9 +346,7 @@ function startDrag(s){
         }
         s.input.boundsRect = new Phaser.Rectangle(s.x, from * tileSize, s.x + s.data.len * tileSize, (to - from + 2 - s.data.len) * tileSize);
     }
-
 }
-
 
 //**************************************** stopDrag *********************************************
 
@@ -368,7 +357,6 @@ function stopDrag(s){
 
     var distanceX = startX-endX;
     var distanceY = startY-endY;
-
 
     // if the brick was only clicked but not dragged;
     if(distanceX != 0 || distanceY != 0){
@@ -392,7 +380,6 @@ function stopDrag(s){
             carOut.onComplete.add(nextLevel, this);    
         }
     }
-    console.log(stepCounter);
     // here we just update levelArray items according to the car we moved.
     // first, we set to zero all items where the car was initially placed
     for(var i = 0; i < s.data.len; i ++){
@@ -416,13 +403,7 @@ function stopDrag(s){
             levelArray[s.data.row + i][s.data.col] = 1;     
         } 
     }
-
-
-
 }
-
-
-
 
 //**************************************** BUTTONS *********************************************
 function restarLevelFunc() {
@@ -542,15 +523,6 @@ function addLevelData(){
     // add the data to the full JSON string
     sessionData += levelData;
     stepCounter = 0;
-
-    //    if(levelNum != lastLevel){
-    //        levelNum++;
-    //        console.log("difficulty-before:" + difficultyLevel)
-    //        difficultyLevel++;
-    //        console.log("difficulty-after:" + difficultyLevel)
-    //
-    //        levelText.text = 'שלב ' + lastLevel + ' / ' + levelNum;            
-    //    }
 }
 
 //****************************************TIME FUNCTIONS*********************************************
@@ -641,7 +613,6 @@ function backHome(){
     btnSound.play();
     gameIsOn = false;
     window.location ="../../client_side/homePage.html";
-    //    window.location ="../../homePage.html"
 }
 
 function backToPauseScreen(){
@@ -719,7 +690,6 @@ function finishGame(){
     Finish("finishGame");  
 }
 
-
 //****************************************GET RANDOM NUMBER*********************************************
 
 function getRandomNumber(min, max) {
@@ -732,7 +702,6 @@ function tint(){
 
 function unTint(){
     this.tint = 0xFFFFFF;
-
 }
 
 //****************************************CHOOSE RANDOM PICTURE*****************************************

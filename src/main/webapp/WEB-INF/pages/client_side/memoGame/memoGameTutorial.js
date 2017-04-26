@@ -1,4 +1,4 @@
-var tapToContinue, tapToContinueText, BgTop, BgBottom, tutorialProgessCounter, tooltip1, tooltip2, tooltip3, tooltip4, tooltip5, tooltip6, tooltip7, arrow, tutorialHeader, gameHeader, skipBtn, star, starLines, wellDoneText, nextLevelContainer, gameIsOn = false, letsStart, startGameBtn, needTapToContinueText = false, tapToContinueTimer, btnSound, brickSize, stageWidth, stageHeight, difficultyLevel, TcurrentLevel, TcolNum, TrowNum, TcoloredBricksNum, bricksCounter, whereIs, userWasCorrect, successCounter, tool1Sound, tool2Sound, tool3Sound, tool4Sound, tool5Sound, letsBeginSound, greatJobSound, correctSound, errorSound, showBrickSound, levelUpSound, wooshSound, cameFromGameToTutorial = false, cameFromGameToPlayAgain = false, counter;
+var tapToContinue, tapToContinueText, BgTop, BgBottom, tutorialProgessCounter, tooltip1, tooltip2, tooltip3, tooltip4, tooltip5, tooltip6, tooltip7, arrow, tutorialHeader, gameHeader, skipBtn, star, starLines, wellDoneText, nextLevelContainer, gameIsOn = false, letsStart, startGameBtn, needTapToContinueText = false, tapToContinueTimer, btnSound, brickSize, stageWidth, stageHeight, difficultyLevel, TcurrentLevel, TcolNum, TrowNum, TcoloredBricksNum, bricksCounter, whereIs, userWasCorrect, successCounter, tool1Sound, tool2Sound, tool3Sound, tool4Sound, tool5Sound, letsBeginSound, greatJobSound, correctSound, errorSound, showBrickSound, levelUpSound, wooshSound, cameFromGameToTutorial = false, cameFromGameToPlayAgain = false, counter, tutorialIsSkipped;
 
 var TutorialLevelsArray = [
     {
@@ -40,6 +40,7 @@ memoGame.memoGameTutorial.prototype = {
         counter = 0;
         levelNum = 1;
         pauseState = false;
+        tutorialIsSkipped = false;
 
         game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
         game.load.spritesheet('pauseBtn', '../assets/allGames/spriteSheets/pausePlay.png', 40, 40);
@@ -110,8 +111,6 @@ memoGame.memoGameTutorial.prototype = {
         BgBottom = game.add.sprite(0, 512, 'Bg');
         BgBottom.frame = 1;
 
-
-
         star = game.add.sprite(0, 0, 'star');
         starLines = game.add.sprite(0, 0, 'starLines');
         starLines.alpha = 0;
@@ -136,13 +135,12 @@ memoGame.memoGameTutorial.prototype = {
         startGameBtn.frame = 0;
         startGameBtn.onInputDown.add(function(){startGameBtn.frame = 1;}, startGameBtn);
         startGameBtn.onInputUp.add(function(){startGameBtn.frame = 0;}, startGameBtn);
-        //---------------------------
+
         difficultyLevel = 0;
         currentLevel = levelsArray[difficultyLevel];
         colNum = currentLevel.colNum;
         rowNum = currentLevel.rowNum;
         coloredBricksNum = currentLevel.coloredBricksNum;
-        //---------------------------
 
         gameHeader = game.add.sprite(0, 0, 'header');
         tutorialHeader = game.add.sprite(0, 0, 'tutorialHeader');
@@ -190,8 +188,6 @@ memoGame.memoGameTutorial.prototype = {
     }    
 };
 
-
-
 //****************************************TUTORIAL SEQUENCE*********************************************
 
 function tutorialSequence(){
@@ -222,6 +218,7 @@ function tutorialSequence(){
 
     }else if (tutorialProgessCounter == 2){
         tool1Sound.stop();
+        skipBtn.input.enabled = false;
 
         setTimeout(function(){ 
             tool2Sound.play();
@@ -241,15 +238,18 @@ function tutorialSequence(){
     }else if (tutorialProgessCounter == 3){
         disableBricksTap();
         tool2Sound.stop();
-        setTimeout(function(){ 
-            tool3Sound.play();
-            tool3Sound.onStop.addOnce(enableBricksTap, this);
-        }, 900);
+            setTimeout(function(){ 
+                tool3Sound.play();
+                tool3Sound.onStop.addOnce(enableBricksTap, this);
+            }, 900);
 
         doTutorial = false;
 
         game.add.tween(tooltip2).to({alpha:0}, 500, Phaser.Easing.Linear.In, true, 0, 0, false);
         var tween = game.add.tween(tooltip3).to({alpha:1}, 500, Phaser.Easing.Linear.In, true, 600, 0, false);
+        tween.onComplete.add(function(){
+            skipBtn.input.enabled = true;
+        }, this);
 
         tutorialProgessCounter++;
 
@@ -274,14 +274,11 @@ function tutorialSequence(){
                 game.add.tween(tooltip4).to({alpha:1}, 600, Phaser.Easing.Linear.In, true, 1000, 0, false);
                 setTimeout(function(){tool4Sound.play();}, 1000)    
             }, this);
-            //            game.add.tween(tooltip5).to({alpha:0}, 600, Phaser.Easing.Linear.In, true, 1600, 0, false);
         }else{
             setTimeout(function(){ 
-                console.log("stage 4");
                 tool4Sound.play();
             }, 2000);
             game.add.tween(tooltip4).to({alpha:0}, 500, Phaser.Easing.Linear.In, false, 600, 0, false).to({alpha:1}, 600, Phaser.Easing.Linear.In, false, 600, 0, false).start();
-
         }
 
         //----------------------------------------5 כל הכבוד, בואו נתחיל------------------------------------------
@@ -336,11 +333,6 @@ function tutorialNextLevel(){
     if (successCounter == 1){
         tutorialProgessCounter = 4;
         tutorialSequence();
-        //        setTimeout(function(){ 
-        //            tool4Sound.play();
-        //        }, 1000);
-        //        game.add.tween(tooltip3).to({alpha:0}, 600, Phaser.Easing.Linear.In, true, 0, 0, false);
-        //        game.add.tween(tooltip4).to({alpha:1}, 600, Phaser.Easing.Linear.In, true, 1200, 0, false);
         difficultyLevel++;
         replaceBoard("endLevel");
     }else{
