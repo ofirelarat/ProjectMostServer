@@ -32,53 +32,54 @@ ballGame.preloader.prototype = {
 
 //****************************************FROM SERVER*********************************************
 
-//function fromServer() {
-//
-//    //preparing to call server side page
-//    var xmlhttp = new XMLHttpRequest();
-//
-//    //PLEASE VERIFY THAT PORT NUMBER IS CORRECT	
-//    // *****************************************************************
-//
-//    var url = "http://project-most.herokuapp.com/userIdandLevel/" + gameID;
-//
-//    // *****************************************************************
-//
-//    xmlhttp.onreadystatechange = function () {
-//        // וידוא שניתן לקרוא את הפונקציה
-//        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-//            myFunction(xmlhttp.responseText);
-//        }
-//    }
-//
-//    xmlhttp.open("GET", url, true);
-//    xmlhttp.send();
-//
-//    //this function retreives information received from server side. received information is inside 'response'
-//    function myFunction(response) {
-//        var responseArray = response;      
-//        console.log(response);
-//
-//        userID = responseArray[1];
-//        lastGameLastLevel = responseArray[3];
-//
-//        picsFromServer();
-//
-//        // creates new JSON structure
-//        time = currentdate.getDate() + "/" + (currentdate.getMonth() + 1) + "/" + currentdate.getFullYear() + " - " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
-//        sessionData = '{ "gameID": ' + gameID + ',"time": "' + time + '","userID": ' + userID + ',"data": {"levels": [';
-//        game.state.start('ballGameTutorial');
-//    }
-//}
-
 function fromServer() {
-    picsFromServer();
-    userID = 8;
-    lastGameLastLevel = 1; 
-    //    lastGameLastLevel = 0; 
-    game.state.start('ballGameTutorial');
 
+    //preparing to call server side page
+    var xmlhttp = new XMLHttpRequest();
+
+    //PLEASE VERIFY THAT PORT NUMBER IS CORRECT	
+    // *****************************************************************
+
+    var url = "http://project-most.herokuapp.com/userIdandLevel/" + gameID;
+
+    // *****************************************************************
+
+    xmlhttp.onreadystatechange = function () {
+        // וידוא שניתן לקרוא את הפונקציה
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            myFunction(xmlhttp.responseText);
+        }
+    }
+
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+
+    //this function retreives information received from server side. received information is inside 'response'
+    function myFunction(response) {
+        console.log("response: " + response);
+        var responseArray = response.split("$");     
+        console.log("response array after split: " + responseArray);
+
+        userID = responseArray[0];
+        lastGameLastLevel = responseArray[1];
+
+        picsFromServer();
+
+        // creates new JSON structure
+        time = currentdate.getDate() + "/" + (currentdate.getMonth() + 1) + "/" + currentdate.getFullYear() + " - " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+        sessionData = '{ "gameID": ' + gameID + ',"time": "' + time + '","userID": ' + userID + ',"data": {"levels": [';
+        game.state.start('ballGameTutorial');
+    }
 }
+
+//function fromServer() {
+//    picsFromServer();
+//    userID = 8;
+//    lastGameLastLevel = 1; 
+//    //    lastGameLastLevel = 0; 
+//    game.state.start('ballGameTutorial');
+//
+//}
 
 function picsFromServer() {
 
@@ -114,20 +115,3 @@ function picsFromServer() {
         console.log("picsArray = " + picsArray);
     }
 }
-
-//function picsFromServer() {
-//    var responseString = '["pic1.jpg", "pic2.jpg"]'; 
-//    if (responseString == "[]"){
-//        picsArray = [];
-//        console.log("array is empty");
-//    }else{
-//        responseString = responseString.substring(1, responseString.length - 1);
-//        responseString = responseString.replace(/"| /gi, "");
-//        console.log("responseString = " + responseString);
-//        picsArray = responseString.split(","); 
-//        console.log("split");
-//    }
-//    console.log("picsArray " + picsArray);
-//}
-//
-//

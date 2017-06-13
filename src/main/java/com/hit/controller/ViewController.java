@@ -2,6 +2,7 @@ package com.hit.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -58,7 +59,7 @@ public class ViewController {
 
 	@RequestMapping(value="/userIdandLevel/{gameId}", method=RequestMethod.GET)
 	@ResponseBody
-	public int[] getUserIdandLevel(HttpSession session,@PathVariable int gameId){
+	public String getUserIdandLevel(HttpSession session,@PathVariable int gameId){
 		IMOSTDAO DAO = HibernateMOSTDAO.getInstance();
 
 		if(session.getAttribute("userId") != null){
@@ -71,7 +72,7 @@ public class ViewController {
 					lastLevel = results[results.length-1].getLevel() + 1;
 				}
 
-				return new int[]{userId,lastLevel};
+				return userId + "$" + lastLevel;
 			}
 			catch (DAOException e) {
 				Logger logger =  LoggerFactory.getLogger("exception.viewCotroller.userIdandLevel");
@@ -80,7 +81,7 @@ public class ViewController {
 			}
 		}
 
-		return new int[]{0,0};
+		return 0 + "$" + 0;
 	}
 
 
@@ -133,7 +134,31 @@ public class ViewController {
 		
 		return null;
 	}
+	
+	@RequestMapping(value="/loginF", method=RequestMethod.GET)
+	public String LoginGetF(HttpServletRequest request,HttpServletResponse response,@RequestParam(value="email")String email,@RequestParam(value="password")String password){
+		IMOSTDAO DAO = HibernateMOSTDAO.getInstance();
+		try {
+			User user = DAO.FindUser(email, password);
+			
+			if(user == null){
+				return "redirect:/pages/ErrorPage.html";
+			}
+			
+			request.getSession().setAttribute("userId", user.getId());
+			response.setContentType("text/html");
+			response.setCharacterEncoding("utf-8");
+			return "pages/homePage2.html";
+		} catch (DAOException e) {
+			Logger logger = (Logger) LoggerFactory.getLogger("exception.viewCotroller.GetLogin");
+			logger.error(e.getMessage());
+			e.printStackTrace();
+		} 
+		
+		return null;
+	}
 
+	
 	@RequestMapping(value="/view/resultsPdf", method=RequestMethod.GET)
 	public ResponseEntity<byte[]> getResultsAnalysisPDF(@RequestParam(value="userId")int userId,@RequestParam(value="gameId") int gameId){
 		IMOSTDAO DAO = HibernateMOSTDAO.getInstance();

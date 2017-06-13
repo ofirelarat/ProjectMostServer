@@ -7,4 +7,4 @@ game.state.add('rushGameCountDown', rushGame.rushGameCountDown);
 game.state.add('preloader', rushGame.preloader);
 
 
-game.state.start('rushGameTutorial');
+game.state.start('preloader');

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="he">
+	<head>	
+		<meta charset="utf-8" />
+        <title>אימוני מוח</title>
+        <meta name="viewport" content="width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <script src="pages/client_side/jQuery/jquery-1.12.0.min.js"></script>
+        <script src="pages/client_side/phaser/phaser.min.js"></script>
+        <link rel="manifest" href="pages/client_side/manifest.json">
+        <link rel="icon" sizes="192x192" href="pages/client_side/assets/logo.png">
+        <link rel="stylesheet" href="pages/client_side/reset.css">
+        <link rel="stylesheet" href="pages/client_side/style.css">
+    	<link href="https://fonts.googleapis.com/css?family=Heebo" rel="stylesheet">
+    </head>
+    
+    <body onload="rndGame()">
+        <div id="container">
+            <header>
+                <h1><img src="pages/client_side/assets/logo.png"/>אימוני מוח</h1>
+                 
+            </header>
+
+
+            <div id="randomGame">
+                <h2>טוב לראות אותך!</h2>
+                <h3>הפעם נתחיל ב...</h3>                
+                <ul class="gamesBtn">
+                    <li id="RndGameBtn"><a href=""><img></a></li> 
+                </ul>
+                <div id="toAllGames"><img id="toAllGamesImg" src="pages/client_side/assets/allGames/sprites/backHome.png">לכל המשחקים</div>
+            </div>
+
+            <div id="allGames">
+                <h2>באיזה משחק מתחשק לך לשחק?</h2>
+                <ul class="gamesBtn">
+                    <li id="li_ball"><a href="pages/client_side/ballGame/index.html"><img src="pages/client_side/assets/allGames/sprites/ballBtn.png"></a></li> 
+                    <li id="li_color"><a href="pages/client_side/colorGame/index.html"><img src="pages/client_side/assets/allGames/sprites/colorBtn.png"></a></li> 
+                    <li id="li_rush"><a href="pages/client_side/rushGame/index.html"><img src="pages/client_side/assets/allGames/sprites/rushBtn.png"></a></li> 
+                    <li id="li_memo"><a href="pages/client_side/memoGame/index.html"><img src="pages/client_side/assets/allGames/sprites/memoBtn.png"></a></li>
+                </ul>
+            </div>
+        </div>
+    </body>
+
+
+    <script>
+        var picsSourceArray = ["pages/client_side/assets/allGames/sprites/ballBtn.png", "pages/client_side/assets/allGames/sprites/colorBtn.png", "pages/client_side/assets/allGames/sprites/rushBtn.png","pages/client_side/assets/allGames/sprites/memoBtn.png"];
+        var picsHref = ["pages/client_side/ballGame/index.html", "pages/client_side/colorGame/index.html", "pages/client_side/rushGame/index.html","pages/client_side/memoGame/index.html"];
+
+       function rndGame(){  
+
+            var previousPage = document.referrer;
+            if (previousPage != ""){
+            	$("#randomGame").css("display", "none");
+            	$("#allGames").css("display", "block");
+            }
+
+            var x = randCell(); 
+            $("#RndGameBtn img").attr("src", picsSourceArray[x])
+            $("#RndGameBtn a").attr("href", picsHref[x])
+       	}
+
+        function randCell() {
+            var x = Math.floor((Math.random() * 4));
+            return x
+        }
+
+        $("#toAllGames").click(function(){
+        	$("#randomGame").css("display", "none");
+        	$("#allGames").css("display", "block");
+        });
+    </script>
+
+</html>

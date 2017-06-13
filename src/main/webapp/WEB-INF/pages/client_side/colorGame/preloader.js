@@ -55,11 +55,12 @@ function fromServer() {
 
     //this function retreives information received from server side. received information is inside 'response'
     function myFunction(response) {
-        var responseArray = response;      
-        console.log(response);
+        console.log("response: " + response);
+        var responseArray = response.split("$");     
+        console.log("response array after split: " + responseArray);
 
-        userID = responseArray[1];
-        lastGameLastLevel = responseArray[3];
+        userID = responseArray[0];
+        lastGameLastLevel = responseArray[1];
 
         picsFromServer();
 
