@@ -10,8 +10,8 @@
 		<property name="userId">
 			<column name="USERID"/>
 		</property>
-		<property name="imageName">
-			<column name="IMAGE"/>
+		<property name="imageURL">
+			<column name="IMAGEURL"/>
 		</property>
 	</class>
 </hibernate-mapping>

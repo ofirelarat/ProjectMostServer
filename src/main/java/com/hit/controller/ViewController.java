@@ -1,16 +1,21 @@
 package com.hit.controller;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -23,12 +28,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
 
+import com.cloudinary.Cloudinary;
 import com.hit.database.HibernateMOSTDAO;
 import com.hit.database.IMOSTDAO;
 import com.hit.exceptions.DAOException;
@@ -36,6 +43,7 @@ import com.hit.model.ExcelResultWriter;
 import com.hit.model.PdfResultWriter;
 import com.hit.model.ResultAnalysis;
 import com.hit.model.User;
+import com.hit.model.UserImage;
 
 
 @Controller
@@ -311,5 +319,44 @@ public class ViewController {
 		}
 		
 		return null;
+	}
+	
+	@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
+	private @ResponseBody
+	String uploadFileHandler(@RequestParam("file") MultipartFile file,
+	        @RequestParam("userid") int userid) {
+	    if (!file.isEmpty()) {
+	        try {
+	            byte[] bytes = file.getBytes();
+
+	            // Creating the directory to store file
+	            String rootPath = "path To save your file/Spring_Upload";
+	            File dir = new File(rootPath + File.separator + "tmpFiles");
+	            if (!dir.exists())
+	                dir.mkdirs();
+
+	            // Create the file on server
+	            File serverFile = new File(dir.getAbsolutePath() + File.separator + file.getName());
+	            BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
+	            stream.write(bytes);
+	            stream.close();	
+	            
+	            // Upload the image to cloudirary
+	            Cloudinary cloudinary = new Cloudinary("cloudinary://412393645827175:Ovp0gyq-w2H1zpNuXrcxgV5qKIo@dyzx9rb3z");
+	            Map entryMap = new HashMap<String,Object>();
+	            Map uploadResult = cloudinary.uploader().upload(serverFile,entryMap);
+	            
+	            // Save the image url in the DB
+	            HibernateMOSTDAO DAO = HibernateMOSTDAO.getInstance();
+	            UserImage userImage = new UserImage(userid,uploadResult.get("url").toString());
+	            DAO.addUserImage(userImage);
+
+	            return "You successfully uploaded file";
+	        } catch (Exception e) {
+	            return "You failed to upload => " + e.getMessage();
+	        }
+	    } else {
+	        return "You failed to upload because the file was empty.";
+	    }
 	}
 }

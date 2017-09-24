@@ -400,7 +400,7 @@ public class HibernateMOSTDAO implements IMOSTDAO {
 			List<UserImage> imagesList = session.createQuery(hql).list();
 			images = new String[imagesList.size()];
 			for(int i=0;i<images.length;i++ ){
-				images[i] = imagesList.get(i).getImageName();
+				images[i] = imagesList.get(i).getImageURL();
 			}
 		}catch(HibernateException e){
 			throw new DAOException(e.getMessage(), e);
@@ -411,22 +411,36 @@ public class HibernateMOSTDAO implements IMOSTDAO {
 	}
 
 	@Override
-	public void deleteUserImage(UserImage temp) throws DAOException {
+	public void deleteUserImage(int userImageId) throws DAOException {
 		Session session = factory.openSession();
 		
 		try{
-			session.beginTransaction();
-			String hql = String.format("From UserImage i Where i.userId = '%s' and i.imageName = '%s'", temp.getUserId(),temp.getImageName());
-			List<UserImage> imagesList = session.createQuery(hql).list();
-			if(!imagesList.isEmpty()){
-				session.delete(imagesList.get(0));
-			}
-			
+			session.delete(session.get(UserImage.class, userImageId));
 			session.getTransaction().commit();
 		}catch (Exception e) {
 			throw new DAOException(e.getMessage(), e);
 		}finally {
 			session.close();
 		}
+	}
+
+	@Override
+	public UserImage[] getAllUserImages() throws DAOException {
+		Session session = factory.openSession();
+		UserImage[] usersImages = null;
+
+		try{
+			session.beginTransaction();
+			String hql = "From UserImage";
+			List usersImagesList = session.createQuery(hql).list();
+			usersImages = new UserImage[usersImagesList.size()];
+			usersImages = (UserImage[]) usersImagesList.toArray(usersImages);
+		}catch (HibernateException e) {
+			throw new DAOException(e.getMessage(),e);
+		}finally{		
+			session.close();
+		}
+		
+		return usersImages;
 	}	
 }

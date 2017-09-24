@@ -4,17 +4,17 @@ public class UserImage {
 
 	private int id;
 	private int userId;
-	private String imageName;
+	private String imageURL;
 		
 	public UserImage() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public UserImage(int userId, String imageName) {
+	public UserImage(int userId, String imageURL) {
 		super();
 		this.userId = userId;
-		this.imageName = imageName;
+		this.imageURL = imageURL;
 	}
 
 	public int getId() {
@@ -33,11 +33,11 @@ public class UserImage {
 		this.userId = userId;
 	}
 
-	public String getImageName() {
-		return imageName;
+	public String getImageURL() {
+		return imageURL;
 	}
 
-	public void setImageName(String imageName) {
-		this.imageName = imageName;
+	public void setImageURL(String imageURL) {
+		this.imageURL = imageURL;
 	}
 }

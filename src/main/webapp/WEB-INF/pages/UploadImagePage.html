@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+	<meta charset="utf-8" />
+	<title>אימוני מוח</title>
+	<link rel="manifest" href="client_side/manifest.json">
+	<link rel="icon" sizes="192x192" href="client_side/assets/logo.png">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="style.css">  
+    <link href="https://fonts.googleapis.com/css?family=Heebo" rel="stylesheet">
+</head>
+<body>
+	<form id="uploadFileForm" method="post" action="uploadFile" enctype="multipart/form-data">
+		<img id="image" src="#" alt="your image" />
+	  	<input type='file' name="file" id="file" onchange="readURL(this);" />
+		<input type='text' id='userID' name="userid" placeholder='מפתח משתמש' onchange="checkUserId();"/>
+	</form>
+	<input type="submit" onclick="uploadFormDataUsingAjax();" id='uploadBtn' value="העלאה" disabled/>
+
+		
+	<script>
+		function readURL(input) {
+	        if (input.files && input.files[0]) {
+	            var reader = new FileReader();
+	
+	            reader.onload = function (e) {
+	                $('#image')
+	                    .attr('src', e.target.result)
+	                    .width(150)
+	                    .height(200);
+	            };
+	
+	            reader.readAsDataURL(input.files[0]);
+	        }
+	    }
+		
+		function checkUserId(){
+			if(document.getElementById('userID').value.length == 0 || document.getElementById("image").src == '#'){
+				document.getElementById('uploadBtn').disabled = true;
+			}
+			else{
+				document.getElementById('uploadBtn').disabled = false;
+			}
+		}
+		
+		function uploadFormDataUsingAjax(){
+			  var uploadForm = new FormData();
+			  uploadForm.append("file", file.files[0]);
+			  uploadForm.append("userid", document.getElementById('userID').value);
+			  $.ajax({
+			    url: 'http://localhost:8080/uploadFile',
+			    data: uploadForm,
+			    dataType: 'text',
+			    processData: false,
+			    contentType: false,
+			    type: 'POST',
+			    success: function(data){
+			     console.log(data);
+			    }
+			  });
+			}
+	</script>
+
+</body>
+</html>
