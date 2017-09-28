@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+	<meta charset="utf-8" />
+	<title>אימוני מוח</title>
+	<link rel="manifest" href="client_side/manifest.json">
+	<link rel="icon" sizes="192x192" href="client_side/assets/logo.png">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="style.css">  
+    <link href="https://fonts.googleapis.com/css?family=Heebo" rel="stylesheet">
+</head>
+<body>
+	<script>
+		$.get("/getImageForUser",function(data){
+			if(data != null && data != ""){
+				document.getElementById("image").src = data;
+			}
+			else{
+				window.location = "/returnToMenu";
+			}
+		});
+		
+		setTimeout(function(){
+			window.location = "/returnToMenu";
+		},5000);
+	</script>
+
+	<div>
+		<img id="image" style="text-align: center;"></img>
+	</div>
+</body>
+</html>

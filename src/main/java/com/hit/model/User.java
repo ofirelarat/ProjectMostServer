@@ -14,6 +14,7 @@ public class User
 	private String lastName;
 	private int age;
 	private Gender gender;
+	private String imagesUrls;
 	
 	public enum Gender
 	{
@@ -92,6 +93,23 @@ public class User
 		this.gender = gender;
 	}
 
+	public String getImagesUrls() {
+		return imagesUrls;
+	}
+
+	public void setImagesUrls(String imagesUrls) {
+		this.imagesUrls = imagesUrls;
+	}
+
+	public void addImageUrl(String url){
+		if(this.imagesUrls != null && this.imagesUrls.length() > 0){
+			this.imagesUrls = this.imagesUrls + "$" + url;
+		}
+		else{
+			this.imagesUrls = url;
+		}
+	}
+	
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", email=" + email + ", password=" + password + ", firstName=" + firstName

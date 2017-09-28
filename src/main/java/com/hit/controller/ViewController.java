@@ -348,8 +348,7 @@ public class ViewController {
 	            
 	            // Save the image url in the DB
 	            HibernateMOSTDAO DAO = HibernateMOSTDAO.getInstance();
-	            UserImage userImage = new UserImage(userid,uploadResult.get("url").toString());
-	            DAO.addUserImage(userImage);
+	            DAO.addImage(uploadResult.get("url").toString());
 
 	            return "You successfully uploaded file";
 	        } catch (Exception e) {
@@ -358,5 +357,50 @@ public class ViewController {
 	    } else {
 	        return "You failed to upload because the file was empty.";
 	    }
+	}
+	
+	@RequestMapping(value="/getImageForUser",method=RequestMethod.GET)
+	public @ResponseBody String getUserImage(HttpServletRequest request){
+		if(request.getSession().getAttribute("userId") == null)
+		{
+			return null;
+		}
+		
+        int userID = (int) request.getSession().getAttribute("userId");
+		HibernateMOSTDAO DAO = HibernateMOSTDAO.getInstance();
+        try {
+			String[] urls = DAO.getUserImages(userID);
+			if(urls != null && urls.length > 0){
+				DAO.deleteUserImage(userID, urls[0]);
+				return urls[0];
+			}
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        return null;
+	}
+
+	@RequestMapping("/returnToMenu")
+	public String gotoMenuPage(HttpServletRequest request){
+		if(request.getSession().getAttribute("userId") == null)
+		{
+			return "redirect:/view/login";
+		}
+		
+        int userID = (int) request.getSession().getAttribute("userId");
+		HibernateMOSTDAO DAO = HibernateMOSTDAO.getInstance();
+		try {
+			User user = DAO.FindUser(userID);
+			if(user != null){
+				return "redirect:/loginF?email=" + user.getEmail() + "&password=" + user.getPassword();
+			}
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return "redirect:/view/login";
 	}
 }

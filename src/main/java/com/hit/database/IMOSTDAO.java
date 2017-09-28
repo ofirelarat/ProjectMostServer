@@ -25,6 +25,11 @@ public interface IMOSTDAO
 	public void DeleteUser(int id) throws DAOException;
 	public void DeleteUser(User temp) throws DAOException;
 	public User[] GetAllUsers() throws DAOException;
+
+	public void addImage(String imageURL) throws DAOException;
+	public String[] getUserImages(int userId) throws DAOException;
+	public void deleteUserImage(int userId,String url) throws DAOException;
+
 	
 	//Result table connection methods
 	public void AddResult(ResultAnalysis result) throws DAOException;
@@ -37,10 +42,4 @@ public interface IMOSTDAO
 	public boolean isFriendShipExist(int firstFriendId,int secondFriendId) throws DAOException;
 	public void addFriendship(Friends friends) throws DAOException;
 	public ArrayList<Integer> getAllUserFriends(int userId) throws DAOException;
-	
-	//Images table connection methods
-	public void addUserImage(UserImage temp) throws DAOException;
-	public void deleteUserImage(int userImageId) throws DAOException;
-	public String[] getUserImages(int userId) throws DAOException;
-	public UserImage[] getAllUserImages() throws DAOException;
 }

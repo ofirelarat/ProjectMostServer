@@ -1,9 +1,9 @@
 var colorGame = {}, centerX = 540/2, centerY = 960/2, graphics, errors, levelNum, nextLevelText, levelData, gameTimer, gameTimerEvent, gameDurationInSeconds, progressBar, progressBarStroke, progressBarLoop, progressBarWidth, endGameProgressBarWidth, pauseState, pauseBtn, gameContainer, pauseContainer, resumeGameBtn, howToBtn, startAgainBtn, backHomeBtn, selectedPicName, timeWord, header, star, nextLevelContainer, starLines, timeIsOut, levelText, pauseText, levelTextMask, last10seconds, colorsArray, difficultyLevel, selectedMeaningLocation, selectedColorLocation, meaning_text, meaning_color, color_text, color_color, colorTextbox, meaningTextbox1, colorCircle1, colorTextbox1, meaningTextbox2, colorCircle2, colorTextbox2, meaningTextbox3, colorCircle3, colorTextbox3, NoBtn, yesBtn, card1, card2, card3, cardBg, cardsArray = [], currentCardNum, cardsGroup, feedback, redFeed, currentTopCard, correctsCounter, last3Corrects, colorTooltip, meaningTooltip, instructionsTooltip1, instructionsTooltip2, cardY, cardX, isMatch, checkMatchCounter, checkMatchNum, cardsPerLevel, popup, popupBg, popupNoBtn, popupYesBtn, xBtn;
 
 var lastLevel = 3;
-var cardsInLevel1 = 15;
-var cardsInLevel2 = 20;
-var cardsInLevel3 = 25;
+var cardsInLevel1 = 10;
+var cardsInLevel2 = 35;
+var cardsInLevel3 = 45;
 
 colorGame.colorGame = function () {};
 colorGame.colorGame.prototype = {
@@ -11,13 +11,14 @@ colorGame.colorGame.prototype = {
     //****************************************PRELOAD*********************************************
 
     preload: function () {
+        
+        gameDurationInSeconds = 105; //1:45 minutes
 
         pauseState = false;
         errors = 0;
         levelNum = 1;
         levelData = "";
         gameIsOn = true; 
-        gameDurationInSeconds = 120; //2 minutes
         last10seconds = true;
         colorsArray = [["כחול", "#0000ff"],["אדום", "#ff0000"], ["ירוק", "#61bd4f"], ["צהוב", "#fcd503"], ["סגול","#a64dff"], ["כתום", "#ff9900"], ["שחור", "#000000"]];
         difficultyLevel = 1;

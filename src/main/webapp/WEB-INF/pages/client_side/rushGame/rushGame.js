@@ -19,9 +19,10 @@ rushGame.rushGame.prototype = {
 
     //****************************************PRELOAD*********************************************
     preload: function () {
+        
+        gameDurationInSeconds = 300;   //5 minutes
 
         userStartPoint = 1;
-
         if (userStartPoint == 1){
             difficultyLevel = 0;
         }else if (userStartPoint == 2){
@@ -29,14 +30,13 @@ rushGame.rushGame.prototype = {
         }else if(userStartPoint == 3){
             difficultyLevel = 10;
         }
-
+        
         pauseState = false;
         levelNum = 1;
         levelData = "";
         gameIsOn = true; 
-        gameDurationInSeconds = 210;   //3.5 minutes
         last10seconds = true
-        stepCounter=0;
+        stepCounter = 0;
         restartBtnWasClicked = false;
         stepBackBtnWasClicked=false;
         timeIsOut = false;

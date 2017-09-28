@@ -2,7 +2,16 @@ var memoGame = {}, centerX = 540/2, centerY = 960/2, graphics, errors, levelNum,
 
 var lastLevel = 10;
 
-var levelsArray=[{colNum:2,rowNum:2,coloredBricksNum:2},{colNum:3,rowNum:3,coloredBricksNum:3},{colNum:3,rowNum:3,coloredBricksNum:4},{colNum:3,rowNum:4,coloredBricksNum:4},{colNum:3,rowNum:4,coloredBricksNum:5},{colNum:4,rowNum:4,coloredBricksNum:5},{colNum:4,rowNum:4,coloredBricksNum:5},{colNum:4,rowNum:5,coloredBricksNum:5},{colNum:4,rowNum:5,coloredBricksNum:6},{colNum:5,rowNum:5,coloredBricksNum:6},{colNum:5,rowNum:6,coloredBricksNum:6},{colNum:5,rowNum:6,coloredBricksNum:7},{colNum:6,rowNum:6,coloredBricksNum:7},{colNum:6,rowNum:6,coloredBricksNum:8},{colNum:6,rowNum:7,coloredBricksNum:8},{colNum:6,rowNum:7,coloredBricksNum:9},{colNum:6,rowNum:7,coloredBricksNum:9}];
+var levelsArray=[{colNum:3,rowNum:4,coloredBricksNum:4},
+                 {colNum:3,rowNum:4,coloredBricksNum:5},
+                 {colNum:4,rowNum:4,coloredBricksNum:6},
+                 {colNum:4,rowNum:4,coloredBricksNum:6},
+                 {colNum:4,rowNum:5,coloredBricksNum:6},
+                 {colNum:4,rowNum:5,coloredBricksNum:7},
+                 {colNum:5,rowNum:5,coloredBricksNum:7},
+                 {colNum:5,rowNum:5,coloredBricksNum:7},
+                 {colNum:5,rowNum:6,coloredBricksNum:8},
+                 {colNum:6,rowNum:6,coloredBricksNum:8}];
 
 
 memoGame.memoGame = function () {};
@@ -12,6 +21,7 @@ memoGame.memoGame.prototype = {
 
     preload: function () {
 
+        gameDurationInSeconds = 150;   //2.5 minutes
         userStartPoint = 1;
 
         if (userStartPoint == 1){
@@ -27,7 +37,6 @@ memoGame.memoGame.prototype = {
         levelNum = 1;
         levelData = "";
         gameIsOn = true; 
-        gameDurationInSeconds = 150;   //2.5 minutes
         last10seconds = true
         userWasCorrect = 0;
         bricksCounter = 0;
@@ -108,7 +117,6 @@ memoGame.memoGame.prototype = {
 
         createPauseScreen();
 
-        //        difficultyLevel = 1;
         currentLevel = levelsArray[difficultyLevel];
         colNum = currentLevel.colNum;
         rowNum = currentLevel.rowNum;

@@ -29,8 +29,8 @@ rushGame.preloader.prototype = {
     }
 };
 
-//****************************************FROM SERVER*********************************************
 
+// ******************************* LOAD FROM SERVER **********************************
 function fromServer() {
 
     //preparing to call server side page
@@ -70,6 +70,21 @@ function fromServer() {
         game.state.start('rushGameTutorial');
     }
 }
+// ******************************* LOAD FROM SERVER **********************************
+
+
+
+
+
+// ******************************* LOAD LOCALLY **********************************
+//function fromServer() {
+//    userID = 8;
+//    lastGameLastLevel = 1; 
+////    lastGameLastLevel = 0;  //uncomment to check what happens when it's the first time this user plays
+//    game.state.start('rushGameTutorial');
+//
+//}
+// ******************************* LOAD LOCALLY **********************************
 
 function picsFromServer() {
 
@@ -105,10 +120,3 @@ function picsFromServer() {
         console.log("picsArray = " + picsArray);
     }
 }
-//function fromServer() {
-//    userID = 8;
-//    lastGameLastLevel = 1; 
-////    lastGameLastLevel = 0; 
-//    game.state.start('rushGameTutorial');
-//
-//}

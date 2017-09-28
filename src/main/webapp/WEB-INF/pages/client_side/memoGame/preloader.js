@@ -29,7 +29,7 @@ memoGame.preloader.prototype = {
     }
 };
 
-//****************************************FROM SERVER*********************************************
+//**************************************** LOAD FROM SERVER *********************************************
 
 function fromServer() {
 
@@ -70,6 +70,18 @@ function fromServer() {
         game.state.start('memoGameTutorial');
     }
 }
+// ******************************* LOAD FROM SERVER **********************************
+
+
+// ******************************* LOAD LOCALLY **********************************
+//function fromServer() {
+//    userID = 8;
+//    lastGameLastLevel = 6; 
+////    lastGameLastLevel = 0; //uncomment to check what happens when it's the first time this user plays
+//    game.state.start('memoGameTutorial');
+//}
+// ******************************* LOAD LOCALLY **********************************
+
 
 function picsFromServer() {
 
@@ -106,10 +118,3 @@ function picsFromServer() {
     }
 }
 
-//function fromServer() {
-//    userID = 8;
-//    lastGameLastLevel = 6; 
-////    lastGameLastLevel = 0; 
-//    game.state.start('memoGameTutorial');
-//
-//}

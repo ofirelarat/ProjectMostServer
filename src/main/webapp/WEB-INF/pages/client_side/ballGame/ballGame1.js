@@ -9,6 +9,7 @@ ballGame.ballGame1.prototype = {
 
     preload: function () {
 
+        gameDurationInSeconds = 150;   //2.5 minutes
         userStartPoint = 2;
 
         if (userStartPoint == 1){
@@ -30,7 +31,6 @@ ballGame.ballGame1.prototype = {
         levelNum = 1;
         levelData = "";
         gameIsOn = true; 
-        gameDurationInSeconds = 150;   //2.5 minutes
         last10seconds = true;
         timeIsOut = false;
 

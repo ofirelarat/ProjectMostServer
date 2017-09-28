@@ -153,6 +153,7 @@ public class HibernateMOSTDAO implements IMOSTDAO {
 			user.setLastName(temp.getLastName());
 			user.setAge(temp.getAge());
 			user.setGender(temp.getGender());
+			user.setImagesUrls(temp.getImagesUrls());
 			session.update(user);
 			session.getTransaction().commit();
 		}catch (HibernateException e) {
@@ -375,72 +376,68 @@ public class HibernateMOSTDAO implements IMOSTDAO {
 	}
 
 	@Override
-	public void addUserImage(UserImage temp) throws DAOException {
-		Session session = factory.openSession();
-
-		try{
-			session.beginTransaction();
-			session.save(temp);
-			session.getTransaction().commit();
-		}catch (HibernateException e) {
-			throw new DAOException(e.getMessage(),e);
-		}finally {
-			session.close();
-		}
-	}
-
-	@Override
 	public String[] getUserImages(int userId) throws DAOException {
 		Session session = factory.openSession();
-		String[] images = null;
+		String[] imagesURLS = null;
 		
 		try{
 			session.beginTransaction();
-			String hql = String.format("From UserImage i Where i.userId = '%s'", userId);
-			List<UserImage> imagesList = session.createQuery(hql).list();
-			images = new String[imagesList.size()];
-			for(int i=0;i<images.length;i++ ){
-				images[i] = imagesList.get(i).getImageURL();
-			}
+			User user = (User) session.get(User.class, userId);
+			imagesURLS = user.getImagesUrls().split("$");
+			
 		}catch(HibernateException e){
 			throw new DAOException(e.getMessage(), e);
 		}finally {
 			session.close();
 		}
-		return images;
+		return imagesURLS;
 	}
 
 	@Override
-	public void deleteUserImage(int userImageId) throws DAOException {
+	public void addImage(String imageURL) throws DAOException {
 		Session session = factory.openSession();
-		
-		try{
-			session.delete(session.get(UserImage.class, userImageId));
-			session.getTransaction().commit();
-		}catch (Exception e) {
-			throw new DAOException(e.getMessage(), e);
-		}finally {
-			session.close();
-		}
-	}
-
-	@Override
-	public UserImage[] getAllUserImages() throws DAOException {
-		Session session = factory.openSession();
-		UserImage[] usersImages = null;
-
 		try{
 			session.beginTransaction();
-			String hql = "From UserImage";
-			List usersImagesList = session.createQuery(hql).list();
-			usersImages = new UserImage[usersImagesList.size()];
-			usersImages = (UserImage[]) usersImagesList.toArray(usersImages);
+			String hql = "From User";
+			List<User> usersList = session.createQuery(hql).list();
+			for(User user : usersList){
+				user.addImageUrl(imageURL);
+				EditUser(user);
+			}
 		}catch (HibernateException e) {
 			throw new DAOException(e.getMessage(),e);
 		}finally{		
 			session.close();
 		}
+	}
+
+	@Override
+	public void deleteUserImage(int userId, String url) throws DAOException {
+		Session session = factory.openSession();
+		String[] imagesURLS = null;
+		StringBuilder urlsBuilder = new StringBuilder();
 		
-		return usersImages;
+		try{
+			session.beginTransaction();
+			User user = (User) session.get(User.class, userId);
+			imagesURLS = user.getImagesUrls().split("$");
+			for(String image : imagesURLS){
+				if(!image.equals(url)){
+					if(urlsBuilder.length() > 0){
+						urlsBuilder.append("$" + image);
+					}
+					else{
+						urlsBuilder.append(image);
+					}
+				}
+			}
+			
+			user.setImagesUrls(urlsBuilder.toString());
+			EditUser(user);
+		}catch (HibernateException e) {
+			throw new DAOException(e.getMessage(),e);
+		}finally{		
+			session.close();
+		}					
 	}	
 }

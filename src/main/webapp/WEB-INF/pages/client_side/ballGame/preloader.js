@@ -30,7 +30,7 @@ ballGame.preloader.prototype = {
     }
 };
 
-//****************************************FROM SERVER*********************************************
+//**************************************** LOAD FROM SERVER *********************************************
 
 function fromServer() {
 
@@ -71,15 +71,19 @@ function fromServer() {
         game.state.start('ballGameTutorial');
     }
 }
+// ******************************* LOAD FROM SERVER **********************************
 
+
+// ******************************* LOAD LOCALLY **********************************
 //function fromServer() {
 //    picsFromServer();
 //    userID = 8;
 //    lastGameLastLevel = 1; 
-//    //    lastGameLastLevel = 0; 
+//    //    lastGameLastLevel = 0;  //uncomment to check what happens when it's the first time this user plays
 //    game.state.start('ballGameTutorial');
 //
 //}
+// ******************************* LOAD LOCALLY **********************************
 
 function picsFromServer() {
 
