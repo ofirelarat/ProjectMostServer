@@ -323,8 +323,7 @@ public class ViewController {
 	
 	@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
 	private @ResponseBody
-	String uploadFileHandler(@RequestParam("file") MultipartFile file,
-	        @RequestParam("userid") int userid) {
+	String uploadFileHandler(@RequestParam("file") MultipartFile file) {
 	    if (!file.isEmpty()) {
 	        try {
 	            byte[] bytes = file.getBytes();

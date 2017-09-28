@@ -16,7 +16,6 @@
 	<form id="uploadFileForm" method="post" action="uploadFile" enctype="multipart/form-data">
 		<img id="image" src="#" alt="your image" />
 	  	<input type='file' name="file" id="file" onchange="readURL(this);" />
-		<input type='text' id='userID' name="userid" placeholder='מפתח משתמש' onchange="checkUserId();"/>
 	</form>
 	<input type="submit" onclick="uploadFormDataUsingAjax();" id='uploadBtn' value="העלאה" disabled/>
 
@@ -38,7 +37,7 @@
 	    }
 		
 		function checkUserId(){
-			if(document.getElementById('userID').value.length == 0 || document.getElementById("image").src == '#'){
+			if(document.getElementById("image").src == '#'){
 				document.getElementById('uploadBtn').disabled = true;
 			}
 			else{
@@ -49,7 +48,6 @@
 		function uploadFormDataUsingAjax(){
 			  var uploadForm = new FormData();
 			  uploadForm.append("file", file.files[0]);
-			  uploadForm.append("userid", document.getElementById('userID').value);
 			  $.ajax({
 			    url: 'http://localhost:8080/uploadFile',
 			    data: uploadForm,
