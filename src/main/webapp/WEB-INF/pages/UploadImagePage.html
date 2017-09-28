@@ -13,12 +13,20 @@
     <link href="https://fonts.googleapis.com/css?family=Heebo" rel="stylesheet">
 </head>
 <body>
-	<form id="uploadFileForm" method="post" action="uploadFile" enctype="multipart/form-data">
-		<img id="image" src="#" alt="your image" />
-	  	<input type='file' name="file" id="file" onchange="readURL(this);" />
-	</form>
-	<input type="submit" onclick="uploadFormDataUsingAjax();" id='uploadBtn' value="העלאה" disabled/>
-
+  	<div class="our-page-header">
+        אימוני מוח
+    </div>
+    
+	<div style="text-align: center;">
+		<form id="uploadFileForm" method="post" action="uploadFile" enctype="multipart/form-data">
+			<img id="image" src="#" alt="" />
+		  	<input class="btn btn-primary btn-colored" type='file' name="file" id="file" onchange="readURL(this);" />
+		</form>
+		<div class="modal-footer">
+			<input style="margin: 10px;" class="btn btn-primary btn-block" type="submit" onclick="uploadFormDataUsingAjax();" id='uploadBtn' value="העלאה" disabled/>
+		</div>
+	</div>
+	
 		
 	<script>
 		function readURL(input) {
@@ -27,23 +35,14 @@
 	
 	            reader.onload = function (e) {
 	                $('#image')
-	                    .attr('src', e.target.result)
-	                    .width(150)
-	                    .height(200);
+	                    .attr('src', e.target.result);
 	            };
 	
+				document.getElementById('uploadBtn').disabled = false;
+
 	            reader.readAsDataURL(input.files[0]);
 	        }
 	    }
-		
-		function checkUserId(){
-			if(document.getElementById("image").src == '#'){
-				document.getElementById('uploadBtn').disabled = true;
-			}
-			else{
-				document.getElementById('uploadBtn').disabled = false;
-			}
-		}
 		
 		function uploadFormDataUsingAjax(){
 			  var uploadForm = new FormData();
@@ -57,6 +56,7 @@
 			    type: 'POST',
 			    success: function(data){
 			     console.log(data);
+			     alert(data);
 			    }
 			  });
 			}

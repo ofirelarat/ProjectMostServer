@@ -156,6 +156,29 @@ public class ViewController {
 			request.getSession().setAttribute("userId", user.getId());
 			response.setContentType("text/html");
 			response.setCharacterEncoding("utf-8");
+			return "pages/ImageViewPage.html";
+		} catch (DAOException e) {
+			Logger logger = (Logger) LoggerFactory.getLogger("exception.viewCotroller.GetLogin");
+			logger.error(e.getMessage());
+			e.printStackTrace();
+		} 
+		
+		return null;
+	}
+	
+	@RequestMapping(value="/loginFToMenu", method=RequestMethod.GET)
+	public String LoginGetFToMenuPage(HttpServletRequest request,HttpServletResponse response,@RequestParam(value="email")String email,@RequestParam(value="password")String password){
+		IMOSTDAO DAO = HibernateMOSTDAO.getInstance();
+		try {
+			User user = DAO.FindUser(email, password);
+			
+			if(user == null){
+				return "redirect:/pages/ErrorPage.html";
+			}
+			
+			request.getSession().setAttribute("userId", user.getId());
+			response.setContentType("text/html");
+			response.setCharacterEncoding("utf-8");
 			return "pages/homePage2.html";
 		} catch (DAOException e) {
 			Logger logger = (Logger) LoggerFactory.getLogger("exception.viewCotroller.GetLogin");
@@ -393,7 +416,7 @@ public class ViewController {
 		try {
 			User user = DAO.FindUser(userID);
 			if(user != null){
-				return "redirect:/loginF?email=" + user.getEmail() + "&password=" + user.getPassword();
+				return "redirect:/loginFToMenu?email=" + user.getEmail() + "&password=" + user.getPassword();
 			}
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
