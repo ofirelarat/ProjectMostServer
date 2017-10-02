@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -393,7 +394,7 @@ public class ViewController {
         try {
 			String[] urls = DAO.getUserImages(userID);
 			if(urls != null && urls.length > 0){
-				DAO.deleteUserImage(userID, urls[0]);
+				//DAO.deleteUserImage(userID, urls[0]);
 				return urls[0];
 			}
 		} catch (DAOException e) {
@@ -404,6 +405,22 @@ public class ViewController {
         return null;
 	}
 
+	@RequestMapping(value="/deleteUserImage",method=RequestMethod.DELETE)
+	public @ResponseBody String deleteUserImage(HttpServletRequest request, @RequestParam("url") String url){
+        int userID = (int) request.getSession().getAttribute("userId");
+		HibernateMOSTDAO DAO = HibernateMOSTDAO.getInstance();
+		
+		try {
+			DAO.deleteUserImage(userID, url);
+			return "user's image deleted";
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return "image didn't deleted";
+	}
+	
 	@RequestMapping("/returnToMenu")
 	public String gotoMenuPage(HttpServletRequest request){
 		if(request.getSession().getAttribute("userId") == null)

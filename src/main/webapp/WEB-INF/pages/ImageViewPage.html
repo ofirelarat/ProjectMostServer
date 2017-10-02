@@ -17,6 +17,13 @@
 		$.get("/getImageForUser",function(data){
 			if(data != null && data != ""){
 				document.getElementById("image").src = data;
+				$.ajax({
+					url: "/deleteUserImage?url=" + data,
+					type: "DELETE",
+					success: function(result){
+						
+					}
+				});
 			}
 			else{
 				window.location = "/returnToMenu";
