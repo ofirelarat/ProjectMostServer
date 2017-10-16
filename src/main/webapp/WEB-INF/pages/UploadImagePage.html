@@ -18,8 +18,12 @@
     </div>
     
 	<div style="text-align: center;">
+		<div class="modal-header">
+ 			<h3 class="modal-title">העלאת תמונה למשתמשים</h3>
+ 		</div>
+		
 		<form id="uploadFileForm" method="post" action="uploadFile" enctype="multipart/form-data">
-			<img id="image" src="#" alt="" />
+			<img id="image" src="assets/imagePlaceholder.png" alt="" />
 		  	<input class="btn btn-primary btn-colored" type='file' name="file" id="file" onchange="readURL(this);" />
 		</form>
 		<div class="modal-footer">
