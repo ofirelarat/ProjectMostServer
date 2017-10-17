@@ -8,6 +8,10 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -441,5 +445,72 @@ public class ViewController {
 		}
 		
 		return "redirect:/view/login";
+	}
+	
+	
+	@RequestMapping("/getScoresForDiagram")
+	public @ResponseBody String[] getScoresForDiagram(HttpServletRequest request,@RequestParam("gameId") int gameId){
+		HibernateMOSTDAO DAO = HibernateMOSTDAO.getInstance();
+		
+		try {
+			int myScore = DAO.FindResults(gameId, (int)request.getSession().getAttribute("userId")).length;
+
+			User[] users = DAO.GetAllUsers();
+			//int[] maxScores = {myScore,0,0};
+			ArrayList<Integer> scores = new ArrayList<>();
+			for (User user : users) {
+				//if(user.getId() != (int)request.getSession().getAttribute("userId")){
+					ResultAnalysis[] results = DAO.FindResults(gameId, user.getId());
+					int userScore = 0;
+					for (ResultAnalysis resultAnalysis : results) {
+						userScore += resultAnalysis.getLevel()+1;
+					}
+					scores.add(userScore);
+					
+					/*if(userScore > maxScores[1]){
+						maxScores[1] = userScore;
+					}
+				}*/
+			}
+			
+			/*for (int score : scores) {
+				if(score > maxScores[2] && score < maxScores[1]){
+					maxScores[2] = score;
+				}
+			}*/
+			
+			Collections.sort(scores,new Comparator<Integer>() {
+
+				@Override
+				public int compare(Integer o1, Integer o2) {
+					// TODO Auto-generated method stub
+					return o2.compareTo(o1);
+				}
+			});
+			
+			String[] maxScoresT = {"","","","",""};
+			int countInTeam = users.length / 4;
+			maxScoresT[0] = scores.get(0) + " - " + scores.get(countInTeam -1);
+			maxScoresT[1] = scores.get(countInTeam) + " - " + scores.get(countInTeam*2 -1);
+			maxScoresT[2] = scores.get(countInTeam*2) + " - " + scores.get(countInTeam*3 -1);
+			maxScoresT[3] = scores.get(countInTeam*3) + " - " + scores.get(countInTeam*4 -1);
+			if(myScore > scores.get(countInTeam -1)){
+				maxScoresT[4] = "0"; 
+			}else if(myScore > scores.get(countInTeam*2 -1)){
+				maxScoresT[4] = "1"; 
+			}else if(myScore > scores.get(countInTeam*3 -1)){
+				maxScoresT[4] = "2"; 
+			}else if(myScore > scores.get(countInTeam*4 -1)){
+				maxScoresT[4] = "3"; 
+			}
+			
+			return maxScoresT;
+			//return maxScores;
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 }

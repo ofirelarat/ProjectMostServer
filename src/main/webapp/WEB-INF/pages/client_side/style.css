@@ -7,28 +7,29 @@ body{
     display:none;
 }
 
-#container {
+.container {
     width: 100%;
     top: 0;
     right: 0;
     background-color: #F9EFDD !important;
     height: 100vh;
 }
-h1,h2,h3,h4,h5,h6,div,span,p{
+
+h1,h2,h3,h4,h5,h6,div,span,p,input{
     font-family: 'Heebo', sans-serif !important;
 }
 
 h1{
-        font-size: 70%;
+    font-size: 70%;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-pack: center;
-        justify-content: center;
+    justify-content: center;
     -ms-flex-align: center;
-        align-items: center;
+    align-items: center;
 }
 header img{
-height: 40px;
+    height: 40px;
     margin-right: -20px;
     padding-left: 5px;
 }
@@ -83,7 +84,7 @@ header{
 }
 
 #toAllGames{
-position: absolute;
+    position: absolute;
     /* top: 90%; */
     /* right: 50%; */
     /* transform: translate(50%); */
@@ -111,4 +112,42 @@ h3{
     font-weight: 400;
     color: #685e60;
     padding-top: 30px;
+}
+
+#chart{
+    width: 90vw;
+    display: block;
+    margin: 2vh auto;
+}
+
+.modal-footer {
+    position:absolute;
+    bottom: 0;
+    width: 100vw;
+}
+
+.modal-footer img {
+    width: 100vw;
+}
+
+.bottomBtn{
+    width: 100vw;
+    height: 10vh;
+    font-size: 6vw;
+    text-align: center;
+    color: #685E60;
+    font-weight: 800;
+    background-color: transparent;
+    border-style: none;
+}
+
+.model-content{
+    margin-top: 10vh;
+}
+
+#gameNameTitle{
+     font-size: 5vw;
+    font-weight: 400;
+    color: #685e60; 
+    text-align: center;
 }

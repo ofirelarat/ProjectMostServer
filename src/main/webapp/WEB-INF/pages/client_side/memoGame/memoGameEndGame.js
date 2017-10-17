@@ -40,8 +40,8 @@ memoGame.memoGameEndGame.prototype = {
         var header = game.add.sprite(0, 0, 'header');
         var timeWord = game.add.sprite(487.171, 72, 'timeWord');
 
-        homePageBtn = game.add.button(270, 877, 'homePageBtn', gotoHome);
-        playAgainBtn = game.add.button(0, 877, 'playAgainBtn', playAgain);
+        homePageBtn = game.add.button(0, 877, 'homePageBtn', gotoChartPage);
+        playAgainBtn = game.add.button(270, 877, 'playAgainBtn', playAgain);
 
 
         if (timeIsOut){
@@ -144,11 +144,11 @@ function playAgain(){
     game.state.start('preloader');
 }
 
-function gotoHome(){
+function gotoChartPage(){
     boingTimeOut.stop();
     finishGameSound.stop();
     btnSound.play();
-    window.location ="../../client_side/homePage.html";
+    window.location = "../../client_side/endGameChart.html?gameName=memoGame";
 }
 
 function resizeImage(image){

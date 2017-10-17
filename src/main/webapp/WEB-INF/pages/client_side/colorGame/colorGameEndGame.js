@@ -40,8 +40,8 @@ colorGame.colorGameEndGame.prototype = {
         var header = game.add.sprite(0, 0, 'header');
         var timeWord = game.add.sprite(487.171, 72, 'timeWord');
 
-        homePageBtn = game.add.button(270, 877, 'homePageBtn', gotoHome);
-        playAgainBtn = game.add.button(0, 877, 'playAgainBtn', playAgain);
+        homePageBtn = game.add.button(0, 877, 'homePageBtn', gotoChartPage);
+        playAgainBtn = game.add.button(270, 877, 'playAgainBtn', playAgain);
 
         if (timeIsOut){
             levelText = game.add.text(1200, 730, '', {fontSize: '40px', fill:'#ffffff', font: 'Heebo'});
@@ -150,11 +150,11 @@ function playAgain(){
     game.state.start('preloader');
 }
 
-function gotoHome(){
+function gotoChartPage(){
     boingTimeOut.stop();
     finishGameSound.stop();
-     btnSound.play();
-    window.location ="../../client_side/homePage.html";
+    btnSound.play();
+    window.location = "../../client_side/endGameChart.html?gameName=colorGame";
 }
 
 function resizeImage(image){

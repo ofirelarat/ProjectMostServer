@@ -1,64 +1,76 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="windows-1255">
+	<meta charset="utf-8">
 	<title>Insert title here</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.4.1/morris.min.js"></script>
 </head>
-<body style="background-color:#425062;">
-	<div style="text-align:center;background-color:#425062;height:100%;font-weigth:300;">
-	  <div class="container-fluid">
-          <div class="container">
-            <div class="panel panel-primary" style="margin-top:50px;">
-              <div class="panel-heading">
-                <h1 class="panel-title">New Score:</h1>
-              </div>
-              <div class="panel-body" style="font-size:40px;"><!-- style="background-color:#2980b9;color:white"-->
-					<p id="new-score">0</p>
-              </div>
-            </div>
-          </div>
-      </div>
-      
-        <div class="container-fluid">
-          <div class="container">
-            <div class="panel panel-primary" style="margin-top:50px;">
-              <div class="panel-heading">
-                <h1 class="panel-title">Last Score:</h1>
-              </div>
-              <div class="panel-body" style="font-size:40px;"><!-- style="background-color:#2980b9;color:white"-->
-					<p id="last-score">0</p>
-              </div>
-            </div>
-          </div>
-      </div>
-      
-      <hr/>
-      <a href="####"><button class="btn btn-success btn-block" style="border-radius:1px;border:none;height:50px;font-size:30px;font-family:'Montserrat-Regular',serif;">Back To Menu</button></a>
-    </div>
-    
+<body>
+	
+    <div id="scoreChart" style="height: 250px; width:500px;"></div>
     
     <script>
     
-    $(document).ready(function(){
-        $.get("http://project-most.herokuapp.com/game/getAverageScore?gameId=1&userId=1",
-        function(data, status){
-            alert("Data: " + data + "\nStatus: " + status);
-            if(data.lenght == 1){
-            	document.getElementById("new-score").innerHTML = data;
-            }
-            else{
-            	if(data.lenght > 1){
-            		document.getElementById("new-score").innerHTML = data[lenght-1];
-            		document.getElementById("last-score").innerHTML = data[lenght-2];
-            	}
-            }
-        });
-    });
+    	$.get("/getScoresForDiagram?gameId=1",function(data){
+    		var first = {x: data[0], y: data[0].split(" - ")[0]};
+    		var second = {x: data[1], y: data[1].split(" - ")[0]};
+    		var third = {x: data[2], y: data[2].split(" - ")[0]};
+    		var forth = {x: data[3], y: data[3].split(" - ")[0]};
+    		
+    		var graphData = [first,second,third,forth];
+    		
+    		Morris.Bar({
+  			  element: 'scoreChart',
+  			  data: graphData,
+  			  xkey: 'x',
+  			  ykeys: ['y'],
+  			  labels: ['תוצאה'],
+  			  barColors: function(row, series, type){
+  				  if(row.x == data[4]) return "#1AB244";
+  				  else return "#AD1D28";
+  			  }
+  			});
+    	});
     
+    
+    /*
+    	$.get("/getScoresForDiagram?gameId=1",function(data){
+    		var myScore = {x: 'אני', y: data[0]};
+    		var secondScore,thirdScore;
+    		if(data[0] > data[2]){
+    			thirdScore = {x: 'מקום שלישי', y: data[2]};
+    			if(data[0] > data[1]){
+        			secondScore = {x: 'מקום שני', y: data[1]};
+    			}
+    			else{
+        			secondScore = {x: 'מקום ראשון', y: data[1]};
+    			}
+    		}
+    		else{
+    			secondScore = {x: 'מקום ראשון', y: data[1]};
+    			thirdScore = {x: 'מקום שני', y: data[2]};
+    		}
+    		
+    		var graphData = [myScore,secondScore,thirdScore];
+    		
+    		Morris.Bar({
+    			  element: 'scoreChart',
+    			  data: graphData,
+    			  xkey: 'x',
+    			  ykeys: ['y'],
+    			  labels: ['תוצאה'],
+    			  barColors: function(row, series, type){
+    				  if(row.label == "אני") return "#1AB244";
+    				  else return "#AD1D28";
+    			  }
+    		});
+    	});
+	*/
+
     </script>
 </body>
 </html>
