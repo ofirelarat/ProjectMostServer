@@ -11,6 +11,9 @@
         <link rel="stylesheet" href="reset.css">
         <link rel="stylesheet" href="style.css">
         <link href="https://fonts.googleapis.com/css?family=Heebo:400,700" rel="stylesheet">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+		<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.4.1/morris.min.js"></script>
     </head>
     <body onload="getGameName()">
         <div class="container">
@@ -26,7 +29,8 @@
 
                 <div class="modal-body">
 
-                    <img id="chart" src="images/chartPlaceHolder.jpg" alt="chart" />
+                    <!-- <img id="chart" src="images/chartPlaceHolder.jpg" alt="chart" /> -->
+                    <div id="chart"></div>
 
                     <div class="modal-footer">
                         <img id="homeBtn" src="assets/allGames/sprites/homeBtn.png" onclick="backToHomePage()" alt="chart" />
@@ -37,6 +41,28 @@
         </div>
 
         <script>
+        	
+	        $.get("/getScoresForDiagram?gameId=1",function(data){
+	    		var first = {x: data[0], y: data[0].split(" - ")[0]};
+	    		var second = {x: data[1], y: data[1].split(" - ")[0]};
+	    		var third = {x: data[2], y: data[2].split(" - ")[0]};
+	    		var forth = {x: data[3], y: data[3].split(" - ")[0]};
+	    		
+	    		var graphData = [first,second,third,forth];
+	    		
+	    		Morris.Bar({
+	  			  element: 'chart',
+	  			  data: graphData,
+	  			  xkey: 'x',
+	  			  ykeys: ['y'],
+	  			  labels: ['תוצאה'],
+	  			  barColors: function(row, series, type){
+	  				  if(row.x == data[4]) return "#1AB244";
+	  				  else return "#AD1D28";
+	  			  }
+	  			});
+	    	});
+        	
 
             function getGameName(){
                 var searchParams = new URLSearchParams(window.location.search);
@@ -54,8 +80,7 @@
 
 
             function backToHomePage(){
-                //            window.location ="../client_side/homePage.html";
-                window.location ="../homePage.html";
+                window.location ="/returnToMenu";
             }
 
 

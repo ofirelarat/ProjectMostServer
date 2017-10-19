@@ -77,6 +77,7 @@ public class ViewController {
 
 		if(session.getAttribute("userId") != null){
 			try {
+				session.setAttribute("currentGameId", gameId);
 				int userId = (int)session.getAttribute("userId");
 				ResultAnalysis[] results = DAO.FindResults(gameId, userId);
 				int lastLevel = 0;
@@ -449,10 +450,11 @@ public class ViewController {
 	
 	
 	@RequestMapping("/getScoresForDiagram")
-	public @ResponseBody String[] getScoresForDiagram(HttpServletRequest request,@RequestParam("gameId") int gameId){
+	public @ResponseBody String[] getScoresForDiagram(HttpServletRequest request){
 		HibernateMOSTDAO DAO = HibernateMOSTDAO.getInstance();
 		
 		try {
+			int gameId = (int)request.getSession().getAttribute("currentGameId");
 			int myScore = DAO.FindResults(gameId, (int)request.getSession().getAttribute("userId")).length;
 
 			User[] users = DAO.GetAllUsers();
@@ -463,7 +465,7 @@ public class ViewController {
 					ResultAnalysis[] results = DAO.FindResults(gameId, user.getId());
 					int userScore = 0;
 					for (ResultAnalysis resultAnalysis : results) {
-						userScore += resultAnalysis.getLevel()+1;
+						userScore += (resultAnalysis.getLevel()+1);
 					}
 					scores.add(userScore);
 					

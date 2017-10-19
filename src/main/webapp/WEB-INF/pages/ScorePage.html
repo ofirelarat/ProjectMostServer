@@ -15,7 +15,7 @@
     
     <script>
     
-    	$.get("/getScoresForDiagram?gameId=1",function(data){
+    	$.get("/getScoresForDiagram",function(data){
     		var first = {x: data[0], y: data[0].split(" - ")[0]};
     		var second = {x: data[1], y: data[1].split(" - ")[0]};
     		var third = {x: data[2], y: data[2].split(" - ")[0]};

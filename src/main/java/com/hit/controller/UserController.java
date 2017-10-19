@@ -149,15 +149,15 @@ public class UserController {
 	
 	@RequestMapping(value="{userId}/getimages",method=RequestMethod.GET)
 	public @ResponseBody String[] getUserImages(@PathVariable int userId){
-		String[] images = null;
+		/*String[] images = null;
 		try {
 			images = DAO.getUserImages(userId);
 		} catch (DAOException e) {
 			 Logger logger = (Logger) LoggerFactory.getLogger("exception.userCotroller.getImages");
 			 logger.error(e.getMessage());
 			e.printStackTrace();
-		}
-		return images;
+		}*/ //temporary
+		return new String[0];
 	}
 	
 	@RequestMapping(value="/deleteimage/{userID}",method=RequestMethod.DELETE)
