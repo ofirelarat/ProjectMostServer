@@ -29,12 +29,14 @@
 
                 <div class="modal-body">
 
-                    <!-- <img id="chart" src="images/chartPlaceHolder.jpg" alt="chart" /> -->
-                    <div id="chart"></div>
-
+                    <h4 style="-webkit-transform: rotate(270deg); float:left; margin-left:-5px; top:150px; position:relative;">שחקנים %</h4>
+                   	<!-- <img id="chart" src="images/chartPlaceHolder.jpg" alt="chart" /> -->
+                    <div style="margin-top:-20px;" id="chart"></div>
+					<h4 style="text-align:center; margin-top:-17px;">ניקוד</h4>
+					
                     <div class="modal-footer">
                         <img id="homeBtn" src="assets/allGames/sprites/homeBtn.png" onclick="backToHomePage()" alt="chart" />
-                        <!--                        <input class="bottomBtn" type='button' id='uploadBtn' value="למסך הבית" disabled/>-->
+                        <!--<input class="bottomBtn" type='button' id='uploadBtn' value="למסך הבית" disabled/>-->
                     </div>
                 </div>
             </div>
@@ -42,23 +44,34 @@
 
         <script>
         	
-	        $.get("/getScoresForDiagram?gameId=1",function(data){
-	    		var first = {x: data[0], y: data[0].split(" - ")[0]};
-	    		var second = {x: data[1], y: data[1].split(" - ")[0]};
-	    		var third = {x: data[2], y: data[2].split(" - ")[0]};
-	    		var forth = {x: data[3], y: data[3].split(" - ")[0]};
+	        $.get("/getScoresForDiagram?gameId=1",function(data){ 
+	    		var first = {x: "גבוה", y: data[0]};
+	    		var second = {x: "טוב", y: data[1]};
+	    		var third = {x: "בינוני", y: data[2]};
+	    		var forth = {x: "סביר", y: data[3]};
+	    		var fifth = {x: "נמוך", y: data[4]};
 	    		
-	    		var graphData = [first,second,third,forth];
+	    		 if(data[5] == 1){
+	        		second.x = "אני";
+	        	}else if(data[5] == 2){
+	        		third.x = "אני";
+	        	}else if(data[5] == 3){
+	        		forth.x = "אני";
+	        	}
+	    		
+	    		
+	    		var graphData = [fifth, forth, third, second, first];
 	    		
 	    		Morris.Bar({
 	  			  element: 'chart',
 	  			  data: graphData,
 	  			  xkey: 'x',
 	  			  ykeys: ['y'],
-	  			  labels: ['תוצאה'],
+	  			  labels: ['אחוז שחקנים'],
+	  			  hideHover: 'auto',
 	  			  barColors: function(row, series, type){
-	  				  if(row.x == data[4]) return "#1AB244";
-	  				  else return "#AD1D28";
+	  				  if(row.x == 4-data[5]) return "#0050ef";
+	  				  else return "#1ba1e2";
 	  			  }
 	  			});
 	    	});

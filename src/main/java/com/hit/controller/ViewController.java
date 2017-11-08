@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.hibernate.dialect.MySQL57InnoDBDialect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -450,12 +451,16 @@ public class ViewController {
 	
 	
 	@RequestMapping("/getScoresForDiagram")
-	public @ResponseBody String[] getScoresForDiagram(HttpServletRequest request){
+	public @ResponseBody int[] getScoresForDiagram(HttpServletRequest request){
 		HibernateMOSTDAO DAO = HibernateMOSTDAO.getInstance();
 		
 		try {
 			int gameId = (int)request.getSession().getAttribute("currentGameId");
-			int myScore = DAO.FindResults(gameId, (int)request.getSession().getAttribute("userId")).length;
+			ResultAnalysis[] myresults = DAO.FindResults(gameId, (int)request.getSession().getAttribute("userId"));
+			int myScore = 0;
+			for (ResultAnalysis resultAnalysis : myresults) {
+				myScore += (resultAnalysis.getLevel()+1);
+			}
 
 			User[] users = DAO.GetAllUsers();
 			//int[] maxScores = {myScore,0,0};
@@ -490,20 +495,34 @@ public class ViewController {
 				}
 			});
 			
-			String[] maxScoresT = {"","","","",""};
-			int countInTeam = users.length / 4;
-			maxScoresT[0] = scores.get(0) + " - " + scores.get(countInTeam -1);
-			maxScoresT[1] = scores.get(countInTeam) + " - " + scores.get(countInTeam*2 -1);
-			maxScoresT[2] = scores.get(countInTeam*2) + " - " + scores.get(countInTeam*3 -1);
-			maxScoresT[3] = scores.get(countInTeam*3) + " - " + scores.get(countInTeam*4 -1);
-			if(myScore > scores.get(countInTeam -1)){
-				maxScoresT[4] = "0"; 
-			}else if(myScore > scores.get(countInTeam*2 -1)){
-				maxScoresT[4] = "1"; 
-			}else if(myScore > scores.get(countInTeam*3 -1)){
-				maxScoresT[4] = "2"; 
-			}else if(myScore > scores.get(countInTeam*4 -1)){
-				maxScoresT[4] = "3"; 
+			int scoreEV = scores.get(0)/4;			
+			int[] maxScoresT = {0,0,0,0,20,0};
+			double totalPlayers = users.length / 0.8;
+			maxScoresT[0] = numOfUserInGroup(scores,scoreEV*3,scores.get(0));
+			maxScoresT[1] = numOfUserInGroup(scores,scoreEV*2,scoreEV*3);
+			maxScoresT[2] = numOfUserInGroup(scores,scoreEV,scoreEV*2);
+			maxScoresT[3] = numOfUserInGroup(scores,0,scoreEV);
+			
+			if(maxScoresT[0] != 0){
+				maxScoresT[0] = (int) (100 * (maxScoresT[0] / totalPlayers));
+			}
+			if(maxScoresT[1] != 0){
+				maxScoresT[1] = (int) (100 * (maxScoresT[1] / totalPlayers));
+			}
+			if(maxScoresT[2] != 0){
+				maxScoresT[2] = (int) (100 * (maxScoresT[2] / totalPlayers));
+			}
+			if(maxScoresT[3] != 0){
+			maxScoresT[3] = (int) (100 * (maxScoresT[3] / totalPlayers));
+			}
+			if(myScore > scoreEV*3){
+				maxScoresT[5] = 0; 
+			}else if(myScore > scoreEV*2){
+				maxScoresT[5] = 1; 
+			}else if(myScore > scoreEV){
+				maxScoresT[5] = 2; 
+			}else if(myScore > 0){
+				maxScoresT[5] = 3; 
 			}
 			
 			return maxScoresT;
@@ -514,5 +533,16 @@ public class ViewController {
 		}
 		
 		return null;
+	}
+	
+	private int numOfUserInGroup(ArrayList<Integer> scores,int startScore,int endScore){
+		int numOfPlayers = 0;
+		for (int userScore : scores) {
+			if(userScore > startScore && userScore <= endScore){
+				numOfPlayers++;
+			}
+		}
+		
+		return numOfPlayers;
 	}
 }
