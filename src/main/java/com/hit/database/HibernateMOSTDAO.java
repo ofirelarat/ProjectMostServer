@@ -383,8 +383,9 @@ public class HibernateMOSTDAO implements IMOSTDAO {
 		try{
 			session.beginTransaction();
 			User user = (User) session.get(User.class, userId);
-			imagesURLS = user.getImagesUrls().split("$");
-			
+			if(user.getImagesUrls() != null){
+				imagesURLS = user.getImagesUrls().split("$");
+			}
 		}catch(HibernateException e){
 			throw new DAOException(e.getMessage(), e);
 		}finally {

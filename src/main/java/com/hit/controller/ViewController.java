@@ -160,10 +160,17 @@ public class ViewController {
 				return "redirect:/pages/ErrorPage.html";
 			}
 			
-			request.getSession().setAttribute("userId", user.getId());
-			response.setContentType("text/html");
-			response.setCharacterEncoding("utf-8");
-			return "pages/ImageViewPage.html";
+			String[] userImages = DAO.getUserImages(user.getId());
+			if(userImages != null && userImages.length > 0 && !userImages[0].equals("")){
+				request.getSession().setAttribute("userId", user.getId());
+				response.setContentType("text/html");
+				response.setCharacterEncoding("utf-8");
+
+				return "pages/ImageViewPage.html";
+			}
+			else{
+				return "redirect:/loginFToMenu?email=" + user.getEmail() + "&password=" + user.getPassword();
+			}
 		} catch (DAOException e) {
 			Logger logger = (Logger) LoggerFactory.getLogger("exception.viewCotroller.GetLogin");
 			logger.error(e.getMessage());
@@ -332,25 +339,6 @@ public class ViewController {
 		}
 	}
 	
-	@RequestMapping(value="/getImage/{imageName}", method=RequestMethod.GET)
-	@ResponseBody
-	public ResponseEntity<byte[]> getImage(@PathVariable String imageName,HttpServletResponse response){
-		try {
-			File imgPath = new File("src/main/resources/images/" + imageName + ".jpg");
-			byte[] image = Files.readAllBytes(imgPath.toPath());
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.IMAGE_JPEG);
-			headers.setContentLength(image.length);
-			return new ResponseEntity<>(image,headers,HttpStatus.OK);
-		} catch (IOException e) {
-			Logger logger = (Logger) LoggerFactory.getLogger("exception.viewCotroller.getImage");
-			 logger.error(e.getMessage());
-			e.printStackTrace();
-		}
-		
-		return null;
-	}
-	
 	@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
 	private @ResponseBody
 	String uploadFileHandler(@RequestParam("file") MultipartFile file) {
@@ -427,7 +415,7 @@ public class ViewController {
 		return "image didn't deleted";
 	}
 	
-	@RequestMapping("/returnToMenu")
+	@RequestMapping(value="/returnToMenu",method=RequestMethod.GET)
 	public String gotoMenuPage(HttpServletRequest request){
 		if(request.getSession().getAttribute("userId") == null)
 		{
@@ -450,7 +438,7 @@ public class ViewController {
 	}
 	
 	
-	@RequestMapping("/getScoresForDiagram")
+	@RequestMapping(value="/getScoresForDiagram",method=RequestMethod.GET)
 	public @ResponseBody int[] getScoresForDiagram(HttpServletRequest request){
 		HibernateMOSTDAO DAO = HibernateMOSTDAO.getInstance();
 		
