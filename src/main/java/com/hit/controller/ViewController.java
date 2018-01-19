@@ -152,7 +152,7 @@ public class ViewController {
 	
 	@RequestMapping(value="/loginF", method=RequestMethod.GET)
 	public String LoginGetF(HttpServletRequest request,HttpServletResponse response,@RequestParam(value="email")String email,@RequestParam(value="password")String password){
-		IMOSTDAO DAO = HibernateMOSTDAO.getInstance();
+		/*IMOSTDAO DAO = HibernateMOSTDAO.getInstance();
 		try {
 			User user = DAO.FindUser(email, password);
 			
@@ -177,7 +177,8 @@ public class ViewController {
 			e.printStackTrace();
 		} 
 		
-		return null;
+		return null;*/
+		return "redirect:/loginFToMenu?email=" + email + "&password=" + password;
 	}
 	
 	@RequestMapping(value="/loginFToMenu", method=RequestMethod.GET)

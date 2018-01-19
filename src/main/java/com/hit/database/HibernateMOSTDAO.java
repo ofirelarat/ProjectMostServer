@@ -12,7 +12,6 @@ import com.hit.exceptions.DAOException;
 import com.hit.model.Friends;
 import com.hit.model.ResultAnalysis;
 import com.hit.model.User;
-import com.hit.model.UserImage;
 
 /**
  * 
@@ -213,20 +212,16 @@ public class HibernateMOSTDAO implements IMOSTDAO {
 
 	@Override
 	public void AddResult(ResultAnalysis result) throws DAOException {
-		
-		if(FindUser(result.getUserId()) != null){
-			
-			Session session = factory.openSession();
-			
-			try{
-				session.beginTransaction();
-				session.save(result);
-				session.getTransaction().commit(); 
-			}catch (HibernateException e) {
-				throw new DAOException(e.getMessage(),e);
-			}finally {
-				session.close();
-			}
+		Session session = factory.openSession();
+
+		try{
+			session.beginTransaction();
+			session.save(result);
+			session.getTransaction().commit(); 
+		}catch (HibernateException e) {
+			throw new DAOException(e.getMessage(),e);
+		}finally {
+			session.close();
 		}
 	}
 
@@ -236,16 +231,22 @@ public class HibernateMOSTDAO implements IMOSTDAO {
 		session.beginTransaction();
 
 		try{
-		for (ResultAnalysis resultAnalysis : results) {
-				session.save(resultAnalysis);
-				}		
-		
-		session.getTransaction().commit();
+			for (ResultAnalysis resultAnalysis : results) {
+					session.save(resultAnalysis);
+			}		
+			
+			session.getTransaction().commit();
 		}catch (HibernateException e) {
 			throw new DAOException(e.getMessage(),e);
 		}finally {
 			session.close();
 		}	
+		//factory.close();
+		//instance = new HibernateMOSTDAO();
+		
+		/*for(ResultAnalysis result : results){
+			AddResult(result);
+		}*/
 	}
 
 	@Override
@@ -268,6 +269,23 @@ public class HibernateMOSTDAO implements IMOSTDAO {
 		return results;
 	}
 
+	@Override
+	public void DeleteResult(int resultId) throws DAOException {
+		Session session = factory.openSession();
+
+		try{
+			session.beginTransaction();
+			session.delete(resultId);
+			session.getTransaction().commit();
+		}catch (HibernateException e) {
+			throw new DAOException(e.getMessage(),e);
+		}catch (Exception e) {	
+			e.printStackTrace();
+		}
+		finally{		
+			session.close();
+		}		
+	}
 	
 	@Override
 	public void DeleteResult(ResultAnalysis result) throws DAOException {

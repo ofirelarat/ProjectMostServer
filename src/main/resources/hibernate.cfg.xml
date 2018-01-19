@@ -4,28 +4,27 @@
 <hibernate-configuration>
 <session-factory>
 
-		<!-- <property name="hibernate.connection.driver_class">
+		<property name="hibernate.connection.driver_class">
 			org.postgresql.Driver
-		</property> -->
+		</property>
+		<property name="hibernate.connection.url">
+			jdbc:postgresql://ec2-54-225-101-64.compute-1.amazonaws.com:5432/deco4tkehfi7ia?sslmode=require
+		</property>
+		<property name="hibernate.connection.username">xpfpkbvqcgwebw</property>
+		<property name="hibernate.connection.password">f63b8854190e59f8b4237a074ca054e7bb8062298458130ebad40dcc90ce053a</property>
+		<property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+		
+		<!-- 
 		<property name="hibernate.connection.driver_class">	
 			com.mysql.jdbc.Driver
 		</property>
-		
-		<!-- <property name="hibernate.connection.url">
-			jdbc:postgresql://ec2-54-225-101-64.compute-1.amazonaws.com:5432/deco4tkehfi7ia
-		</property> -->
 		<property name="hibernate.connection.url">
 			jdbc:mysql://eu-cdbr-azure-west-d.cloudapp.net:3306/mostdb
 		</property>
-		
-		<!-- <property name="hibernate.connection.username">xpfpkbvqcgwebw</property> -->
 		<property name="hibernate.connection.username">b2ded1ffb1bb31</property> 
-		
-		<!-- <property name="hibernate.connection.password">f63b8854190e59f8b4237a074ca054e7bb8062298458130ebad40dcc90ce053a</property> -->
 		<property name="hibernate.connection.password">ad102b20</property>
-		
-		<!-- <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property> -->
 		<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+		 -->
 		
 		<property name="show_sql">true</property>
 		<property name="hibernate.hbm2ddl.auto">update</property>

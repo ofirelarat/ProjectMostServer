@@ -648,7 +648,7 @@ function Finish(state) {
     sessionData += "]}}"
 
     $.ajax({
-        url: "http://project-most.herokuapp.com/game/addresult",
+        url: "/game/addresult",
         type: "POST",
         data: sessionData,
         contentType: "application/json; charset=utf-8",

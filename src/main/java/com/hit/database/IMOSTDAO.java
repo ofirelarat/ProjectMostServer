@@ -37,6 +37,7 @@ public interface IMOSTDAO
 	public ResultAnalysis[] FindResults(int gameId,int userId) throws DAOException;
 	public void DeleteResult(ResultAnalysis result) throws DAOException;
 	public void DeleteResults(ResultAnalysis[] results) throws DAOException;
+	public void DeleteResult(int resultId) throws DAOException;
 	
 	//Friends table connection methods
 	public boolean isFriendShipExist(int firstFriendId,int secondFriendId) throws DAOException;

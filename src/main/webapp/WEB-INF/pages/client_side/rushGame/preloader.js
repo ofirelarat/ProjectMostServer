@@ -39,7 +39,7 @@ function fromServer() {
     //PLEASE VERIFY THAT PORT NUMBER IS CORRECT	
     // *****************************************************************
 
-    var url = "http://project-most.herokuapp.com/userIdandLevel/" + gameID;
+    var url = "/userIdandLevel/" + gameID;
 
     // *****************************************************************
 

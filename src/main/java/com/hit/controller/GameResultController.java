@@ -7,11 +7,15 @@ import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.AsyncRestTemplate;
 
 import com.hit.database.HibernateMOSTDAO;
 import com.hit.database.IMOSTDAO;
@@ -25,14 +29,16 @@ public class GameResultController {
 
 	@RequestMapping(value = "/game/addresult" ,method=RequestMethod.POST)
 	public void sendGameResult(@RequestBody ResultAnalysisAsJson resultJson){
-		ResultAnalysis[] results = ResultAnalysisAsJson.parseToResult(resultJson);
-		IMOSTDAO DAO = HibernateMOSTDAO.getInstance();
-		try {
-			DAO.AddResults(results);
-		} catch (DAOException e) {
-			 Logger logger = (Logger) LoggerFactory.getLogger("exception.gameCotroller.addResult");
-			 logger.error(e.getMessage());
-			e.printStackTrace();
+		if(resultJson.getUserID() != 0){
+			ResultAnalysis[] results = ResultAnalysisAsJson.parseToResult(resultJson);
+			IMOSTDAO DAO = HibernateMOSTDAO.getInstance();
+			try {
+				DAO.AddResults(results);
+			} catch (DAOException e) {
+				 Logger logger = (Logger) LoggerFactory.getLogger("exception.gameCotroller.addResult");
+				 logger.error(e.getMessage());
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -88,5 +94,16 @@ public class GameResultController {
 
 		Integer[] averagesArray = new Integer[sumScorePerDate.size()];
 		return averagesList.toArray(averagesArray);
+	}
+	
+	@RequestMapping(value="/deleteResults/{userId}/{gameId}", method=RequestMethod.DELETE)
+	public void deleteResults(@PathVariable int userId, @PathVariable int gameId){
+		IMOSTDAO DAO = HibernateMOSTDAO.getInstance();
+		try {
+			DAO.DeleteResults(DAO.FindResults(gameId, userId));
+		} catch (DAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

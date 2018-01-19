@@ -13,7 +13,7 @@ public class User
 	private String firstName;
 	private String lastName;
 	private int age;
-	private Gender gender;
+	private String gender;
 	private String imagesUrls;
 	
 	public enum Gender
@@ -34,7 +34,7 @@ public class User
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.age = age;
-		this.gender = gender;
+		this.gender = gender.name();
 	}
 
 	public int getId() {
@@ -85,11 +85,11 @@ public class User
 		this.age = age;
 	}
 
-	public Gender getGender() {
+	public String getGender() {
 		return gender;
 	}
 
-	public void setGender(Gender gender) {
+	public void setGender(String gender) {
 		this.gender = gender;
 	}
 
