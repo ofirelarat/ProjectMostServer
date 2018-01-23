@@ -8,10 +8,10 @@
 			org.postgresql.Driver
 		</property>
 		<property name="hibernate.connection.url">
-			jdbc:postgresql://ec2-54-225-101-64.compute-1.amazonaws.com:5432/deco4tkehfi7ia?sslmode=require
+			jdbc:postgresql://ec2-174-129-22-84.compute-1.amazonaws.com:5432/d9q9nqq6i0a203?sslmode=require
 		</property>
-		<property name="hibernate.connection.username">xpfpkbvqcgwebw</property>
-		<property name="hibernate.connection.password">f63b8854190e59f8b4237a074ca054e7bb8062298458130ebad40dcc90ce053a</property>
+		<property name="hibernate.connection.username">nwbrtzvltwzwsj</property>
+		<property name="hibernate.connection.password">f111715c12e193247d3a102932842e6e8a61894c1321695c6052a8b6f8cff02d</property>
 		<property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
 		
 		<!-- 
