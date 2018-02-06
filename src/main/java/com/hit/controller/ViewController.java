@@ -440,12 +440,14 @@ public class ViewController {
 	
 	
 	@RequestMapping(value="/getScoresForDiagram",method=RequestMethod.GET)
-	public @ResponseBody int[] getScoresForDiagram(HttpServletRequest request){
+	public @ResponseBody int[] getScoresForDiagram(HttpServletRequest request, @RequestParam("gameId") int gameId, @RequestParam("userId") int userId){
 		HibernateMOSTDAO DAO = HibernateMOSTDAO.getInstance();
 		
 		try {
-			int gameId = (int)request.getSession().getAttribute("currentGameId");
-			ResultAnalysis[] myresults = DAO.FindResults(gameId, (int)request.getSession().getAttribute("userId"));
+			if(request.getSession().getAttribute("userId") == null){
+				request.getSession().setAttribute("userId", userId);
+			}
+			ResultAnalysis[] myresults = DAO.FindResults(gameId, userId);
 			int myScore = 0;
 			for (ResultAnalysis resultAnalysis : myresults) {
 				myScore += (resultAnalysis.getLevel()+1);

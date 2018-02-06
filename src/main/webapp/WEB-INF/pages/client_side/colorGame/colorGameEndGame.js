@@ -154,7 +154,7 @@ function gotoChartPage(){
     boingTimeOut.stop();
     finishGameSound.stop();
     btnSound.play();
-    window.location = "../../client_side/endGameChart.html?gameName=colorGame";
+    window.location = "../../client_side/endGameChart.html?gameName=colorGame&userID=" + userID;
 }
 
 function resizeImage(image){

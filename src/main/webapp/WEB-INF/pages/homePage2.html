@@ -15,6 +15,15 @@
     </head>
     
     <body onload="rndGame()">
+    
+      	<script type="text/javascript">
+      	 $.get('/userIdandLevel/0',function(result){
+     		 	if(result == '0$0'){
+     		    	location.reload();
+     		 	}
+      	 });
+	    </script>
+    
         <div id="container">
             <header>
                 <h1><img src="pages/client_side/assets/logo.png"/>אימוני מוח</h1>

@@ -148,7 +148,7 @@ function gotoChartPage(){
     boingTimeOut.stop();
     finishGameSound.stop();
     btnSound.play();
-    window.location = "../../client_side/endGameChart.html?gameName=memoGame";
+    window.location = "../../client_side/endGameChart.html?gameName=memoGame&userID=" + userID;
 }
 
 function resizeImage(image){

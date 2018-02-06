@@ -43,8 +43,9 @@
         </div>
 
         <script>
-        	
-	        $.get("/getScoresForDiagram?gameId=1",function(data){ 
+        	var userId = getUserID();
+        	var gameId = getGameID();
+	        $.get("/getScoresForDiagram?gameId=" + gameId + "&userId=" + userId, function(data){ 
 	    		var first = {x: "גבוה", y: data[0]};
 	    		var second = {x: "טוב", y: data[1]};
 	    		var third = {x: "בינוני", y: data[2]};
@@ -90,7 +91,26 @@
                     document.getElementById("gameNameTitle").innerHTML = "במשחק זיכרון בריבוע"
                 }        
             }
-
+            
+            function getUserID(){
+            	 var searchParams = new URLSearchParams(window.location.search);
+                 var userID = searchParams.get("userID");
+                 return userID;
+            }
+            
+            function getGameID(){
+                var searchParams = new URLSearchParams(window.location.search);
+                var gameName = searchParams.get("gameName");
+                if (gameName == "ballGame"){
+					return 1;
+				}else if (gameName == "colorGame"){
+					return 2;
+                }else if    (gameName == "rushGame"){
+					return 3;
+                }else if (gameName == "memoGame"){
+					return 4;
+                } 
+            }
 
             function backToHomePage(){
                 window.location ="/returnToMenu";
