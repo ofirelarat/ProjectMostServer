@@ -25,6 +25,8 @@ public interface IMOSTDAO
 	public void DeleteUser(int id) throws DAOException;
 	public void DeleteUser(User temp) throws DAOException;
 	public User[] GetAllUsers() throws DAOException;
+	public void updateUser(User temp) throws DAOException;
+
 
 	public void addImage(String imageURL) throws DAOException;
 	public String[] getUserImages(int userId) throws DAOException;

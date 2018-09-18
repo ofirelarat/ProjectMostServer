@@ -29,10 +29,6 @@
 			<column name="AGE"/>
 		</property>
 		
-		<property name="gender">
-			<column name="GENDER"/>
-		</property>
-		
 		<property name="imagesUrls">
 			<column name="IMAGESURLS"/>
 		</property>

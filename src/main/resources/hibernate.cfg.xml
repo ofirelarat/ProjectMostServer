@@ -27,7 +27,7 @@
 		 -->
 		
 		<property name="show_sql">true</property>
-		<property name="hibernate.hbm2ddl.auto">update</property>
+		<property name="hibernate.hbm2ddl.auto">validate</property>
 		
 		<!-- Mapping files -->
 		<mapping resource="storeuser.hbm.xml"/>

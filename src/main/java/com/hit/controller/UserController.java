@@ -33,13 +33,6 @@ public class UserController {
 		return "hello ";
 	}
 	
-	@RequestMapping(value = "get/{name}", method = RequestMethod.GET, produces = "application/json")
-	public @ResponseBody User getUser(@PathVariable String name)
-	{
-		return new User("kuku@gmail.com", "1234", name , name, 37, Gender.male);
-	}
-	
-	
 	@RequestMapping(value="/get" ,method = RequestMethod.POST)
 	public User login(@RequestParam(value="email")String email ,@RequestParam(value="password")String password)
 	{
@@ -74,7 +67,7 @@ public class UserController {
 	@RequestMapping(value="/put",method = RequestMethod.PUT)
 	public HttpStatus register(@RequestParam(value="email")String email,@RequestParam(value="password")String password,@RequestParam(value="firstname")String firstname,@RequestParam(value="lastname")String lastname,@RequestParam(value="age")int age,@RequestParam(value="gender")Gender gender)
 	{
-		User user= new User(email,password,firstname,lastname,age,gender);
+		User user= new User(email,password,firstname,lastname,age);
 		try {
 			if(DAO.AddUser(user))
 			{
@@ -82,6 +75,35 @@ public class UserController {
 			}else{
 				return HttpStatus.CONFLICT;
 			}
+		} catch (DAOException e) {
+			 Logger logger = (Logger) LoggerFactory.getLogger("exception.userCotroller.register");
+			 logger.error(e.getMessage());
+			e.printStackTrace();
+			return HttpStatus.BAD_REQUEST;
+		}
+	}
+	
+	@RequestMapping(value="/update",method = RequestMethod.POST)
+	public HttpStatus update(@RequestParam(value="email")String email,@RequestParam(value="password")String password,@RequestParam(value="firstname")String firstname,@RequestParam(value="lastname")String lastname,@RequestParam(value="age")int age,@RequestParam(value="gender")Gender gender)
+	{
+		User user = null;
+		try {
+			user = DAO.FindUserByEmail(email);
+			if(user == null){
+				return HttpStatus.NOT_FOUND;
+			}
+		} catch (DAOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		user.setEmail(email);
+		user.setPassword(password);
+		user.setFirstName(firstname);
+		user.setLastName(lastname);
+		
+		try {
+			DAO.updateUser(user);
+			return HttpStatus.OK;
 		} catch (DAOException e) {
 			 Logger logger = (Logger) LoggerFactory.getLogger("exception.userCotroller.register");
 			 logger.error(e.getMessage());

@@ -61,6 +61,20 @@ public class HibernateMOSTDAO implements IMOSTDAO {
 		
 		return flag;
 	}
+	
+	public void updateUser(User temp) throws DAOException{
+		Session session = factory.openSession();
+		
+		try{
+			session.beginTransaction();
+			session.update(temp);
+			session.getTransaction().commit();
+		}catch (HibernateException e) {
+			throw new DAOException(e.getMessage(),e);
+		}finally {
+			session.close();
+		}
+	}
 
 	public boolean IsExist(String email) throws DAOException {
 		Session session = factory.openSession();
@@ -151,7 +165,6 @@ public class HibernateMOSTDAO implements IMOSTDAO {
 			user.setFirstName(temp.getFirstName());
 			user.setLastName(temp.getLastName());
 			user.setAge(temp.getAge());
-			user.setGender(temp.getGender());
 			user.setImagesUrls(temp.getImagesUrls());
 			session.update(user);
 			session.getTransaction().commit();

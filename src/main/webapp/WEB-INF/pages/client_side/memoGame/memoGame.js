@@ -25,7 +25,7 @@ memoGame.memoGame.prototype = {
         userStartPoint = 1;
 
         if (userStartPoint == 1){
-            difficultyLevel = 1;
+            difficultyLevel = 0;
         }else if (userStartPoint == 2){
             difficultyLevel = 3;
         }else if(userStartPoint == 3){

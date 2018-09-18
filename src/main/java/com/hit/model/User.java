@@ -13,7 +13,6 @@ public class User
 	private String firstName;
 	private String lastName;
 	private int age;
-	private String gender;
 	private String imagesUrls;
 	
 	public enum Gender
@@ -27,14 +26,14 @@ public class User
 		
 	}
 	
-	public User(String email,String password, String firstName, String lastName, int age, Gender gender) {
+	public User(String email, String password, String firstName, String lastName, int age) {
 		super();
 		this.email = email;
 		this.password = password;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.age = age;
-		this.gender = gender.name();
+		this.imagesUrls = imagesUrls;
 	}
 
 	public int getId() {
@@ -84,15 +83,7 @@ public class User
 	public void setAge(int age) {
 		this.age = age;
 	}
-
-	public String getGender() {
-		return gender;
-	}
-
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
-
+	
 	public String getImagesUrls() {
 		return imagesUrls;
 	}
@@ -113,6 +104,6 @@ public class User
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", email=" + email + ", password=" + password + ", firstName=" + firstName
-				+ ", lastName=" + lastName + ", age=" + age + ", gender=" + gender + "]";
+				+ ", lastName=" + lastName + ", age=" + age + "]";
 	}
 }
